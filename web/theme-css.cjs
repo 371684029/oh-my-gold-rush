@@ -595,7 +595,10 @@ header.home-hero .subtitle {
   border: 0.5px solid rgba(184, 134, 11, 0.25);
   padding: 3px 10px; border-radius: 980px;
 }
-.hero-left { flex-shrink: 0; }
+.hero-left {
+  flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
 .hero-body { flex: 1; min-width: 0; }
 .hero-date { font-size: 0.78rem; color: var(--text-3); letter-spacing: 0.02em; }
 .hero-title { font-size: 1.2rem; font-weight: 650; color: var(--text); margin: 4px 0 8px; letter-spacing: -0.02em; }
@@ -689,7 +692,22 @@ header.home-hero .subtitle {
 .home-panels .tr-panel { margin-top: 2px; }
 .home-panels .pred-stats-panel { margin-bottom: 14px; }
 .report-card.hidden { display: none; }
-.rc-score { flex-shrink: 0; }
+.rc-score {
+  flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+}
+.rc-score-top { display: inline-flex; align-items: center; }
+.rc-quant-badge {
+  display: inline-flex; align-items: baseline; gap: 3px;
+  padding: 2px 9px; border-radius: 980px;
+  font-size: 0.74rem; font-weight: 700; letter-spacing: -0.01em;
+  border: 0.5px solid; white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.rc-quant-badge .rc-qb-label { font-size: 0.6rem; font-weight: 600; opacity: 0.85; }
+.rc-quant-badge.rc-qb-bullish { color: var(--green-text); background: rgba(48, 209, 88, 0.12); border-color: rgba(48, 209, 88, 0.3); }
+.rc-quant-badge.rc-qb-neutral { color: var(--yellow-text); background: rgba(255, 159, 10, 0.1); border-color: rgba(255, 159, 10, 0.28); }
+.rc-quant-badge.rc-qb-bearish { color: var(--red-text); background: rgba(255, 69, 58, 0.1); border-color: rgba(255, 69, 58, 0.28); }
 .rc-body { flex: 1; min-width: 0; }
 .rc-date { font-weight: 600; color: var(--text); font-size: 0.95rem; letter-spacing: -0.01em; }
 .rc-snippet { font-size: 0.82rem; color: var(--text-2); margin-top: 4px; line-height: 1.45; }
@@ -700,9 +718,8 @@ header.home-hero .subtitle {
   display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px;
   font-size: 0.78rem; color: var(--text-2); margin-top: 5px; font-weight: 500;
 }
-.rc-dual strong { color: var(--text); font-weight: 700; }
-.rc-dual-sep { color: var(--text-3); margin: 0 1px; }
-.rc-dual-d { font-variant-numeric: tabular-nums; }
+.rc-dual-word { color: var(--text-2); font-weight: 600; }
+.rc-dual-d { font-variant-numeric: tabular-nums; font-weight: 700; }
 .rc-dual-ok { color: var(--text-3); }
 .rc-dual-mild { color: var(--yellow-text, #9a6700); }
 .rc-dual-conflict { color: var(--red); font-weight: 700; }

@@ -13,6 +13,7 @@ const {
   attachNeighborDeltas,
   attachPredictionOutcomes,
   renderListDualHtml,
+  renderQuantBadgeHtml,
   renderListDeltaHtml,
   renderListOutcomeHtml,
   renderListPosHtml,
@@ -1264,13 +1265,14 @@ function renderIndex(fileInfos) {
   const rest = analyses.slice(1);
 
   const dualLine = (info) => renderListDualHtml(listDualScores(info), esc);
+  const quantBadge = (info) => renderQuantBadgeHtml(listDualScores(info), esc);
   const deltaLine = (info) => renderListDeltaHtml(info.listDelta || info.dayDelta, esc);
   const outcomeLine = (info) => renderListOutcomeHtml(info.outcome, esc);
   const posChip = (info) => renderListPosHtml(info.positionRec, esc);
 
   const heroHtml = latest ? `<a href="/${latest.filename}" class="hero-card dir-${latest.direction || 'neutral'} ${latest.qualityGate && !latest.qualityGate.actionable ? 'hero-blocked' : ''} ${(latest.listDelta || latest.dayDelta)?.skipFineRead ? 'hero-skip' : ''}">
     <div class="hero-badge">最新研判 ${qualityDot(latest.qualityGate)}</div>
-    <div class="hero-left">${scoreBadge(latest.score)}</div>
+    <div class="hero-left">${scoreBadge(latest.score)}${quantBadge(latest)}</div>
     <div class="hero-body">
       <div class="hero-date">${esc(latest.dateLabel)} ${latest.qualityGate ? `<span class="hero-dq">${latest.qualityGate.emoji} ${latest.qualityGate.label}${latest.confidence != null ? ' · ' + latest.confidence + '%' : ''}</span>` : ''} ${posChip(latest)}</div>
       ${dualLine(latest)}
@@ -1293,7 +1295,7 @@ function renderIndex(fileInfos) {
       : (info.advice ? `<div class="rc-verdict">${renderCardVerdict(info.score, info.direction)}</div>` : `<div class="rc-snippet muted">${esc(info.filename)}</div>`);
     const search = buildCardSearchBlob(info);
     return `<a href="/${info.filename}" class="report-card dir-${info.direction || 'neutral'}" data-search="${esc(search)}" data-score="${info.score ?? ''}" data-quant="${listDualScores(info)?.quant ?? ''}">
-      <div class="rc-score">${scoreBadge(info.score)}${qualityDot(info.qualityGate)}</div>
+      <div class="rc-score"><span class="rc-score-top">${scoreBadge(info.score)}${qualityDot(info.qualityGate)}</span>${quantBadge(info)}</div>
       <div class="rc-body">
         <div class="rc-date">${info.dateLabel} ${info.confidence != null ? `<span class="rc-conf">置信 ${info.confidence}%</span>` : ''} ${posChip(info)}</div>
         ${dualLine(info)}

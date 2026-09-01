@@ -1,11 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import {
   listDualScores,
+  scoreTone,
   synthesizeNeighborDelta,
   attachNeighborDeltas,
   attachPredictionOutcomes,
   describeOutcome,
   renderListDualHtml,
+  renderQuantBadgeHtml,
   renderListDeltaHtml,
   renderListOutcomeHtml,
   fmtSigned,
@@ -18,6 +20,15 @@ describe('list-card-meta', () => {
     expect(fmtSigned(0)).toBe('±0');
   });
 
+  it('scoreTone 与 scoreBadge 同口径分档', () => {
+    expect(scoreTone(80)).toBe('bullish');
+    expect(scoreTone(75)).toBe('bullish');
+    expect(scoreTone(60)).toBe('neutral');
+    expect(scoreTone(55)).toBe('neutral');
+    expect(scoreTone(40)).toBe('bearish');
+    expect(scoreTone(null)).toBeNull();
+  });
+
   it('listDualScores 读 LLM/量化/冲突', () => {
     const d = listDualScores({
       score: 70,
@@ -27,9 +38,41 @@ describe('list-card-meta', () => {
     expect(d.llm).toBe(70);
     expect(d.quant).toBe(50);
     expect(d.conflict).toBe(true);
-    expect(renderListDualHtml(d, s => s)).toContain('LLM');
-    expect(renderListDualHtml(d, s => s)).toContain('量化');
-    expect(renderListDualHtml(d, s => s)).toContain('分歧');
+  });
+
+  it('renderQuantBadgeHtml 按量化分分档着色', () => {
+    expect(renderQuantBadgeHtml({ quant: 80 }, s => s)).toContain('rc-qb-bullish');
+    expect(renderQuantBadgeHtml({ quant: 60 }, s => s)).toContain('rc-qb-neutral');
+    expect(renderQuantBadgeHtml({ quant: 40 }, s => s)).toContain('rc-qb-bearish');
+    expect(renderQuantBadgeHtml({ quant: 55 }, s => s)).toContain('rc-qb-neutral');
+    expect(renderQuantBadgeHtml({ quant: 55 }, s => s)).toContain('> 55');
+    expect(renderQuantBadgeHtml(null, s => s)).toBe('');
+    expect(renderQuantBadgeHtml({ llm: 60, quant: null }, s => s)).toBe('');
+  });
+
+  it('renderListDualHtml：一致/轻度分歧/分歧弃权三档', () => {
+    // |Δ|≤8 → 一致
+    const ok = renderListDualHtml({ llm: 57, quant: 55, delta: 2, conflict: false }, s => s);
+    expect(ok).toContain('Δ+2');
+    expect(ok).toContain('一致');
+    expect(ok).toContain('rc-dual-ok');
+    expect(ok).not.toContain('rc-dual-flag');
+    expect(ok).not.toContain('分歧');
+    // 8<|Δ|≤15 → 轻度分歧
+    const mild = renderListDualHtml({ llm: 58, quant: 46, delta: 12, conflict: false }, s => s);
+    expect(mild).toContain('轻度分歧');
+    expect(mild).toContain('rc-dual-mild');
+    // conflict → 分歧·操作弃权 + 弃权标
+    const conflict = renderListDualHtml({ llm: 70, quant: 50, delta: 20, conflict: true }, s => s);
+    expect(conflict).toContain('Δ+20');
+    expect(conflict).toContain('分歧·操作弃权');
+    expect(conflict).toContain('rc-dual-conflict');
+    expect(conflict).toContain('rc-dual-flag');
+    // Δ 缺失 → 不渲染
+    expect(renderListDualHtml({ llm: 60, quant: null, delta: null, conflict: false }, s => s)).toBe('');
+    // 数字由左列徽章承载，Δ 行不再重复
+    expect(ok).not.toContain('LLM');
+    expect(ok).not.toContain('量化');
   });
 
   it('相邻推算：分数跳变时有差分 headline', () => {

@@ -199,22 +199,40 @@ function describeOutcome(raw) {
 }
 
 /**
- * 列表双打分行 HTML
+ * 分数 → 方向色档（与 scoreBadge 同口径：≥75 偏多 / ≥55 中性 / 其余偏空）
+ */
+function scoreTone(score) {
+  if (score == null) return null;
+  if (score >= 75) return 'bullish';
+  if (score >= 55) return 'neutral';
+  return 'bearish';
+}
+
+/**
+ * 列表双打分行 HTML：Δ 摘要（数字由左列 LLM/量化徽章承载，不重复）
+ * 口径：|Δ|≤8 一致；8<|Δ|≤15 轻度分歧；>15 或 conflict → 分歧·操作弃权
  */
 function renderListDualHtml(dual, escFn) {
   const esc = typeof escFn === 'function' ? escFn : (s) => String(s);
-  if (!dual) return '';
-  const parts = [];
-  if (dual.llm != null) parts.push(`<span class="rc-dual-llm">LLM <strong>${dual.llm}</strong></span>`);
-  if (dual.quant != null) parts.push(`<span class="rc-dual-q">量化 <strong>${dual.quant}</strong></span>`);
-  if (dual.delta != null) {
-    const dStr = fmtSigned(dual.delta);
-    const tone = dual.conflict ? 'conflict' : Math.abs(dual.delta) > 8 ? 'mild' : 'ok';
-    parts.push(`<span class="rc-dual-d rc-dual-${tone}">Δ${esc(dStr)}</span>`);
-  }
-  if (!parts.length) return '';
-  const conflictMark = dual.conflict ? '<span class="rc-dual-flag">分歧</span>' : '';
-  return `<div class="rc-dual" title="双打分并排；分歧时不抬单侧权重">⚖️ ${parts.join('<span class="rc-dual-sep">·</span>')}${conflictMark}</div>`;
+  if (!dual || dual.delta == null) return '';
+  const dStr = fmtSigned(dual.delta);
+  const tone = dual.conflict ? 'conflict' : Math.abs(dual.delta) > 8 ? 'mild' : 'ok';
+  const word = dual.conflict
+    ? '分歧·操作弃权'
+    : tone === 'mild' ? '轻度分歧' : '一致';
+  const icon = dual.conflict ? '⛔' : '⚖️';
+  const conflictMark = dual.conflict ? '<span class="rc-dual-flag">弃权</span>' : '';
+  return `<div class="rc-dual" title="双打分并排；|Δ|>15 或方向相反 → 操作弃权、维持定投，不抬单侧权重">${icon} <span class="rc-dual-d rc-dual-${tone}">Δ${esc(dStr)}</span> <span class="rc-dual-word">${esc(word)}</span>${conflictMark}</div>`;
+}
+
+/**
+ * 左列量化小徽章：与 LLM 徽章同色档口径，纵向并排直观对比
+ */
+function renderQuantBadgeHtml(dual, escFn) {
+  const esc = typeof escFn === 'function' ? escFn : (s) => String(s);
+  if (!dual || dual.quant == null) return '';
+  const tone = scoreTone(dual.quant);
+  return `<span class="rc-quant-badge rc-qb-${tone}" title="量化分（纯本地因子，零 LLM）"><span class="rc-qb-label">量化</span> ${esc(String(dual.quant))}</span>`;
 }
 
 /**
@@ -274,7 +292,7 @@ function buildCardSearchBlob(info) {
     info.score,
     dual?.llm,
     dual?.quant,
-    dual?.conflict ? '分歧' : '',
+    dual?.conflict ? '分歧 弃权' : '',
     info.advice?.label,
     info.qualityGate?.label,
     dd?.headline,
@@ -288,6 +306,7 @@ function buildCardSearchBlob(info) {
 module.exports = {
   fmtSigned,
   predLabel,
+  scoreTone,
   listDualScores,
   synthesizeNeighborDelta,
   attachNeighborDeltas,
@@ -296,6 +315,7 @@ module.exports = {
   enrichOutcome,
   describeOutcome,
   renderListDualHtml,
+  renderQuantBadgeHtml,
   renderListDeltaHtml,
   renderListOutcomeHtml,
   renderListPosHtml,
