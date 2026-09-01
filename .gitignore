@@ -9,3 +9,6 @@ dist/
 
 # Runtime logs (keep .gitkeep)
 logs/*.log
+
+# Editor/backup leftovers
+*.bak
