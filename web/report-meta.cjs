@@ -81,7 +81,9 @@ function gateFromMeta(meta) {
   return {
     tier,
     actionable: meta.gate.actionable,
-    overallConfidence: meta.gate.overallConfidence,
+    // 与 extractDataQualityGate 的形状对齐：confidence 命名 + notes 数组（meta 不携带则空）
+    confidence: meta.gate.overallConfidence ?? null,
+    notes: [],
     emoji,
     label,
   };

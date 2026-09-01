@@ -740,8 +740,9 @@ function renderQualityBanner(gate) {
   if (!gate) return '';
   const cls = gate.tier === 'green' ? 'dq-green' : gate.tier === 'yellow' ? 'dq-yellow' : 'dq-red';
   const conf = gate.confidence != null ? `${gate.confidence}%` : '—';
-  const extra = gate.notes.length
-    ? `<div class="dq-notes">${gate.notes.slice(0, 4).map(n => `<div>· ${esc(n)}</div>`).join('')}</div>`
+  const notes = Array.isArray(gate.notes) ? gate.notes : [];
+  const extra = notes.length
+    ? `<div class="dq-notes">${notes.slice(0, 4).map(n => `<div>· ${esc(n)}</div>`).join('')}</div>`
     : '';
   const actionLine = gate.actionable
     ? (gate.tier === 'green' ? '可参考本报告操作建议（仍须结合自身判断）' : '可阅读分析，建议结合量化分与主力数据')

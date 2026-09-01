@@ -8,6 +8,7 @@ import {
   loadReportMeta,
   REPORT_META_SCHEMA,
 } from '../src/utils/report-meta.js';
+import { gateFromMeta } from '../web/report-meta.cjs';
 import type { GoldAnalysisReport } from '../src/types/analysis.js';
 import type { MidTermOutlook } from '../src/utils/mid-term-outlook.js';
 
@@ -125,5 +126,19 @@ describe('buildReportMeta / saveReportMeta', () => {
     const badPath = path.join(dir, 'bad.meta.json');
     fs.writeFileSync(badPath, JSON.stringify({ ...meta, schemaVersion: 999 }), 'utf-8');
     expect(loadReportMeta(badPath)).toBeNull();
+  });
+});
+
+describe('gateFromMeta（web 读取端）', () => {
+  it('gate 形状与 extractDataQualityGate 对齐：confidence 命名 + notes 数组', () => {
+    const gate = gateFromMeta({ gate: { tier: 'yellow', actionable: true, overallConfidence: 72 } });
+    expect(gate?.tier).toBe('yellow');
+    expect(gate?.confidence).toBe(72);
+    expect(Array.isArray(gate?.notes)).toBe(true);
+  });
+
+  it('meta 无 gate 时返回 null', () => {
+    expect(gateFromMeta({})).toBeNull();
+    expect(gateFromMeta(null)).toBeNull();
   });
 });
