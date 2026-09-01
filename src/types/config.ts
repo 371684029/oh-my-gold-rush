@@ -86,14 +86,14 @@ export interface GoldRushConfig {
 /** 默认配置 */
 export const DEFAULT_CONFIG: GoldRushConfig = {
   models: {
-    dataCollector: { providerID: 'opencode-go', modelID: 'deepseek-v4-pro' },
-    validator: { providerID: 'opencode-go', modelID: 'deepseek-v4-pro' },
-    technical: { providerID: 'opencode-go', modelID: 'deepseek-v4-pro' },
-    fundamental: { providerID: 'opencode-go', modelID: 'deepseek-v4-pro' },
-    sentiment: { providerID: 'opencode-go', modelID: 'deepseek-v4-pro' },
-    fund: { providerID: 'opencode-go', modelID: 'deepseek-v4-pro' },
-    rebuttal: { providerID: 'opencode-go', modelID: 'deepseek-v4-pro' },
-    orchestrator: { providerID: 'opencode-go', modelID: 'deepseek-v4-pro' },
+    dataCollector: { providerID: 'opencode-go', modelID: 'deepseek-v4-flash-vision-exp' },
+    validator: { providerID: 'opencode-go', modelID: 'deepseek-v4-flash-vision-exp' },
+    technical: { providerID: 'opencode-go', modelID: 'deepseek-v4-flash-vision-exp' },
+    fundamental: { providerID: 'opencode-go', modelID: 'deepseek-v4-flash-vision-exp' },
+    sentiment: { providerID: 'opencode-go', modelID: 'deepseek-v4-flash-vision-exp' },
+    fund: { providerID: 'opencode-go', modelID: 'deepseek-v4-flash-vision-exp' },
+    rebuttal: { providerID: 'opencode-go', modelID: 'deepseek-v4-flash-vision-exp' },
+    orchestrator: { providerID: 'opencode-go', modelID: 'deepseek-v4-flash-vision-exp' },
   },
   search: {
     tavilyApiKey: '',

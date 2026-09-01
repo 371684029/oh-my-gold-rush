@@ -27,7 +27,7 @@ describe('loadConfig — 深合并与 llm.models 别名', () => {
 
     const cfg = loadConfig(cfgPath);
     expect(cfg.models.rebuttal.modelID).toBe('custom-model-x');
-    expect(cfg.models.technical.modelID).toBe('deepseek-v4-pro');
+    expect(cfg.models.technical.modelID).toBe('deepseek-v4-flash-vision-exp');
   });
 
   it('database.path 可被用户配置覆盖', () => {
