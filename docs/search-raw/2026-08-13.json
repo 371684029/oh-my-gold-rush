@@ -1,0 +1,141 @@
+{
+  "timestamp": "2026-08-13T02:00:23.141Z",
+  "date": "2026-08-13",
+  "queries": [
+    {
+      "query": "gold price XAUUSD spot today 2026",
+      "dataType": "xauusd",
+      "results": [
+        {
+          "title": "Gold (XAU) Spot Rate",
+          "url": "https://www.bloomberg.com/quote/XAU:CUR",
+          "snippet": "# Bloomberg. Contact us](https://www.bloomberg.com/feedback). ## We've detected unusual activity from your computer network. To continue, please click the box below to let us know you're not a robot. ### Why did this happen? Please make sure your browser supports JavaScript and cookies and that you are not blocking them from loading. For more information you can review our [Terms of Service](https://www.bloomberg.com/notices/tos) and [Cookie Policy](https://www.bloomberg.com/notices/tos). ### Need Help? For inquiries related to this message please [contact our support team](https://www.bloomberg.com/feedback) and provide the reference ID below. Block reference ID:eee90643-9408-11f1-95be-9ce71c9fc5b5. Get the most important global markets news at your fingertips with a [Bloomberg.com](https",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Price, News, Quote & History",
+          "url": "https://finance.yahoo.com/quote/GC%3DF",
+          "snippet": "[News • 2 days ago Gold's breakout could force investors back in](https://finance.yahoo.com/markets/article/golds-breakout-could-force-investors-back-in-chart-of-the-day-113004349.html?.tsrc=fin-notif). [News • 4 days ago Big Tech is borrowing its way through the AI boom](https://finance.yahoo.com/markets/article/big-tech-is-borrowing-its-way-through-the-ai-boom-chart-of-the-day-100000605.html?.tsrc=fin-notif). [News • 5 days ago SpaceX's need for power is a 'clear positive' for these companies](https://finance.yahoo.com/markets/article/spacexs-need-for-power-is-a-clear-positive-for-these-companies-154604075.html?.tsrc=fin-notif). [News • 5 days ago The Nasdaq slipped, while the Dow and S&P 500 inched up as earnings rolled in](https://finance.yahoo.com/markets/live/stock-market-today-thurs",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Price Today: August 11, 2026 - Investing",
+          "url": "https://www.forbes.com/advisor/investing/gold-price",
+          "snippet": "*   greenhouse Insights: How AI Can Help You Make Your Smartest Hire Yet| Paid Program. *   Dell Technologies BrandVoice| Paid Program. *   AI's Nuanced Impact And A Quest To Quantify It. *   5 Traits of AI Pacesetters to Help You Pull Ahead| Paid Program. *   The Birth Of Almanac: A Re-Evaluation Of What's Really Needed In Farming| Paid Program. *   ServiceNow BrandVoice Premium Post: Why It's Time To See Your Workforce In 4D| Paid Program. Keep reading Forbes Advisor for the chance to see the answer to your question in one of our upcoming stories. The spot price of gold is the current rate at which gold can be bought or sold for immediate delivery.It’s most commonly quoted in U.S. dollars per troy ounce. Whether now is a good time for you to buy gold depends on your personal investment g",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "London gold spot price Kitco Investing.com 2026",
+      "dataType": "xauusd_alt",
+      "results": [
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Price, News, Quote & History",
+          "url": "https://finance.yahoo.com/quote/GC=F",
+          "snippet": "Skip to navigation  Skip to right column. # Yahoo Finance. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 6. Asking for a Trend. # Gold Dec 26 (GC=F). As of 6:52:59 PM EDT. Loading chart for GC=F. Customize your GC=F view in AlphaSpace. * Settlement Date  2026-12-29. * Last Price  4,441.10. * Day's Range  4,427.80 - 4,437.80. ### Recent News.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "The Price of Gold Sinks Under $4,000 for the First Time Since November",
+          "url": "https://www.investopedia.com/gold-sinks-under-usd4-000-for-the-first-time-in-months-12005599",
+          "snippet": "Gold bars stacked in the shape of a pyramid against a black background.:max_bytes(150000):strip_icc():format(webp)/GettyImages-2259321333-64af61de792d48e3a12b9b7b386fe92d.jpg). Traders work on the floor of the New York Stock Exchange:max_bytes(150000):strip_icc():format(webp)/GettyImages-2289192394-2fab43f249f142b78fbb0242a0b4a238.jpg). Traders are seen working on the floor of the New York Stock Exchange.:max_bytes(150000):strip_icc():format(webp)/GettyImages-2289338022-74f1abc59ab741f4b3ad6a7287c679e2.jpg). Traders are seen working on the floor of the New York Stock Exchange. Traders work on the floor of the New York Stock Exchange:max_bytes(150000):strip_icc():format(webp)/GettyImages-2286702658-dd165aed2bd247fe9215851ebfc83d4c.jpg). Traders are seen working on the floor of the New York ",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold (XAU) Spot Rate",
+          "url": "https://www.bloomberg.com/quote/XAU:CUR",
+          "snippet": "# Bloomberg. Contact us](https://www.bloomberg.com/feedback). ## We've detected unusual activity from your computer network. To continue, please click the box below to let us know you're not a robot. ### Why did this happen? Please make sure your browser supports JavaScript and cookies and that you are not blocking them from loading. For more information you can review our [Terms of Service](https://www.bloomberg.com/notices/tos) and [Cookie Policy](https://www.bloomberg.com/notices/tos). ### Need Help? For inquiries related to this message please [contact our support team](https://www.bloomberg.com/feedback) and provide the reference ID below. Block reference ID:eee90643-9408-11f1-95be-9ce71c9fc5b5. Get the most important global markets news at your fingertips with a [Bloomberg.com](https",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "COMEX gold futures close price today",
+      "dataType": "xauusd_alt2",
+      "results": [
+        {
+          "title": "Gold Continuous Contract Futures Prices and News | GC00",
+          "url": "https://www.wsj.com/market-data/quotes/futures/GC00",
+          "snippet": "Continuous Contract prices today ・ $4466.80 USD -0.70. Comex Gold Settles 0.09% Lower at $4242.00 ・ are delayed at least 15 minutes.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Price, News, Quote & History",
+          "url": "https://finance.yahoo.com/quote/GC%3DF",
+          "snippet": "[News • 2 days ago Gold's breakout could force investors back in](https://finance.yahoo.com/markets/article/golds-breakout-could-force-investors-back-in-chart-of-the-day-113004349.html?.tsrc=fin-notif). [News • 4 days ago Big Tech is borrowing its way through the AI boom](https://finance.yahoo.com/markets/article/big-tech-is-borrowing-its-way-through-the-ai-boom-chart-of-the-day-100000605.html?.tsrc=fin-notif). [News • 5 days ago SpaceX's need for power is a 'clear positive' for these companies](https://finance.yahoo.com/markets/article/spacexs-need-for-power-is-a-clear-positive-for-these-companies-154604075.html?.tsrc=fin-notif). [News • 5 days ago The Nasdaq slipped, while the Dow and S&P 500 inched up as earnings rolled in](https://finance.yahoo.com/markets/live/stock-market-today-thurs",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Historical Prices & Data",
+          "url": "https://finance.yahoo.com/quote/GC%3DF/history",
+          "snippet": "2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 3. How to get approved. | Date | Open | High | Low | Close  Close price adjusted for splits. | Adj Close  Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Jul 31, 2026 | 4,102.40 | 4,102.40 | 4,022.40 | 4,049.10 | 4,049.10 | 1,166 |.",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "上海金 Au99.99 今日行情 2026",
+      "dataType": "shanghai_gold",
+      "results": []
+    },
+    {
+      "query": "上海黄金交易所 Au99.99 收盘价",
+      "dataType": "shanghai_gold_alt",
+      "results": []
+    },
+    {
+      "query": "黄金ETF 518880 最新净值 涨跌幅",
+      "dataType": "etf_nav",
+      "results": []
+    },
+    {
+      "query": "US dollar index DXY today",
+      "dataType": "dxy",
+      "results": [
+        {
+          "title": "US Dollar Index (DX-Y.NYB)",
+          "url": "https://finance.yahoo.com/quote/DX-Y.NYB",
+          "snippet": "Skip to navigation  Skip to right column. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 6. Asking for a Trend. # US Dollar Index (DX-Y.NYB). As of 1:39:01 PM EDT. Loading chart for DX-Y.NYB. * Day's Range  99.72 - 99.90. * 52 Week Range  95.55 - 101.80. ### ICE US Dollar Index - Index - C Heatmap. ^FVX  Treasury Yield 5 Years. ^XAX  NYSE American Composite Index. ^STOXX50E  EURO STOXX 50 I. IMOEX.ME  MOEX Russia Index. 000001.SS  SSE Composite Index. ^AXJO  S&P/ASX 200. ^BSESN  S&P BSE SENSEX. ^NZ50  S&P/NZX 50 INDEX GROSS ( GROSS. ^TWII  TWSE Capitalization Weighted Stock Index",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "DOLLAR INDEX SPOT (DXY) Spot Rate - Bloomberg.com",
+          "url": "https://www.bloomberg.com/quote/DXY:CUR",
+          "snippet": "# Bloomberg. Contact us](https://www.bloomberg.com/feedback). ## We've detected unusual activity from your computer network. To continue, please click the box below to let us know you're not a robot. ### Why did this happen? Please make sure your browser supports JavaScript and cookies and that you are not blocking them from loading. For more information you can review our [Terms of Service](https://www.bloomberg.com/notices/tos) and [Cookie Policy](https://www.bloomberg.com/notices/tos). ### Need Help? For inquiries related to this message please [contact our support team](https://www.bloomberg.com/feedback) and provide the reference ID below. Block reference ID:e55e2dee-9464-11f1-a828-9ecc0cd988d8. Get the most important global markets news at your fingertips with a [Bloomberg.com](https",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "U.S. Dollar Index (DXY) Price & News",
+          "url": "https://www.wsj.com/market-data/quotes/index/DXY/historical-prices",
+          "snippet": "We use cookies and browser capability checks to help us deliver our online services, including to learn if you enabled Flash for video or ad blocking. By using our website or by closing this message box, you agree to our use of browser capability checks, and to our use of cookies as described in our Cookie Policy. **Stocks:** Real-time U.S. stock quotes reflect trades reported through Nasdaq only; comprehensive quotes and volume reflect trading in all markets and are delayed at least 15 minutes. **Indexes:** Index quotes may be real-time or delayed as per exchange requirements; refer to time stamps for information on any delays. **Markets Diary:** Data on U.S. Overview page represent trading in all U.S. markets and updates until 8 p.m. See Closing Diaries table for 4 p.m. closing data.",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "US 10 year treasury yield TIPS real yield today",
+      "dataType": "us10y",
+      "results": [
+        {
+          "title": "United States Rates & Bonds - Bloomberg",
+          "url": "https://www.bloomberg.com/markets/rates-bonds/government-bonds/us",
+          "snippet": "*   [Software Updates](https://www.bloomberg.com/professional/support/customer-support/software-updates/?utm_source=bloomberg-menu&utm_medium=markets). *   [Manage Products and Account Information](https://service.bloomberg.com/portal/sessions/new?utm_source=bloomberg-menu&utm_medium=markets). *   [About](https://www.bloomberg.com/company/?utm_source=bloomberg-menu&utm_medium=markets). *   [Careers](https://www.bloomberg.com/company/what-we-do/?utm_source=bloomberg-menu&utm_medium=markets). *   [Inclusion at Bloomberg](https://www.bloomberg.com/company/values/inclusion/?utm_source=bloomberg-menu&utm_medium=markets). *   [Tech at Bloomberg](https://www.bloomberg.com/company/values/tech-at-bloomberg/?utm_source=bloomberg-menu&utm_medium=markets). *   [Philanthropy](https://www.bloomberg.com/",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Treasury Inflation-Protected Securities",
+          "url": "https://www.wsj.com/market-data/bonds/tips?eafs_enabled=false",
+          "snippet": "# Markets. #### Topics. #### C-Suite. #### WSJ Professional. #### Market Data. #### Columnists. #### Newsletters. #### Reviews. ## Find what you're looking for. Search for topics like \"tariffs\", your favorite authors, companies or even a more specific query like \"dollar's role as a reserve currency\". ### Treasury Inflation-Protected Securities.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "What Are Treasury Inflation-Protected Securities (TIPS)?",
+          "url": "https://www.investopedia.com/terms/t/tips.asp",
+          "snippet": "*   [Newsletters](https://www.investopedia.com/terms/t/tips.asp#). *   [Newsletters](https://www.investopedia.com/terms/t/tips.asp#). *   [Understanding TIPS](https://www.investopedia.com/terms/t/tips.asp#toc-understanding-treasury-inflation-protected-securities-tips). *   [Price Relationship to Inflation](https://www.investopedia.com/terms/t/tips.asp#toc-tips-and-inflation). *   [FAQs](https://www.investopedia.com/terms/t/tips.asp#toc-how-can-i-buy-treasury-inflation-protected-securities-tips). *   [The Bottom Line](https://www.investopedia.com/terms/t/tips.asp#toc-the-bottom-line). 4.   [Treasury Inflation-Protected Securities (TIPS)](https://www.investopedia.com/terms/t/tips.asp)CURRENT ARTICLE. [Video 1](https://www.investopedia.com/terms/t/tips.asp). The [principal](https://www.invest",
+          "sourceGrade": "B"
+        }
+      ]
+    }
+  ]
+}

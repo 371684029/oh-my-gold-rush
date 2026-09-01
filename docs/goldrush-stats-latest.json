@@ -1,42 +1,42 @@
 {
-  "asOf": "2026-07-20",
+  "asOf": "2026-08-31",
   "windowDays": 90,
-  "sampleEligible": 35,
+  "sampleEligible": 70,
   "llm": {
-    "hits": 19,
-    "total": 25,
-    "hitRate": 76
+    "hits": 24,
+    "total": 39,
+    "hitRate": 61.5
   },
   "quant": {
-    "hits": 4,
-    "total": 7,
-    "hitRate": 57.1
+    "hits": 16,
+    "total": 21,
+    "hitRate": 76.2
   },
   "highScoreUpRate": 0,
   "highScoreN": 3,
-  "lowScoreUpRate": 12.5,
-  "lowScoreN": 16,
-  "conflictDays": 3,
+  "lowScoreUpRate": 29.6,
+  "lowScoreN": 27,
+  "conflictDays": 4,
   "conflictFollowQuantHits": 1,
   "conflictFollowLlmHits": 2,
   "buckets": [
     {
       "range": "0-30",
-      "sample": 9,
-      "upRate": 11.1,
-      "avgReturn": -1.9
+      "sample": 15,
+      "upRate": 26.7,
+      "avgReturn": -0.65
     },
     {
       "range": "30-50",
-      "sample": 12,
-      "upRate": 16.7,
-      "avgReturn": -1.57
+      "sample": 31,
+      "upRate": 45.2,
+      "avgReturn": 0.8
     },
     {
       "range": "50-60",
-      "sample": 8,
-      "upRate": 37.5,
-      "avgReturn": -0.95
+      "sample": 21,
+      "upRate": 57.1,
+      "avgReturn": 0.26
     },
     {
       "range": "60-70",
@@ -47,145 +47,145 @@
   ],
   "recent": [
     {
-      "date": "2026-07-20",
-      "llmScore": 28,
-      "quantScore": 45,
-      "direction": "bearish",
-      "pred": "down",
-      "actual5dPct": null,
-      "hit": null,
-      "status": "pending"
-    },
-    {
-      "date": "2026-07-19",
-      "llmScore": 24,
-      "quantScore": 43,
-      "direction": "bearish",
-      "pred": "down",
-      "actual5dPct": null,
-      "hit": null,
-      "status": "pending"
-    },
-    {
-      "date": "2026-07-18",
-      "llmScore": 25,
-      "quantScore": 43,
-      "direction": "bearish",
-      "pred": "down",
-      "actual5dPct": null,
-      "hit": null,
-      "status": "pending"
-    },
-    {
-      "date": "2026-07-17",
-      "llmScore": 27,
-      "quantScore": 42,
-      "direction": "bearish",
-      "pred": "down",
-      "actual5dPct": 0.47,
+      "date": "2026-08-27",
+      "llmScore": 57,
+      "quantScore": 55,
+      "direction": "neutral",
+      "pred": "up",
+      "actual5dPct": -4.57,
       "hit": false,
       "status": "miss"
     },
     {
-      "date": "2026-07-16",
-      "llmScore": 33,
-      "quantScore": 35,
-      "direction": "bearish",
-      "pred": "down",
-      "actual5dPct": -1.56,
-      "hit": true,
-      "status": "hit"
-    },
-    {
-      "date": "2026-07-16",
-      "llmScore": 26,
-      "quantScore": 36,
-      "direction": "bearish",
-      "pred": "down",
-      "actual5dPct": -1.56,
-      "hit": true,
-      "status": "hit"
-    },
-    {
-      "date": "2026-07-15",
-      "llmScore": 29,
-      "quantScore": 36,
-      "direction": "bearish",
-      "pred": "down",
-      "actual5dPct": -0.72,
-      "hit": true,
-      "status": "hit"
-    },
-    {
-      "date": "2026-07-15",
-      "llmScore": 35,
-      "quantScore": 60,
-      "direction": "bearish",
-      "pred": "down",
-      "actual5dPct": -0.72,
-      "hit": true,
-      "status": "hit"
-    },
-    {
-      "date": "2026-07-14",
-      "llmScore": 29,
-      "quantScore": null,
-      "direction": "bearish",
-      "pred": "down",
-      "actual5dPct": -0.96,
-      "hit": true,
-      "status": "hit"
-    },
-    {
-      "date": "2026-07-13",
-      "llmScore": 63,
-      "quantScore": null,
+      "date": "2026-08-25",
+      "llmScore": 58,
+      "quantScore": 46,
       "direction": "bullish",
       "pred": "up",
-      "actual5dPct": -0.99,
+      "actual5dPct": -5.9,
       "hit": false,
       "status": "miss"
     },
     {
-      "date": "2026-07-11",
-      "llmScore": 41,
-      "quantScore": null,
-      "direction": "bearish",
-      "pred": "down",
-      "actual5dPct": -0.2,
+      "date": "2026-08-24",
+      "llmScore": 54,
+      "quantScore": 44,
+      "direction": "neutral",
+      "pred": "flat",
+      "actual5dPct": -3.49,
+      "hit": null,
+      "status": "flat"
+    },
+    {
+      "date": "2026-08-23",
+      "llmScore": 47,
+      "quantScore": 43,
+      "direction": "neutral",
+      "pred": "flat",
+      "actual5dPct": 4.73,
+      "hit": null,
+      "status": "flat"
+    },
+    {
+      "date": "2026-08-22",
+      "llmScore": 57,
+      "quantScore": 47,
+      "direction": "neutral",
+      "pred": "up",
+      "actual5dPct": 1.51,
       "hit": true,
       "status": "hit"
     },
     {
-      "date": "2026-07-10",
-      "llmScore": 26,
-      "quantScore": null,
-      "direction": "bearish",
-      "pred": "down",
+      "date": "2026-08-21",
+      "llmScore": 50,
+      "quantScore": 55,
+      "direction": "neutral",
+      "pred": "flat",
+      "actual5dPct": 2.76,
+      "hit": null,
+      "status": "flat"
+    },
+    {
+      "date": "2026-08-20",
+      "llmScore": 46,
+      "quantScore": 54,
+      "direction": "neutral",
+      "pred": "flat",
+      "actual5dPct": 4.88,
+      "hit": null,
+      "status": "flat"
+    },
+    {
+      "date": "2026-08-19",
+      "llmScore": 51,
+      "quantScore": 53,
+      "direction": "neutral",
+      "pred": "flat",
+      "actual5dPct": 6.28,
+      "hit": null,
+      "status": "flat"
+    },
+    {
+      "date": "2026-08-18",
+      "llmScore": 52,
+      "quantScore": 55,
+      "direction": "neutral",
+      "pred": "flat",
+      "actual5dPct": -0.86,
+      "hit": null,
+      "status": "flat"
+    },
+    {
+      "date": "2026-08-17",
+      "llmScore": 52,
+      "quantScore": 56,
+      "direction": "neutral",
+      "pred": "flat",
+      "actual5dPct": 5.02,
+      "hit": null,
+      "status": "flat"
+    },
+    {
+      "date": "2026-08-16",
+      "llmScore": 50,
+      "quantScore": 47,
+      "direction": "neutral",
+      "pred": "flat",
+      "actual5dPct": 3.52,
+      "hit": null,
+      "status": "flat"
+    },
+    {
+      "date": "2026-08-15",
+      "llmScore": 51,
+      "quantScore": 57,
+      "direction": "neutral",
+      "pred": "flat",
+      "actual5dPct": 3.18,
+      "hit": null,
+      "status": "flat"
+    },
+    {
+      "date": "2026-08-14",
+      "llmScore": 48,
+      "quantScore": 48,
+      "direction": "neutral",
+      "pred": "flat",
       "actual5dPct": -1.64,
-      "hit": true,
-      "status": "hit"
+      "hit": null,
+      "status": "flat"
     },
     {
-      "date": "2026-07-10",
-      "llmScore": 28,
-      "quantScore": null,
-      "direction": "bearish",
-      "pred": "down",
-      "actual5dPct": -1.64,
-      "hit": true,
-      "status": "hit"
-    },
-    {
-      "date": "2026-07-09",
-      "llmScore": 38,
-      "quantScore": null,
-      "direction": "bearish",
-      "pred": "down",
-      "actual5dPct": -1.53,
-      "hit": true,
-      "status": "hit"
+      "date": "2026-08-13",
+      "llmScore": 47,
+      "quantScore": 48,
+      "direction": "neutral",
+      "pred": "flat",
+      "actual5dPct": -0.01,
+      "hit": null,
+      "status": "flat"
     }
   ],
-  "summary": "LLM 方向命中 76%（19/25） · 量化命中 57%（4/7） · 高分段(≥60) 5日涨 0% · 低分段(≤40) 5日涨 13% · 冲突日 3（跟量化 1 / 跟LLM 2）"
+  "summary": "LLM 方向命中 62%（24/39） · 量化命中 76%（16/21） · 高分段(≥60) 5日涨 0% · 低分段(≤40) 5日涨 30% · 冲突日 4（跟量化 1 / 跟LLM 2）"
 }

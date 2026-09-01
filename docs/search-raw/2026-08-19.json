@@ -1,0 +1,141 @@
+{
+  "timestamp": "2026-08-19T02:00:26.435Z",
+  "date": "2026-08-19",
+  "queries": [
+    {
+      "query": "gold price XAUUSD spot today 2026",
+      "dataType": "xauusd",
+      "results": [
+        {
+          "title": "Gold (XAU) Spot Rate - Bloomberg",
+          "url": "https://www.bloomberg.com/quote/XAU:CUR",
+          "snippet": "# Bloomberg. Contact us](https://www.bloomberg.com/feedback). ## We've detected unusual activity from your computer network. To continue, please click the box below to let us know you're not a robot. ### Why did this happen? Please make sure your browser supports JavaScript and cookies and that you are not blocking them from loading. For more information you can review our [Terms of Service](https://www.bloomberg.com/notices/tos) and [Cookie Policy](https://www.bloomberg.com/notices/tos). ### Need Help? For inquiries related to this message please [contact our support team](https://www.bloomberg.com/feedback) and provide the reference ID below. Block reference ID:1b3110d4-9a1a-11f1-8172-79c45faef39d. Get the most important global markets news at your fingertips with a [Bloomberg.com](https",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Price, News, Quote & History",
+          "url": "https://finance.yahoo.com/quote/GC%3DF",
+          "snippet": "Skip to navigation  Skip to right column. # Yahoo Finance. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 6. Asking for a Trend. # Gold Dec 26 (GC=F). As of 10:51:15 AM EDT. Loading chart for GC=F. Customize your GC=F view in AlphaSpace. * Settlement Date  2026-12-29. * Last Price  4,437.30. * Day's Range  4,422.30 - 4,484.90. ### Recent News.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "XAU to USD Exchange Rate",
+          "url": "https://www.bloomberg.com/quote/XAUUSD:CUR",
+          "snippet": "Current exchange rate Gold (XAU) to US DOLLAR (USD) 4,344.8200 71.17–1.61% Close 4,415.9900 USD 4,345.2700",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "London gold spot price Kitco Investing.com 2026",
+      "dataType": "xauusd_alt",
+      "results": [
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Price, News, Quote & History",
+          "url": "https://finance.yahoo.com/quote/GC%3DF",
+          "snippet": "Skip to navigation  Skip to right column. # Yahoo Finance. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 6. Asking for a Trend. # Gold Dec 26 (GC=F). As of 10:51:15 AM EDT. Loading chart for GC=F. Customize your GC=F view in AlphaSpace. * Settlement Date  2026-12-29. * Last Price  4,437.30. * Day's Range  4,422.30 - 4,484.90. ### Recent News.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "LBMA PM Gold Price Set $15 Below Spot Market",
+          "url": "https://www.forbes.com/sites/kitconews/2017/04/12/lbma-pm-gold-price-set-15-below-spot-market",
+          "snippet": "# LBMA PM Gold Price Set $15 Below Spot Market. **(Kitco News) -** Gold buyers, settling contracts using the London Bullion Market Association PM Gold Price, got a great deal Tuesday as the benchmark ended up being set almost $15 dollars below where spot prices were trading at the time. In a statement to Kitco News, the LBMA said that it is currently reviewing what happened during the PM auction. The large discrepancy between spot and the benchmark once again put the market’s transparency in the spotlight; however, Jeff Christian, managing director at CPM Group, a leading commodity research firm, said that he doesn’t see it as nefarious manipulation but the effects of poorly conceived regulations and a faulty price discovery mechanism. He said that the problem is that the auction process s",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "A.M. Kitco Metals Roundup: Gold Weaker on Profit Taking and amid Bearish Outside Market Forces",
+          "url": "https://www.forbes.com/sites/kitconews/2012/10/08/a-m-kitco-metals-roundup-gold-weaker-on-profit-taking-and-amid-bearish-outside-market-forces",
+          "snippet": "Comex gold prices are trading lower in subdued U.S. trading Monday. Some profit taking and chart consolidation are featured to start the trading week, as the key “outside markets” are bearishly postured for the precious metals markets. The U.S. dollar index is higher and crude oil prices are lower. It’s a bit of a “risk-off” trading day in the market place Monday, as European and U.S. stock indexes are weaker, while the U.S. dollar index and U.S. Treasury prices are higher. The U.S. dollar index is trading higher Monday morning, on short covering in a bear market. The U.S. dollar bears still have the overall near-term technical advantage. Crude oil bears now have the near-term technical advantage as a four-week-old downtrend is in place on the daily bar chart. Bulls’ next upside price brea",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "COMEX gold futures close price today",
+      "dataType": "xauusd_alt2",
+      "results": [
+        {
+          "title": "Gold Continuous Contract Futures Prices and News | GC00",
+          "url": "https://www.wsj.com/market-data/quotes/futures/GC00?eafs_enabled=",
+          "snippet": "Gold Continuous Contract prices today ・ 08/18/26 $4394.50 USD. Futures 8:28 PM ET 08/18/26 ・ are delayed at least 15 minutes.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Price, News, Quote & History",
+          "url": "https://finance.yahoo.com/quote/GC%3DF",
+          "snippet": "Skip to navigation  Skip to right column. # Yahoo Finance. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 6. Asking for a Trend. # Gold Dec 26 (GC=F). As of 10:51:15 AM EDT. Loading chart for GC=F. Customize your GC=F view in AlphaSpace. * Settlement Date  2026-12-29. * Last Price  4,437.30. * Day's Range  4,422.30 - 4,484.90. ### Recent News.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Commodities Futures: prices, changes, trading volume & ...",
+          "url": "https://finance.yahoo.com/markets/commodities",
+          "snippet": "2. Best 0% APR cards. 3. Best money market accounts. | YM=F | Mini Dow Jones Indus.-$5 Sep 26 |  | 53,439.00  -105.00 (-0.20%) | 3:10PM EDT | -105.00 | -0.20% | 51,448 | 90,635 |. | ZN=F | 10-Year T-Note Futures,Sep-2026 |  | 108.56  +0.11 (+0.10%) | 3:10PM EDT | +0.11 | +0.10% | 1.54M | 5.381M |. | GC=F | Gold Dec 26 |  | 4,410.00  -63.70 (-1.42%) | 3:10PM EDT | -63.70 | -1.42% | 118,641 | 313,060 |. | MGC=F | Micro Gold Futures,Dec-2026 |  | 4,410.00  -63.70 (-1.42%) | 3:10PM EDT | -63.70 | -1.42% | 250,623 | 42,285 |. | SIL=F | Micro Silver Futures,Sep-2026 |  | 63.85  -2.38 (-3.59%) | 3:10PM EDT | -2.38 | -3.59% | 45,214 | 14,242 |. | HG=F | Copper Sep 26 |  | 6.47  -0.14 (-2.17%) | 3:09PM EDT | -0.14 | -2.17% | 50,897 | 82,332 |.",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "上海金 Au99.99 今日行情 2026",
+      "dataType": "shanghai_gold",
+      "results": []
+    },
+    {
+      "query": "上海黄金交易所 Au99.99 收盘价",
+      "dataType": "shanghai_gold_alt",
+      "results": []
+    },
+    {
+      "query": "黄金ETF 518880 最新净值 涨跌幅",
+      "dataType": "etf_nav",
+      "results": []
+    },
+    {
+      "query": "US dollar index DXY today",
+      "dataType": "dxy",
+      "results": [
+        {
+          "title": "US Dollar Index (DX-Y.NYB) - Yahoo Finance",
+          "url": "https://finance.yahoo.com/quote/DX-Y.NYB",
+          "snippet": "Skip to navigation  Skip to right column. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 6. Asking for a Trend. # US Dollar Index (DX-Y.NYB). As of 4:59:59 PM EDT. Loading chart for DX-Y.NYB. Customize your DX-Y.NYB view in AlphaSpace. * Day's Range  99.47 - 99.94. * 52 Week Range  95.55 - 101.80. ### ICE US Dollar Index - Index - C Heatmap. ^FVX  Treasury Yield 5 Years. ^XAX  NYSE American Composite Index. ^STOXX50E  EURO STOXX 50 I. IMOEX.ME  MOEX Russia Index. 000001.SS  SSE Composite Index. ^AXJO  S&P/ASX 200. ^BSESN  S&P BSE SENSEX. ^NZ50  S&P/NZX 50 INDEX GROSS ( GROSS. ^TW",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "DOLLAR INDEX SPOT (DXY) Spot Rate",
+          "url": "https://www.bloomberg.com/quote/DXY:CUR",
+          "snippet": "Updated spot exchange rate of DOLLAR INDEX SPOT (DXY) against the US dollar index. Close 99.6370 USD 99.6360 USD 17:28 22:50 1:56 5:02 8:09 11:15 99.6570",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "U.S. Dollar Index (DXY) Price & News",
+          "url": "https://www.wsj.com/market-data/quotes/index/DXY/historical-prices",
+          "snippet": "**Stocks:** Real-time U.S. stock quotes reflect trades reported through Nasdaq only; comprehensive quotes and volume reflect trading in all markets and are delayed at least 15 minutes. **Indexes:** Index quotes may be real-time or delayed as per exchange requirements; refer to time stamps for information on any delays. **Markets Diary:** Data on U.S. Overview page represent trading in all U.S. markets and updates until 8 p.m. See Closing Diaries table for 4 p.m. closing data. Change value during the period between open outcry settle and the commencement of the next day's trading is calculated as the difference between the last trade and the prior day's settle. FactSet (a) does not make any express or implied warranties of any kind regarding the data, including, without limitation, any warr",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "US 10 year treasury yield TIPS real yield today",
+      "dataType": "us10y",
+      "results": [
+        {
+          "title": "Treasury Inflation-Protected Securities",
+          "url": "https://www.wsj.com/market-data/bonds/tips",
+          "snippet": "# Markets. #### Topics. #### C-Suite. #### WSJ Professional. #### Market Data. #### Columnists. #### Newsletters. #### Reviews. ## Find what you're looking for. Search for topics like \"tariffs\", your favorite authors, companies or even a more specific query like \"dollar's role as a reserve currency\". ### Treasury Inflation-Protected Securities.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "United States Rates & Bonds",
+          "url": "https://www.bloomberg.com/markets/rates-bonds/government-bonds/us",
+          "snippet": "Bloomberg the Company & Its Products The Company & its ProductsBloomberg Terminal Demo RequestBloomberg Anywhere Remote Login Bloomberg Anywhere LoginBloomberg Customer Support Customer Support. Connecting decision makers to a dynamic network of information, people and ideas, Bloomberg quickly and accurately delivers business and financial information, news and insight around the world. *   Manage Products and Account Information. | Name, not sorted | Coupon, not sorted | Price, not sorted | Yield, not sorted | 1 Month, not sorted | 1 Year, not sorted | Time (EDT), not sorted |. | GB3:GOV 3 Month | 0.00 | 3.70 | +3.79% | +1 | –43 | 4:59 PM |. | Rate, not sorted | Yield, not sorted | 1 Year Prior, not sorted |. | Name, not sorted | Yield, not sorted | 1 Day, not sorted | 1 Month, not sorted",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "What Are Treasury Inflation-Protected Securities (TIPS)?",
+          "url": "https://www.investopedia.com/terms/t/tips.asp",
+          "snippet": "# What Are Treasury Inflation-Protected Securities (TIPS)? :max_bytes(150000):strip_icc():format(webp)/gordonscottphoto-5bfc26c446e0fb00265b0ed4.jpg). Treasury Inflation-Protected Securities (TIPS) are a type of Treasury bond that is indexed to an inflationary gauge to protect investors from a decline in the purchasing power of their money. Since you wouldn’t be alone if you did, the U.S. Treasury created Treasury Inflation-Protected Securities (TIPS) in 1997—special government bonds designed to help protect investors when prices rise across the economy. When inflation rises, both the principal amount you invested and the interest payments you receive increase to help maintain your purchasing power. While TIPS typically offer lower initial interest rates than conventional Treasury bonds, t",
+          "sourceGrade": "B"
+        }
+      ]
+    }
+  ]
+}

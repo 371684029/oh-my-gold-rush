@@ -1,0 +1,179 @@
+{
+  "timestamp": "2026-08-28T02:00:24.803Z",
+  "date": "2026-08-28",
+  "queries": [
+    {
+      "query": "gold price XAUUSD spot today 2026",
+      "dataType": "xauusd",
+      "results": [
+        {
+          "title": "Gold (XAU) Spot Rate",
+          "url": "https://www.bloomberg.com/quote/XAU:CUR",
+          "snippet": "# Bloomberg. Contact us](https://www.bloomberg.com/feedback). ## We've detected unusual activity from your computer network. To continue, please click the box below to let us know you're not a robot. ### Why did this happen? Please make sure your browser supports JavaScript and cookies and that you are not blocking them from loading. For more information you can review our [Terms of Service](https://www.bloomberg.com/notices/tos) and [Cookie Policy](https://www.bloomberg.com/notices/tos). ### Need Help? For inquiries related to this message please [contact our support team](https://www.bloomberg.com/feedback) and provide the reference ID below. Block reference ID:75331bdb-a017-11f1-8417-684187ed5721. Get the most important global markets news at your fingertips with a [Bloomberg.com](https",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "XAU to USD Exchange Rate",
+          "url": "https://www.bloomberg.com/quote/XAUUSD:CUR",
+          "snippet": "Current exchange rate Gold (XAU) to US DOLLAR (USD) (USD) 4,599.1700 0.02+0.00",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Symbol Lookup from Yahoo Finance",
+          "url": "https://finance.yahoo.com/quote/GC",
+          "snippet": "2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. * Dow Futures 53,660.00  +0.07%. * Nasdaq Futures 29,643.00  -0.18%. * Russell 2000 Futures 3,021.40  +0.08%. * Gold 4,634.90  -0.62%. * XRP USD 1.09  -1.94%. All (604)\")  Stocks (184)\")  Mutual Funds (232)\")  ETFs (76)\")  Indices (72)\")  Futures (32)\")  Currencies (0)\")  Cryptocurrencies (8)\")  Private Companies (0)\"). | GC=F | Gold Dec 26 | 4,634.90 | -- | Futures | CMX |. | GCT=F | Gold TAS Futures,Dec-2026 | 1.00 | -- | Futures | CMX |. | GCT | GigaCloud Technology Inc | 51.58 | Technology | Stocks | NGM |. | GCZA.F | Gray Media Inc. R | 4.72 | Communication Services | Stocks | FRA |. | 1.91 | Technology | Stocks | NYQ |. | GCB1.F | P",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "London gold spot price Kitco Investing.com 2026",
+      "dataType": "xauusd_alt",
+      "results": [
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Price, News, Quote & History",
+          "url": "https://finance.yahoo.com/quote/GC%3DF",
+          "snippet": "Skip to navigation  Skip to right column. # Yahoo Finance. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 2. 50/30/20 Budget Calculator. 6. Asking for a Trend. # Gold Dec 26 (GC=F). As of 9:41:21 PM EDT. Loading chart for GC=F. * Settlement Date  2026-12-29. * Last Price  4,664.00. * Day's Range  4,631.20 - 4,664.80. ### Recent News.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "LBMA PM Gold Price Set $15 Below Spot Market",
+          "url": "https://www.forbes.com/sites/kitconews/2017/04/12/lbma-pm-gold-price-set-15-below-spot-market",
+          "snippet": "# LBMA PM Gold Price Set $15 Below Spot Market. **(Kitco News) -** Gold buyers, settling contracts using the London Bullion Market Association PM Gold Price, got a great deal Tuesday as the benchmark ended up being set almost $15 dollars below where spot prices were trading at the time. In a statement to Kitco News, the LBMA said that it is currently reviewing what happened during the PM auction. The large discrepancy between spot and the benchmark once again put the market’s transparency in the spotlight; however, Jeff Christian, managing director at CPM Group, a leading commodity research firm, said that he doesn’t see it as nefarious manipulation but the effects of poorly conceived regulations and a faulty price discovery mechanism. He said that the problem is that the auction process s",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "A.M. Kitco Metals Roundup: Gold Trading Near Steady but ...",
+          "url": "https://www.forbes.com/sites/kitconews/2013/03/27/a-m-kitco-metals-roundup-gold-trading-near-steady-but-bearish-outside-markets-limit-upside",
+          "snippet": "Mar 27, 2013 — Spot gold was last quoted down $4.10 at $1,596.00. The London A.M. gold fixing is $1,591.00 … last week's high of $1,616.50. then at $1,580.00.",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "COMEX gold futures close price today",
+      "dataType": "xauusd_alt2",
+      "results": [
+        {
+          "title": "Gold Continuous Contract Futures Prices and News | GC00",
+          "url": "https://www.wsj.com/market-data/quotes/futures/GC00",
+          "snippet": "Gold Continuous Contract prices today … $4662.70 USD -1.30. Comex Gold Settles 0.1% Lower 08/24/26 U.S., Futures 7:02 PM ET",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Price, News, Quote & History",
+          "url": "https://finance.yahoo.com/quote/GC%3DF",
+          "snippet": "Skip to navigation  Skip to right column. # Yahoo Finance. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 2. 50/30/20 Budget Calculator. 6. Asking for a Trend. # Gold Dec 26 (GC=F). As of 9:41:21 PM EDT. Loading chart for GC=F. * Settlement Date  2026-12-29. * Last Price  4,664.00. * Day's Range  4,631.20 - 4,664.80. ### Recent News.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Historical Prices & Data - Yahoo Finance",
+          "url": "https://finance.yahoo.com/quote/GC%3DF/history",
+          "snippet": "2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 3. How to get approved. 2. 50/30/20 Budget Calculator. | Date | Open | High | Low | Close  Close price adjusted for splits. | Adj Close  Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Jul 31, 2026 | 4,102.40 | 4,102.40 | 4,022.40 | 4,049.10 | 4,049.10 | 1,166 |.",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "上海金 Au99.99 今日行情 2026",
+      "dataType": "shanghai_gold",
+      "results": []
+    },
+    {
+      "query": "上海黄金交易所 Au99.99 收盘价",
+      "dataType": "shanghai_gold_alt",
+      "results": [
+        {
+          "title": "黄金ETF-上海黄金交易所",
+          "url": "https://sge.com.cn/cpfw/hjetf",
+          "snippet": "交易所介绍 公告 品牌中心 大事记 博士后工作站 国际交流与合作 人才招聘 联系我们. 聚焦二十大 交易所新闻 媒体报道 战疫情 稳运行. 竞价 询价 定价 租借 清算与结算 交割 国际板 黄金ETF. 延时行情 行情走势 历史行情数据 上海金基准价 上海银基准价 行情周报 行情月报 黄金ETF专栏 行情产品服务 询价市场价格基准 黄金租借参考费率 现金交割专栏 黄金资管统计数据 票据查验. 会员名录与查询 下载专区 发票EMS查询 水平考试成绩查询 从业人员信息查询 从业人员培训 会员之窗. 黄金大讲堂 市场合作与推广 工作研究 风险教育提示 投教园地 上金所年报 社会责任报告 PFMI. 黄金市场相关政策 业务规则 竞价 询价 清算与结算 交割 定价 反洗钱专栏. **现货实盘合约  **现货即期合约  **现货延期交收合约  **现金交割延期合约  **产品参数表  **机构名单* 询价. ## 黄金ETF. 黄金ETF基金（ExchangeTradedFund）是指将绝大部分基金财产投资于上海黄金交易所挂盘交易的黄金品种，紧密跟踪黄金价格，使用黄金品种组合或基金合同约定的方式进行申购赎回，并在证券交易所上市交易的开放式基金。目前，我国主要有两类黄金ETF产品，一类跟踪上海黄金交易所Au99.99现货实盘合约价格，另一类跟踪上海黄金交易所上海金集中定价合约（合约代码：SHAU）价格。. ## 管理办法及收费标准. | 申购/赎回登记结算费 | 30万/年 | 基金管理人 |. ## 会员超级用户权限申请. ## 二级系统接口权限申请. | 1 | 华安易富黄金交易型开放式证券投资基金 | 518880 | Au99.99 合约收盘价 |. | 2 | 国泰黄金交易型开放式证券投资基金 | 518800 | Au99.99 合约收盘价 |. | 6 | 工银",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "黄金ETF-上海黄金交易所",
+          "url": "http://www.sge.com.cn/cpfw/hjetf",
+          "snippet": "交易所介绍 公告 品牌中心 大事记 博士后工作站 国际交流与合作 人才招聘 联系我们. 聚焦二十大 交易所新闻 媒体报道 战疫情 稳运行. 竞价 询价 定价 租借 清算与结算 交割 国际板 黄金ETF. 延时行情 行情走势 历史行情数据 上海金基准价 上海银基准价 行情周报 行情月报 黄金ETF专栏 行情产品服务 询价市场价格基准 黄金租借参考费率 现金交割专栏 黄金资管统计数据 票据查验. 会员名录与查询 下载专区 发票EMS查询 水平考试成绩查询 从业人员信息查询 从业人员培训 会员之窗. 黄金大讲堂 市场合作与推广 工作研究 风险教育提示 投教园地 上金所年报 社会责任报告 PFMI. 黄金市场相关政策 业务规则 竞价 询价 清算与结算 交割 定价 反洗钱专栏. **现货实盘合约  **现货即期合约  **现货延期交收合约  **现金交割延期合约  **产品参数表  **机构名单* 询价. ## 黄金ETF. 黄金ETF基金（ExchangeTradedFund）是指将绝大部分基金财产投资于上海黄金交易所挂盘交易的黄金品种，紧密跟踪黄金价格，使用黄金品种组合或基金合同约定的方式进行申购赎回，并在证券交易所上市交易的开放式基金。目前，我国主要有两类黄金ETF产品，一类跟踪上海黄金交易所Au99.99现货实盘合约价格，另一类跟踪上海黄金交易所上海金集中定价合约（合约代码：SHAU）价格。. ## 管理办法及收费标准. | 申购/赎回登记结算费 | 30万/年 | 基金管理人 |. ## 会员超级用户权限申请. ## 二级系统接口权限申请. | 1 | 华安易富黄金交易型开放式证券投资基金 | 518880 | Au99.99 合约收盘价 |. | 2 | 国泰黄金交易型开放式证券投资基金 | 518800 | Au99.99 合约收盘价 |. | 6 | 工银",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "搜狗搜索",
+          "url": "https://www.sogou.com/web?user_ip=86.43.222.13&s_from=hint_last&bh=1&hintidx=7&query=%E4%B8%8A%E6%B5%B7%E9%BB%84%E9%87%91%E4%BA%A4%E6%98%93%E6%89%80au99.99&sessiontime=1773099483622&w=01020600&interation=&interV=kKIOkrELjbkRmLkElbkTkKIMkrELjboImLkEk74TkKIRmLkEk78TkKILkY%3D%3D_-115092183&htdbg=on&ie=utf8",
+          "snippet": "IP：104.28.212.140. 访问时间：2026.08.27 10:18:55.",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "黄金ETF 518880 最新净值 涨跌幅",
+      "dataType": "etf_nav",
+      "results": [
+        {
+          "title": "518880 Quote - Huaan Yifu Gold ETF Fund - Bloomberg",
+          "url": "https://www.bloomberg.com/quote/518880:CH",
+          "snippet": "Performance charts for Huaan Yifu Gold ETF (518880 - Type ETF) including intraday, historical and comparison charts, technical analysis and trend lines.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Huaan Yifu Gold Exchange Traded Fund (518880.SS) Analyst Ratings, Estimates & Forecasts - Yahoo Finance",
+          "url": "https://finance.yahoo.com/quote/518880.SS/analysis",
+          "snippet": "Skip to navigation  Skip to right column. # Yahoo Finance. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 2. 50/30/20 Budget Calculator. # Huaan Yifu Gold Exchange Traded Fund (518880.SS). As of 9:25:02 AM GMT+8. ### Revenue Estimate. | Currency in USD | Current Qtr. (Jan 1970) | Current Year (1970) | Next Year (1970) |. ### Earnings Estimate. ### EPS Trend. ### EPS Revisions. ### Growth Estimates.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Huaan Yifu Gold Exchange Traded Fund (518880.SS) Stock Price, News, Quote & History - Yahoo Finance",
+          "url": "https://finance.yahoo.com/quote/518880.SS",
+          "snippet": "Skip to navigation  Skip to right column. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 2. 50/30/20 Budget Calculator. # Huaan Yifu Gold Exchange Traded Fund (518880.SS). As of 9:38:57 AM GMT+8. Loading chart for 518880.SS. * Day's Range  9.41 - 9.44. Trailing total returns as of 8/28/2026, which may include dividends or other distributions. Benchmark is MSCI WORLD (^990100-USD-STRD)\") . ### YTD Return. MSCI WORLD (^990100-USD-STRD). * Net Income Avi to Common (ttm). #### Balance Sheet and Cash Flow. * Levered Free Cash Flow (ttm). Select to analyze similar companies using key p",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "US dollar index DXY today",
+      "dataType": "dxy",
+      "results": [
+        {
+          "title": "US Dollar Index (DX-Y.NYB)",
+          "url": "https://finance.yahoo.com/quote/DX-Y.NYB",
+          "snippet": "Skip to navigation  Skip to right column. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 2. 50/30/20 Budget Calculator. 6. Asking for a Trend. # US Dollar Index (DX-Y.NYB). Loading chart for DX-Y.NYB. * Day's Range  99.10 - 99.16. * 52 Week Range  95.55 - 101.80. ### ICE US Dollar Index - Index - C Heatmap. ^TNX  CBOE Interest Rate 10 Year T No. TLT  iShares 20+ Year Treasury Bond ETF. ^FVX  Treasury Yield 5 Years. ^XAX  NYSE American Composite Index. ^STOXX50E  EURO STOXX 50 I. IMOEX.ME  MOEX Russia Index. 000001.SS  SSE Composite Index. ^AXJO  S&P/ASX 200 [XJO]. ^BSESN  S&P BSE",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "DOLLAR INDEX SPOT (DXY) Spot Rate",
+          "url": "https://www.bloomberg.com/quote/DXY:CUR",
+          "snippet": "Updated spot exchange rate of DOLLAR INDEX SPOT (DXY) against the US dollar index. (USD) 99.1650 0.000.00% As of 2:47 PM EDT 08/27/26",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "U.S. Dollar Index (DXY) Price & News",
+          "url": "https://www.wsj.com/market-data/quotes/index/DXY/historical-prices",
+          "snippet": "**Stocks:** Real-time U.S. stock quotes reflect trades reported through Nasdaq only; comprehensive quotes and volume reflect trading in all markets and are delayed at least 15 minutes. **Indexes:** Index quotes may be real-time or delayed as per exchange requirements; refer to time stamps for information on any delays. **Markets Diary:** Data on U.S. Overview page represent trading in all U.S. markets and updates until 8 p.m. See Closing Diaries table for 4 p.m. closing data. Change value during the period between open outcry settle and the commencement of the next day's trading is calculated as the difference between the last trade and the prior day's settle. FactSet (a) does not make any express or implied warranties of any kind regarding the data, including, without limitation, any warr",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "US 10 year treasury yield TIPS real yield today",
+      "dataType": "us10y",
+      "results": [
+        {
+          "title": "Treasury Inflation-Protected Securities",
+          "url": "https://www.wsj.com/market-data/bonds/tips",
+          "snippet": "# Markets. #### Topics. #### C-Suite. #### WSJ Professional. #### Market Data. #### Columnists. #### Newsletters. #### Reviews. ## Find what you're looking for. Search for topics like \"tariffs\", your favorite authors, companies or even a more specific query like \"dollar's role as a reserve currency\". ### Treasury Inflation-Protected Securities.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "United States Rates & Bonds - Bloomberg.com",
+          "url": "https://www.bloomberg.com/markets/rates-bonds/government-bonds/us",
+          "snippet": "Bloomberg the Company & Its Products The Company & its ProductsBloomberg Terminal Demo RequestBloomberg Anywhere Remote Login Bloomberg Anywhere LoginBloomberg Customer Support Customer Support. Connecting decision makers to a dynamic network of information, people and ideas, Bloomberg quickly and accurately delivers business and financial information, news and insight around the world. *   Manage Products and Account Information. | Name, not sorted | Coupon, not sorted | Price, not sorted | Yield, not sorted | 1 Month, not sorted | 1 Year, not sorted | Time (EDT), not sorted |. | GB3:GOV 3 Month | 0.00 | 3.70 | +3.79% | +1 | –43 | 4:59 PM |. | Rate, not sorted | Yield, not sorted | 1 Year Prior, not sorted |. | Name, not sorted | Yield, not sorted | 1 Day, not sorted | 1 Month, not sorted",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "What Are Treasury Inflation-Protected Securities (TIPS)?",
+          "url": "https://www.investopedia.com/terms/t/tips.asp",
+          "snippet": "# What Are Treasury Inflation-Protected Securities (TIPS)? :max_bytes(150000):strip_icc():format(webp)/gordonscottphoto-5bfc26c446e0fb00265b0ed4.jpg). Treasury Inflation-Protected Securities (TIPS) are a type of Treasury bond that is indexed to an inflationary gauge to protect investors from a decline in the purchasing power of their money. Since you wouldn’t be alone if you did, the U.S. Treasury created Treasury Inflation-Protected Securities (TIPS) in 1997—special government bonds designed to help protect investors when prices rise across the economy. When inflation rises, both the principal amount you invested and the interest payments you receive increase to help maintain your purchasing power. While TIPS typically offer lower initial interest rates than conventional Treasury bonds, t",
+          "sourceGrade": "B"
+        }
+      ]
+    }
+  ]
+}

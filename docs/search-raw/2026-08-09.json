@@ -1,0 +1,160 @@
+{
+  "timestamp": "2026-08-09T02:00:22.636Z",
+  "date": "2026-08-09",
+  "queries": [
+    {
+      "query": "gold price XAUUSD spot today 2026",
+      "dataType": "xauusd",
+      "results": [
+        {
+          "title": "Gold (XAU) Spot Rate - Bloomberg.com",
+          "url": "https://www.bloomberg.com/quote/XAU:CUR",
+          "snippet": "Updated spot exchange rate of Gold (XAU) against the US dollar index. Find currency & selling price and other forex information.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Dec 26 (GC=F) - Yahoo Finance",
+          "url": "https://finance.yahoo.com/quote/GC=F",
+          "snippet": "Skip to navigation  Skip to right column. # Yahoo Finance. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 6. Asking for a Trend. # Gold Dec 26 (GC=F). At close: August 7 at 4:59:55 PM EDT. Loading chart for GC=F. * Settlement Date  2026-12-29. * Last Price  4,299.60. * Day's Range  4,288.00 - 4,432.30. ### Recent News.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold forecast and tracker: Where will prices land in 2026?",
+          "url": "https://finance.yahoo.com/personal-finance/investing/article/gold-forecast-and-tracker-where-will-prices-land-in-2026-130000340.html",
+          "snippet": "[News • 4 days ago The tech stock dumpster fire should serve as a reminder of an important investing lesson](https://finance.yahoo.com/markets/article/the-tech-stock-dumpster-fire-should-remind-you-of-this-important-investing-lesson-123000193.html?.tsrc=fin-notif). Here's what investors should watch for._](https://finance.yahoo.com/personal-finance/investing/article/risks-for-gold-investors-100015304.html). _Learn more:_[_How much gold would $1 million buy at different points in history?_](https://finance.yahoo.com/personal-finance/investing/article/how-much-gold-would-1-million-buy-at-different-points-in-history-140032360.html). What [gold's price](https://finance.yahoo.com/personal-finance/investing/article/who-decides-what-gold-is-worth-how-gold-prices-are-determined-130135952.html) wil",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "London gold spot price Kitco Investing.com 2026",
+      "dataType": "xauusd_alt",
+      "results": [
+        {
+          "title": "Gold Dec 26 (GC=F) - Yahoo Finance",
+          "url": "https://finance.yahoo.com/quote/GC=F",
+          "snippet": "Skip to navigation  Skip to right column. # Yahoo Finance. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 6. Asking for a Trend. # Gold Dec 26 (GC=F). At close: August 7 at 4:59:55 PM EDT. Loading chart for GC=F. * Settlement Date  2026-12-29. * Last Price  4,299.60. * Day's Range  4,288.00 - 4,432.30. ### Recent News.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Price, News, Quote & History",
+          "url": "https://ca.finance.yahoo.com/quote/GC%3DF",
+          "snippet": "[](https://ca.finance.yahoo.com/). *   [News](https://ca.yahoo.com/). *   [Finance](https://ca.finance.yahoo.com/). *   [News](https://ca.yahoo.com/). *   [Finance](https://ca.finance.yahoo.com/). *   [My portfolio](https://ca.finance.yahoo.com/portfolios/). *   [Watchlists](https://ca.finance.yahoo.com/watchlists/). *   [Markets](https://ca.finance.yahoo.com/calendar/). *   [News](https://ca.finance.yahoo.com/topic/news/). *   [Screeners](https://ca.finance.yahoo.com/research-hub/screener/). *   [Industries](https://ca.finance.yahoo.com/industries/energy/). *   [Taxes](https://ca.finance.yahoo.com/topic/taxes/). 1.   [My Stocks](https://ca.finance.yahoo.com/portfolios/). 2.   [News](https://ca.finance.yahoo.com/topic/news/). 1.   [Housing](https://ca.finance.yahoo.com/topic/canada-real-es",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold (XAU) Spot Rate - Bloomberg.com",
+          "url": "https://www.bloomberg.com/quote/XAU:CUR",
+          "snippet": "Updated spot exchange rate of Gold (XAU) against the US dollar index. Gold Spot $/Oz Following. Price EUR 6,476.98 0.15%",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "COMEX gold futures close price today",
+      "dataType": "xauusd_alt2",
+      "results": [
+        {
+          "title": "COMEX Live | COMEX Commodity | COMEX Futures",
+          "url": "https://comexlive.org",
+          "snippet": "| COMEX Palladium | 1,383.00 | +5.60 | +0.41% | 1,380.00 | 1,412.00 | 1,365.50 | 08-Aug 03:09 |. The Commodity Exchange (COMEX) is one of the world’s most influential commodities futures exchanges. Based in New York and now a division of the CME Group, COMEX serves as the global benchmark for precious metals and a vital hub for commodity derivatives trading. Gold, silver, copper, and aluminum futures on COMEX set international price standards and play a critical role in global trade, hedging, and investment strategies. By offering a transparent marketplace with deep liquidity, COMEX allows producers, consumers, and investors to manage risk while providing real-time price discovery for some of the world’s most important raw materials. In 1994, COMEX merged with the New York Mercantile Excha",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "COMEX",
+          "url": "https://www.cmegroup.com/company/comex.html",
+          "snippet": "# COMEX. CME Group is the world’s leading derivatives marketplace, made up of four exchanges, CME, CBOT, NYMEX and COMEX. COMEX, a Designated Contract Market offering products subject to COMEX rules and regulations, joined CME Group with NYMEX in 2008. The merger expanded our suite of metals products to include several global benchmarks in precious, base and ferrous metals. View product information for products subject to the rules and regulations of COMEX, including intra-day and settlement quotes, contract specifications, product calendars, and performance bonds/margins. ## Rules and Regulation. View CME Group trading platforms/venues, services and tools and resources here. View this general info for block trades including product information provided by CME Group. ###### MARKET REGULATI",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Comex",
+          "url": "https://en.wikipedia.org/wiki/Comex",
+          "snippet": "# Comex. From Wikipedia, the free encyclopedia. * COMEX (NYMEX) \"COMEX (NYMEX)\"), a division of the New York Mercantile Exchange (NYMEX). * COMEX (Compagnie maritime d'expertises), a French company in undersea engineering. * Comex Group, a Mexican paint manufacturer and distributor. * Commonwealth Expedition, a series of expeditions from Britain to India. * Los Comex, a comic book imprint. Topics referred to by the same term. This disambiguation page lists articles associated with the title **Comex**. If an internal link incorrectly led you here, you may wish to change the link to point directly to the intended article. * Short description is different from Wikidata.",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "上海金 Au99.99 今日行情 2026",
+      "dataType": "shanghai_gold",
+      "results": []
+    },
+    {
+      "query": "上海黄金交易所 Au99.99 收盘价",
+      "dataType": "shanghai_gold_alt",
+      "results": []
+    },
+    {
+      "query": "黄金ETF 518880 最新净值 涨跌幅",
+      "dataType": "etf_nav",
+      "results": [
+        {
+          "title": "黄金ETF(518880)_基金最新净值_中财网",
+          "url": "https://quote.cfi.cn/quote16859_518880.html",
+          "snippet": "| 基金概况 基金最新净值 基金收益分配 基金管理 基金档案 基金净值 基金投资组合(持股) 基金公开信息 基金财报全文 公告全文 | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- ",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "黄金ETF(518880)_基金最新净值_中财网",
+          "url": "https://gg.cfi.cn/quote.aspx?stockid=16859&lm=outlinejj&client=pc",
+          "snippet": "| 基金概况 基金最新净值 基金收益分配 基金管理 基金档案 基金净值 基金投资组合(持股) 基金公开信息 基金财报全文 公告全文 | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- ",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "黄金ETF(518880)_基金最新净值_中财网",
+          "url": "https://quote.cfi.cn/quote.aspx?stockid=16859&lm=outlinejj&client=pc",
+          "snippet": "| 基金概况 基金最新净值 基金收益分配 基金管理 基金档案 基金净值 基金投资组合(持股) 基金公开信息 基金财报全文 公告全文 | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- ",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "US dollar index DXY today",
+      "dataType": "dxy",
+      "results": [
+        {
+          "title": "US Dollar Index (DX-Y.NYB)",
+          "url": "https://finance.yahoo.com/quote/DX-Y.NYB",
+          "snippet": "Skip to navigation  Skip to right column. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 6. Asking for a Trend. # US Dollar Index (DX-Y.NYB). As of August 7 at 4:59:59 PM EDT. Loading chart for DX-Y.NYB. Customize your DX-Y.NYB view in AlphaSpace. * Day's Range  99.40 - 100.00. * 52 Week Range  95.55 - 101.80. ## ICE US Dollar Index - Index - C Heatmap. ^FVX  Treasury Yield 5 Years. ^XAX  NYSE American Composite Index. IMOEX.ME  MOEX Russia Index. 000001.SS  SSE Composite Index. ^AXJO  S&P/ASX 200. ^BSESN  S&P BSE SENSEX. ^NZ50  S&P/NZX 50 INDEX GROSS ( GROSS. ^TWII  TWSE Capital",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "DOLLAR INDEX SPOT (DXY) Spot Rate - Bloomberg.com",
+          "url": "https://www.bloomberg.com/quote/DXY:CUR",
+          "snippet": "Updated spot exchange rate of DOLLAR INDEX SPOT (DXY) against the US dollar index. Close 99.9300 USD 99.6040 USD 16:58 22:46",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "U.S. Dollar Index (DXY) Price & News - WSJ",
+          "url": "https://www.wsj.com/market-data/quotes/index/DXY/historical-prices",
+          "snippet": "We use cookies and browser capability checks to help us deliver our online services, including to learn if you enabled Flash for video or ad blocking. By using our website or by closing this message box, you agree to our use of browser capability checks, and to our use of cookies as described in our Cookie Policy. **Stocks:** Real-time U.S. stock quotes reflect trades reported through Nasdaq only; comprehensive quotes and volume reflect trading in all markets and are delayed at least 15 minutes. **Indexes:** Index quotes may be real-time or delayed as per exchange requirements; refer to time stamps for information on any delays. **Markets Diary:** Data on U.S. Overview page represent trading in all U.S. markets and updates until 8 p.m. See Closing Diaries table for 4 p.m. closing data.",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "US 10 year treasury yield TIPS real yield today",
+      "dataType": "us10y",
+      "results": [
+        {
+          "title": "United States Rates & Bonds - Bloomberg.com",
+          "url": "https://www.bloomberg.com/markets/rates-bonds/government-bonds/us",
+          "snippet": "Bloomberg the Company & Its Products The Company & its ProductsBloomberg Terminal Demo RequestBloomberg Anywhere Remote Login Bloomberg Anywhere LoginBloomberg Customer Support Customer Support. Connecting decision makers to a dynamic network of information, people and ideas, Bloomberg quickly and accurately delivers business and financial information, news and insight around the world. *   Manage Products and Account Information. | Name, not sorted | Coupon, not sorted | Price, not sorted | Yield, not sorted | 1 Month, not sorted | 1 Year, not sorted | Time (EDT), not sorted |. | GB3:GOV 3 Month | 0.00 | 3.71 | +3.79% | –2 | –44 | 08/07/2026 |. | Rate, not sorted | Yield, not sorted | 1 Year Prior, not sorted |. | Name, not sorted | Yield, not sorted | 1 Day, not sorted | 1 Month, not sor",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Treasury Inflation-Protected Securities",
+          "url": "https://www.wsj.com/market-data/bonds/tips",
+          "snippet": "# Markets. #### Topics. #### C-Suite. #### WSJ Professional. #### Market Data. #### Columnists. #### Newsletters. #### Reviews. ## Find what you're looking for. Search for topics like \"tariffs\", your favorite authors, companies or even a more specific query like \"dollar's role as a reserve currency\". ### Treasury Inflation-Protected Securities.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "What Are Treasury Inflation-Protected Securities (TIPS)?",
+          "url": "https://www.investopedia.com/terms/t/tips.asp",
+          "snippet": "*   [Newsletters](https://www.investopedia.com/terms/t/tips.asp#). *   [Newsletters](https://www.investopedia.com/terms/t/tips.asp#). *   [Understanding TIPS](https://www.investopedia.com/terms/t/tips.asp#toc-understanding-treasury-inflation-protected-securities-tips). *   [Price Relationship to Inflation](https://www.investopedia.com/terms/t/tips.asp#toc-tips-and-inflation). *   [FAQs](https://www.investopedia.com/terms/t/tips.asp#toc-how-can-i-buy-treasury-inflation-protected-securities-tips). *   [The Bottom Line](https://www.investopedia.com/terms/t/tips.asp#toc-the-bottom-line). 4.   [Treasury Inflation-Protected Securities (TIPS)](https://www.investopedia.com/terms/t/tips.asp)CURRENT ARTICLE. [Video 1](https://www.investopedia.com/terms/t/tips.asp). The [principal](https://www.invest",
+          "sourceGrade": "B"
+        }
+      ]
+    }
+  ]
+}

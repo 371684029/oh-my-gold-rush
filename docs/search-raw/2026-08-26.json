@@ -1,0 +1,179 @@
+{
+  "timestamp": "2026-08-26T02:00:23.694Z",
+  "date": "2026-08-26",
+  "queries": [
+    {
+      "query": "gold price XAUUSD spot today 2026",
+      "dataType": "xauusd",
+      "results": [
+        {
+          "title": "Gold (XAU) Spot Rate",
+          "url": "https://www.bloomberg.com/quote/XAU:CUR",
+          "snippet": "# Bloomberg. Contact us](https://www.bloomberg.com/feedback). ## We've detected unusual activity from your computer network. To continue, please click the box below to let us know you're not a robot. ### Why did this happen? Please make sure your browser supports JavaScript and cookies and that you are not blocking them from loading. For more information you can review our [Terms of Service](https://www.bloomberg.com/notices/tos) and [Cookie Policy](https://www.bloomberg.com/notices/tos). ### Need Help? For inquiries related to this message please [contact our support team](https://www.bloomberg.com/feedback) and provide the reference ID below. Block reference ID:75331bdb-a017-11f1-8417-684187ed5721. Get the most important global markets news at your fingertips with a [Bloomberg.com](https",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "XAU to USD Exchange Rate",
+          "url": "https://www.bloomberg.com/quote/XAUUSD:CUR",
+          "snippet": "Current exchange rate Gold (XAU) to US DOLLAR (USD) USD) 4,657.1400 0.03–0.00 1Y 5Y Prev. Close 4,657.1700 USD 4,657.1400",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Price, News, Quote & History",
+          "url": "https://finance.yahoo.com/quote/GC=F",
+          "snippet": "1. [My Portfolio](https://finance.yahoo.com/portfolios/). [Markets](https://finance.yahoo.com/topic/stock-market-news/). 1. [Stock market](https://finance.yahoo.com/topic/stock-market-news/). 2. [Crypto](https://finance.yahoo.com/markets/crypto/). 3. [Housing](https://finance.yahoo.com/topic/housing-market/). 4. [Magnificent 7](https://finance.yahoo.com/topic/magnificent-7/). 3. [Premium news](https://finance.yahoo.com/topic/premium-news/). 1. [Earnings](https://finance.yahoo.com/topic/earnings/). 4. [Tariffs](https://finance.yahoo.com/topic/tariffs/). 6. [Tech](https://finance.yahoo.com/topic/tech/). [Stocks](https://finance.yahoo.com/markets/stocks/). 1. [Most active](https://finance.yahoo.com/markets/stocks/most-active/). 2. [Day gainers](https://finance.yahoo.com/markets/stocks/gainers",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "London gold spot price Kitco Investing.com 2026",
+      "dataType": "xauusd_alt",
+      "results": [
+        {
+          "title": "P.M. Kitco Metals Roundup: Comex Gold Ends Down Amid ...",
+          "url": "https://www.forbes.com/sites/kitconews/2012/04/16/p-m-kitco-metals-roundup-comex-gold-ends-down-amid-general-raw-commodity-price-weakness-monday",
+          "snippet": "Spot gold was last quoted down $7.60 an ounce at $1,651.50. 2026 Forbes Media LLC.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "LBMA PM Gold Price Set $15 Below Spot Market",
+          "url": "https://www.forbes.com/sites/kitconews/2017/04/12/lbma-pm-gold-price-set-15-below-spot-market",
+          "snippet": "# LBMA PM Gold Price Set $15 Below Spot Market. **(Kitco News) -** Gold buyers, settling contracts using the London Bullion Market Association PM Gold Price, got a great deal Tuesday as the benchmark ended up being set almost $15 dollars below where spot prices were trading at the time. In a statement to Kitco News, the LBMA said that it is currently reviewing what happened during the PM auction. The large discrepancy between spot and the benchmark once again put the market’s transparency in the spotlight; however, Jeff Christian, managing director at CPM Group, a leading commodity research firm, said that he doesn’t see it as nefarious manipulation but the effects of poorly conceived regulations and a faulty price discovery mechanism. He said that the problem is that the auction process s",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Symbol Lookup from Yahoo Finance",
+          "url": "https://finance.yahoo.com/quote/GC",
+          "snippet": "3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 3. How to get approved. * S&P Futures 7,676.25  +0.08%. * Nasdaq Futures 29,192.75  +0.30%. * Russell 2000 Futures 3,004.70  +0.10%. * Gold 4,682.70  -0.32%. * 10-Yr Bond 4.7040  -0.72%. * XRP USD 1.52  +2.51%. All (558)\")  Stocks (183)\")  Mutual Funds (187)\")  ETFs (76)\")  Indices (72)\")  Futures (32)\")  Currencies (0)\")  Cryptocurrencies (8)\")  Private Companies (0)\"). | GC=F | Gold Dec 26 | 4,682.80 | -- | Futures | CMX |. | GCT=F | Gold TAS Futures,Dec-2026 | 1.00 | -- | Futures | CMX |. | GCT | GigaCloud Technology Inc | 50.51 | Technology | Stocks | NGM |. | 0.25 | Healthcare | Stocks | OQB |. | GCTS-WT ",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "COMEX gold futures close price today",
+      "dataType": "xauusd_alt2",
+      "results": [
+        {
+          "title": "COMEX Live | COMEX Commodity | COMEX Futures",
+          "url": "https://comexlive.org",
+          "snippet": "| COMEX Gold | 4,698.80 | +1.00 | +0.02% | 4,710.10 | 4,755.00 | 4,659.50 | 25-Aug 16:39 |. | COMEX Palladium | 1,335.00 | -28.30 | -2.08% | 1,361.50 | 1,373.00 | 1,318.50 | 25-Aug 16:39 |. | COMEX Aluminum | 3,415.00 | +18.25 | +0.54% | 3,385.25 | 3,415.50 | 3,371.00 | 25-Aug 16:39 |. The Commodity Exchange (COMEX) is one of the world’s most influential commodities futures exchanges. Based in New York and now a division of the CME Group, COMEX serves as the global benchmark for precious metals and a vital hub for commodity derivatives trading. Gold, silver, copper, and aluminum futures on COMEX set international price standards and play a critical role in global trade, hedging, and investment strategies. In 1994, COMEX merged with the New York Mercantile Exchange (NYMEX), and in 2008 both",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "COMEX",
+          "url": "https://www.cmegroup.com/company/comex.html",
+          "snippet": "##### Markets Home. ##### Market Data Home. Market Data on Google Analytics Hub. THE SOURCE FOR HISTORICAL DATA. ##### Solutions Home. ##### Insights Home. ##### Education Home. CME Group is the world’s leading derivatives marketplace, made up of four exchanges, CME, CBOT, NYMEX and COMEX. COMEX, a Designated Contract Market offering products subject to COMEX rules and regulations, joined CME Group with NYMEX in 2008. The merger expanded our suite of metals products to include several global benchmarks in precious, base and ferrous metals. ## Membership. View product information for products subject to the rules and regulations of COMEX, including intra-day and settlement quotes, contract specifications, product calendars, and performance bonds/margins. ### Membership Home. ### Clearing Me",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "COMEX: Metals Trading, Market History & Key Futures Explained",
+          "url": "https://www.investopedia.com/terms/c/comex.asp",
+          "snippet": ":max_bytes(150000):strip_icc():format(webp)/wk_headshot_aug_2018_02__william_kenton-5bfc261446e0fb005118afc9.jpg). :max_bytes(150000):strip_icc():format(webp)/gordonscottphoto-5bfc26c446e0fb00265b0ed4.jpg). COMEX is a major futures and options market for metals like gold, silver, and copper. Based in New York’s World Financial Center, COMEX is best known for its futures contracts, which allow traders to hedge against price changes in the metals market. It merged with the New York Mercantile Exchange (NYMEX) in 1994 and later became part of the CME Group in 2008. The Commodity Exchange is the main exchange for silver and gold futures. The merger between the Commodity Exchange and the New York Mercantile Exchange (NYMEX) created the world's largest physical futures trading exchange: COMEX. T",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "上海金 Au99.99 今日行情 2026",
+      "dataType": "shanghai_gold",
+      "results": []
+    },
+    {
+      "query": "上海黄金交易所 Au99.99 收盘价",
+      "dataType": "shanghai_gold_alt",
+      "results": [
+        {
+          "title": "上海黄金交易所au99.99 - 搜狗搜索",
+          "url": "https://www.sogou.com/web?user_ip=51&bh=1&hintidx=7&query=%E4%B8%8A%E6%B5%B7%E9%BB%84%E9%87%91%E4%BA%A4%E6%98%93%E6%89%80au99.99&w=01020600&sessiontime=1773099483622&interation=&interV=kKIOkrELjbkRmLkElbkTkKIMkrELjboImLkEk74TkKIRmLkEk78TkKILkY%3D%3D_-115092183&htdbg=on&ie=utf8&s_from=hint_middle",
+          "snippet": "Title: 上海黄金交易所au99.99 - 搜狗搜索\n**相关推荐** au99.99%真黄金吗 上海黄金t+d 99.99%高纯度海洛因 含金量99.9%是什么金 90%的黄金是好黄金吗 中国黄金au99.99 首页上海黄金交易所 au99.99今日金价 黄金au99.99最新报价 上海黄金官方交易app 上海黄金交易所个人交割 黄金au99.99和au999.9区别 上海黄金交易所金价查询 上海黄金交易市场今日行情 易金通上海黄金交易所. 人民财讯3月23日电,3月23日,上海黄金交易所Au99.99黄金合约价格进一步大幅下挫,上午盘中已跌破1000元/克。. ### *...*还能涨回去吗?|期货|*上金所*|伦敦金|美联储|美元指数|*上海黄金交易所*... 多家品牌金饰今日挂牌价下跌12元*上海黄金交易所Au99.99*昨日也出现大阴线行情，最低跌至550.90元/克，收于552.40元/克，比上一交易日收盘价下跌13.... 网易https://www.163.com/d...2024-07-26. 中国黄金au99.99黄金au99.99和au999.9区别黄金au99.99和au999.9哪个好au黄金9999实时价格黄金au99.99最新报价上海黄金交易所个人交割首页上海黄金交易所上海黄金交易所交易今日金价au99.99今日金价. ### *上金所*：*Au99.99*合约交易单位调整为10克/手. 交割品种为标准重量1千克、成色不低于99.99%的*Au99.99*标准金锭。其余合约参数与Au(T+D)相同。（详见公告附件一“*上海黄金交易所*mAu(T+D)合约参数... cite 中国证券网 https://news.cnstock.com/n... ### 以下关于*上海黄金交易所*合约*Au99.99*的说法正确的是()。 - 问答库. [单",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "黄金ETF-上海黄金交易所",
+          "url": "http://www.sge.com.cn/cpfw/hjetf",
+          "snippet": "交易所介绍 公告 品牌中心 大事记 博士后工作站 国际交流与合作 人才招聘 联系我们. 聚焦二十大 交易所新闻 媒体报道 战疫情 稳运行. 竞价 询价 定价 租借 清算与结算 交割 国际板 黄金ETF. 延时行情 行情走势 历史行情数据 上海金基准价 上海银基准价 行情周报 行情月报 黄金ETF专栏 行情产品服务 询价市场价格基准 黄金租借参考费率 现金交割专栏 黄金资管统计数据 票据查验. 会员名录与查询 下载专区 发票EMS查询 水平考试成绩查询 从业人员信息查询 从业人员培训 会员之窗. 黄金大讲堂 市场合作与推广 工作研究 风险教育提示 投教园地 上金所年报 社会责任报告 PFMI. 黄金市场相关政策 业务规则 竞价 询价 清算与结算 交割 定价 反洗钱专栏. **现货实盘合约  **现货即期合约  **现货延期交收合约  **现金交割延期合约  **产品参数表  **机构名单* 询价. ## 黄金ETF. 黄金ETF基金（ExchangeTradedFund）是指将绝大部分基金财产投资于上海黄金交易所挂盘交易的黄金品种，紧密跟踪黄金价格，使用黄金品种组合或基金合同约定的方式进行申购赎回，并在证券交易所上市交易的开放式基金。目前，我国主要有两类黄金ETF产品，一类跟踪上海黄金交易所Au99.99现货实盘合约价格，另一类跟踪上海黄金交易所上海金集中定价合约（合约代码：SHAU）价格。. ## 管理办法及收费标准. | 申购/赎回登记结算费 | 30万/年 | 基金管理人 |. ## 会员超级用户权限申请. ## 二级系统接口权限申请. | 1 | 华安易富黄金交易型开放式证券投资基金 | 518880 | Au99.99 合约收盘价 |. | 2 | 国泰黄金交易型开放式证券投资基金 | 518800 | Au99.99 合约收盘价 |. | 6 | 工银",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "黄金ETF-上海黄金交易所",
+          "url": "https://sge.com.cn/cpfw/hjetf",
+          "snippet": "交易所介绍 公告 品牌中心 大事记 博士后工作站 国际交流与合作 人才招聘 联系我们. 聚焦二十大 交易所新闻 媒体报道 战疫情 稳运行. 竞价 询价 定价 租借 清算与结算 交割 国际板 黄金ETF. 延时行情 行情走势 历史行情数据 上海金基准价 上海银基准价 行情周报 行情月报 黄金ETF专栏 行情产品服务 询价市场价格基准 黄金租借参考费率 现金交割专栏 黄金资管统计数据 票据查验. 会员名录与查询 下载专区 发票EMS查询 水平考试成绩查询 从业人员信息查询 从业人员培训 会员之窗. 黄金大讲堂 市场合作与推广 工作研究 风险教育提示 投教园地 上金所年报 社会责任报告 PFMI. 黄金市场相关政策 业务规则 竞价 询价 清算与结算 交割 定价 反洗钱专栏. **现货实盘合约  **现货即期合约  **现货延期交收合约  **现金交割延期合约  **产品参数表  **机构名单* 询价. ## 黄金ETF. 黄金ETF基金（ExchangeTradedFund）是指将绝大部分基金财产投资于上海黄金交易所挂盘交易的黄金品种，紧密跟踪黄金价格，使用黄金品种组合或基金合同约定的方式进行申购赎回，并在证券交易所上市交易的开放式基金。目前，我国主要有两类黄金ETF产品，一类跟踪上海黄金交易所Au99.99现货实盘合约价格，另一类跟踪上海黄金交易所上海金集中定价合约（合约代码：SHAU）价格。. ## 管理办法及收费标准. | 申购/赎回登记结算费 | 30万/年 | 基金管理人 |. ## 会员超级用户权限申请. ## 二级系统接口权限申请. | 1 | 华安易富黄金交易型开放式证券投资基金 | 518880 | Au99.99 合约收盘价 |. | 2 | 国泰黄金交易型开放式证券投资基金 | 518800 | Au99.99 合约收盘价 |. | 6 | 工银",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "黄金ETF 518880 最新净值 涨跌幅",
+      "dataType": "etf_nav",
+      "results": [
+        {
+          "title": "黄金ETF(518880)_基金最新净值_中财网",
+          "url": "https://quote.cfi.cn/quote.aspx?stockid=16035&lm=jjjz&client=pc",
+          "snippet": "| 基金概况  基金最新净值  基金收益分配  基金发行  基金管理  基金档案  基金净值  基金投资组合(持股)  基金公开信息  基金财报全文  公告全文 |  | |  | | --- | |  | | 518880基金收益分配图 | |  | | |  |  | | --- | --- | | 黄金ETF(518880)基金档案>>详细 | | | 基金名称 | 黄金ETF | | 基金代码 | 518880 | | 投资类型 | 契约型开放式 | | 投资风格 | -- | | 发行总份额(份) | 1208486400.00 | | 成立日期 | 2013-07-18 | | 基金托管人 | 中国建设银行股份有限公司 | | 基金管理人 | 华安基金管理有限公司 | | 基金类型 | 混合型基金 | | 投资目标 | 紧密跟踪国内黄金现货价格的表现。 | | 基金经理 | 许之彦 | | |  | | |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | | |  |  |  |  |  |  |  | | --- | --- | --- | --- | --- | --- | --- | | 黄金ETF(518880)基金投资组合(持股)>>详细 | | | | | | | | 截止日期 | 股票代码 | 股票名称 | 股票名称 | 数量(万股) | 持有市值(万元) | 占净值比 | | 518880基金投资组合(持股)图 | | |.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "基金跌幅前20，黄金ETF易方达(159934)跌12.65%领跌_基金速查网",
+          "url": "https://www.dayfund.cn/news/20260323000702.html",
+          "snippet": "Title: 基金跌幅前20，黄金ETF易方达(159934)跌12.65%领跌_基金速查网\n# 基金跌幅前20，黄金ETF易方达(159934)跌12.65%领跌. [导读]:2026年03月23日基金跌幅前20，黄金ETF易方达(159934)跌12.65%领跌，接着上榜基金有黄金ETF博时,博时黄金D,博时黄金I,黄金基金,... 2026年03月23日基金跌幅前20，黄金ETF易方达(159934)跌12.65%领跌，接着上榜基金有黄金ETF博时,博时黄金D,博时黄金I,黄金基金,... 黄金ETF易方达(159934)，昨日净值：10.3826，今日净值：9.2165，涨跌幅：-12.65%。. 黄金ETF博时(159937)，昨日净值：9.9158，今日净值：8.8020，涨跌幅：-12.65%。. 博时黄金D(000929)，昨日净值：10.0817，今日净值：8.9493，涨跌幅：-12.65%。. 博时黄金I(000930)，昨日净值：9.8978，今日净值：8.7860，涨跌幅：-12.65%。. 黄金基金(518800)，昨日净值：9.8182，今日净值：8.7164，涨跌幅：-12.64%。. 黄金ETF(518880)，昨日净值：9.9383，今日净值：8.8241，涨跌幅：-12.63%。. 黄金ETF前海开源(159812)，昨日净值：9.8997，今日净值：8.7907，涨跌幅：-12.62%。. 工银黄金(518660)，昨日净值：9.9548，今日净值：8.8402，涨跌幅：-12.61%。. 黄金9999(518850)，昨日净值：10.0223，今日净值：8.9004，涨跌幅：-12.61%。. 国泰黄金ETF联接A(000218)，昨日净值：3.7678，今日净值：3.3527，涨跌幅：-12.38%。. 国泰黄金ETF联接C(00",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "涨幅榜丨同类涨幅第一！黄金ETF（518880）涨5.2% - 财中社",
+          "url": "https://m.caizhongshe.cn/news-7424351361343092631.html",
+          "snippet": "## 搜索历史清空. ## 账号登录. ## 涨幅榜丨同类涨幅第一！黄金ETF（518880）涨5.2%. 财中社 郑秀丽  2026-02-03 15:59  10.6w阅读. 2月3日，黄金ETF（518880）报收10.422元，收涨... 2月3日，黄金ETF（518880）报收10.422元，收涨5.19%，成交金额216.13亿元。同类基金中涨幅第一。. 黄金ETF成立于2013年07月18日，管理人为华安基金，基金经理为许之彦。今年以来基金回报5.6%，同类排名21/63。. 黄金ETF跟踪的指数为黄金9999（AU9999.SGE）。黄金9999是上海黄金交易所推出的标准化黄金现货合约，代表纯度不低于99.99%的1千克金锭，以人民币/克为报价单位，通过​​连续竞价机制​​形成实时价格，支持T+0实物交割，是国内个人及机构投资者参与实物黄金交易的核心渠道。. 黄金ETF（518880）的场外联接基金为：华安黄金易ETF联接A（000216.OF）、华安黄金易ETF联接C（000217.OF）、华安黄金易ETF联接I（022653.OF）。. **重要提示：** 本文著作权归财中社所有。未经允许，任何单位或个人不得在任何公开传播平台上使用本文内容；经允许进行转载或引用时，请注明来源。联系请发邮件至editor@caizhongshe.cn。. #### 相关文章. ## 财中ETF风向标｜权益ETF结构分化 医疗赛道领涨资源股回调. ## 财中ETF风向标｜科创50ETF景顺(588950)连续5日净申购，近5日累计净申购1.62亿份. ## 财中ETF风向标｜科创人工智能ETF华宝(589520)连续5日净申购 近5日累计净申购1.23亿份. ## 财中ETF风向标｜证券保险ETF鹏华(515630)连续6日净赎回 近5日累计净赎回1.03亿份. #### ",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "US dollar index DXY today",
+      "dataType": "dxy",
+      "results": [
+        {
+          "title": "U.S. Dollar Index (DXY) Price & News",
+          "url": "https://www.wsj.com/market-data/quotes/index/DXY/historical-prices",
+          "snippet": "U.S. Dollar Index (DXY) 6:04 PM EDT 08/25/26 98.90 -0.10 -0.10% 1 Day Range 98.86 - 99.12 52 Week Range. HIGH LOW CLOSE … markets and are delayed at least 15",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "DOLLAR INDEX SPOT (DXY) Spot Rate",
+          "url": "https://www.bloomberg.com/quote/DXY:CUR",
+          "snippet": "Updated spot exchange rate of DOLLAR INDEX SPOT (DXY) against the US dollar index. Close 99.0020 USD 98.9190 USD 17:18 22:48 1:53 4:58",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "US Dollar Index (DX-Y.NYB) Historical Data",
+          "url": "https://finance.yahoo.com/quote/DX-Y.NYB/history",
+          "snippet": "2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. # US Dollar Index (DX-Y.NYB). As of 3:46:21 PM EDT. | Date | Open | High | Low | Close  Close price adjusted for splits. | Adj Close  Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Jun 30, 2026 | 101.12 | 101.43 | 101.05 | 101.19 | 101.19 | - |. ^XAX  NYSE American Composite Index. 000001.SS  SSE Composite Index. ^NZ50  S&P/NZX 50 INDEX GROSS ( GROSS. ^GSPTSE  S&P/TSX Composite index.",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "US 10 year treasury yield TIPS real yield today",
+      "dataType": "us10y",
+      "results": [
+        {
+          "title": "US 10 Year Treasury Note TMUBMUSD10Y (Tullett Prebon)",
+          "url": "https://www.wsj.com/market-data/quotes/bond/BX/TMUBMUSD10Y",
+          "snippet": "Yield 4.636% 0.002 Price 08/14/26. Treasury Yields Fall as U.S. Inflation. Rises to Highest Level Since Jan. Real-time U.S. stock quotes reflect trades",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "TIPS Spread: What it is, How it Works, Relevance",
+          "url": "https://www.investopedia.com/terms/t/tips-spread.asp",
+          "snippet": "A close-up image of the capital at the top of the columns in front of the U.S. Treasury Department building.:max_bytes(150000):strip_icc():format(webp)/TIPSSpreadGettyImages-1436838185-369db85e8e364e5abd7d6381fa5f2af7.jpg). TIPS spread is the difference in the yields between U.S. treasury bonds and Treasury Inflation-Protected Securities (TIPS) and is a useful measure of the market’s expectation of future Consumer Price Index (CPI) inflation. The TIPS spread compares the yield of the TIPS and the yield of regular U.S. Treasury securities with the same maturity dates. This variability of the principal is key as it is linked to the metric, CPI, that measures the level of inflation in the economy. This means that the difference between this yield and nominal U.S. bond yield, or the TIPS sprea",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "10-Year Treasury Bond Yield: What It Is and Why It Matters - Investopedia",
+          "url": "https://www.investopedia.com/articles/investing/100814/why-10-year-us-treasury-rates-matter.asp",
+          "snippet": "# 10-Year Treasury Bond Yield: What It Is and Why It Matters. These rates indicate the confidence of investors in the economy. The 10-year Treasury note yield is commonly used as a measure of the U.S. government’s 10-year borrowing rate. It serves as a benchmark for other interest rates and is a key indicator of investor sentiment about economic conditions. It matters because it influences borrowing costs of products like mortgages, impacts the valuation of financial assets, and signals expectations about inflation and economic growth. ## Understanding 10-Year Treasury Bond Yields. The importance of the 10-year Treasury bond yield goes beyond just understanding the return on investment (ROI) for the security. This confidence factor is also felt outside of the U.S., as it points to the futu",
+          "sourceGrade": "B"
+        }
+      ]
+    }
+  ]
+}

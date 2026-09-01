@@ -1,0 +1,186 @@
+{
+  "timestamp": "2026-08-03T02:00:23.573Z",
+  "date": "2026-08-03",
+  "queries": [
+    {
+      "query": "gold price XAUUSD spot today 2026",
+      "dataType": "xauusd",
+      "results": [
+        {
+          "title": "Gold (XAU) Spot Rate",
+          "url": "https://www.bloomberg.com/quote/XAU:CUR",
+          "snippet": "Updated spot exchange rate of Gold (XAU) against the US dollar index. Gold Spot $/Oz Following. Following Follow Follow +0.63% As of 7:20 PM EDT 08/02/26 .",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Price, News, Quote & History",
+          "url": "https://finance.yahoo.com/quote/GC%3DF",
+          "snippet": "Gold Dec 26 (GC=F) 4,125.90 +18.90 (+0.46%) As of August 2 at 7:18:26 PM EDT. Last Price 4,107.00 Day's Range 4,119.00 - 4,141.40 Volume 4.9k",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold price outlook: Could prices hit $6000 in 2026?",
+          "url": "https://finance.yahoo.com/personal-finance/investing/article/gold-price-outlook-could-prices-hit-6000-in-2026-150000589.html",
+          "snippet": "# Yahoo Finance. 2. Best High-Yield Savings Accounts. 3. Best Money Market Accounts. 4. Best Free Checking Accounts. 3. Balance Transfer Credit Cards. 4. 0% APR Credit Cards. 4. Best Places for Loans. 6. Paying off Student Loans. 2. Types of Car Insurance. Some offers on this page are from advertisers who pay us, which may affect which products we write about, but not our recommendations. # Gold price outlook: Could prices hit $6,000 in 2026? Gold has a reputation as a safe haven for investors. When the stock market fluctuates and inflation rises, investors often allocate more capital to precious metals like gold and silver. With the war in Iran affecting oil prices and the stock market, along with ongoing issues in Europe and South America, gold is more popular than ever. In fact, gold's ",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "London gold spot price Kitco Investing.com 2026",
+      "dataType": "xauusd_alt",
+      "results": [
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Price, News, Quote & History",
+          "url": "https://finance.yahoo.com/quote/GC%3DF",
+          "snippet": "Gold Dec 26 (GC=F) 4,125.90 +18.90 (+0.46%) As of August 2 at 7:18:26 PM EDT. Last Price 4,107.00 Day's Range 4,119.00 - 4,141.40 Volume 4.9k",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold (XAU) Spot Rate",
+          "url": "https://www.bloomberg.com/quote/XAU:CUR",
+          "snippet": "Updated spot exchange rate of Gold (XAU) against the US dollar index. Gold Spot $/Oz Following. Following Follow Follow +0.63% As of 7:20 PM EDT 08/02/26 .",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "The Price of Gold Sinks Under $4,000 for the First Time Since November",
+          "url": "https://www.investopedia.com/gold-sinks-under-usd4-000-for-the-first-time-in-months-12005599",
+          "snippet": "Gold bars stacked in the shape of a pyramid against a black background.:max_bytes(150000):strip_icc():format(webp)/GettyImages-2259321333-64af61de792d48e3a12b9b7b386fe92d.jpg). A trader works on the floor of the New York Stock Exchange :max_bytes(150000):strip_icc():format(webp)/GettyImages-2287221937-b40d4f61197f4a29bb4d07c11114b227.jpg). A trader works on the floor of the New York Stock Exchange. Traders are seen working on the floor of the New York Stock Exchange.:max_bytes(150000):strip_icc():format(webp)/GettyImages-2287540556-c038ef36005b4316a2f7544536defa86.jpg). Traders are seen working on the floor of the New York Stock Exchange.:max_bytes(150000):strip_icc():format(webp)/GettyImages-2287222149-19465a7a85c84db3a1ad877609b3da26.jpg). Traders are seen working on the floor of the New",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "COMEX gold futures close price today",
+      "dataType": "xauusd_alt2",
+      "results": [
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Price, News, Quote & History",
+          "url": "https://finance.yahoo.com/quote/GC%3DF",
+          "snippet": "COMEX - Delayed Quote • USD Gold Dec 26 (GC=F) 4,125.90 +18.90 (+0.46%) As of August 2 at 7:18:26 PM EDT. Last Price 4,107.00 Day's Range 4,119.00 - 4,141.40",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Continuous Contract Futures Prices and News | GC00",
+          "url": "https://www.wsj.com/market-data/quotes/futures/GC00?eafs_enabled=false",
+          "snippet": "Continuous Contract prices today. Comex Gold Settles 0.04% Lower at $4034.70. Front Month 4049.50 0.40 4102.40",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Commodities Futures: prices, changes, trading volume & daily charts - Yahoo Finance",
+          "url": "https://finance.yahoo.com/markets/commodities",
+          "snippet": "2. Best 0% APR cards. 3. Best money market accounts. | ZB=F | U.S. Treasury Bond Futures,Sep- |  | 108.31  -1.09 (-1.00%) | 4:59PM EDT | -1.09 | -1.00% | 643,839 | 1.863M |. | ZN=F | 10-Year T-Note Futures,Sep-2026 |  | 108.00  -0.55 (-0.50%) | 4:59PM EDT | -0.55 | -0.50% | 2.553M | 5.285M |. | MGC=F | Micro Gold Futures,Aug-2026 |  | 4,107.00  -53.60 (-1.29%) | 4:59PM EDT | -53.60 | -1.29% | 196,849 | 32,009 |. | SI=F | Silver Sep 26 |  | 57.79  -1.23 (-2.09%) | 4:59PM EDT | -1.23 | -2.09% | 27,280 | 80,685 |. | SIL=F | Micro Silver Futures,Sep-2026 |  | 57.79  -1.23 (-2.09%) | 4:59PM EDT | -1.23 | -2.09% | 37,626 | 13,214 |. | PL=F | Platinum Oct 26 |  | 1,658.70  -1.50 (-0.09%) | 4:59PM EDT | -1.50 | -0.09% | 13,518 | 45,587 |. | ZS=F | Soybean Futures,Nov-2026 |  | 1,187.50  -1.25 (-0.",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "上海金 Au99.99 今日行情 2026",
+      "dataType": "shanghai_gold",
+      "results": [
+        {
+          "title": "京東推最低11299元黃金手機殼秒售罄",
+          "url": "https://hk.finance.yahoo.com/news/%E4%BA%AC%E6%9D%B1%E6%8E%A8%E6%9C%80%E4%BD%8E11-299%E5%85%83%E9%BB%83%E9%87%91%E6%89%8B%E6%A9%9F%E6%AE%BC%E7%A7%92%E5%94%AE%E7%BD%84-200004713.html",
+          "snippet": "更新時間2026年1月22日 9618. 一款AU99.99 黃金手機殼・ 標價11,299 元、20g 標價22,499 元、30g 標價33,699 元、50g 標 ・ 飾克價逼近1,500 元。 權©",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "上海黄金交易所 Au99.99 收盘价",
+      "dataType": "shanghai_gold_alt",
+      "results": [
+        {
+          "title": "黄金ETF-上海黄金交易所",
+          "url": "https://sge.com.cn/cpfw/hjetf",
+          "snippet": "交易所介绍 公告 品牌中心 大事记 博士后工作站 国际交流与合作 人才招聘 联系我们. 聚焦二十大 交易所新闻 媒体报道 战疫情 稳运行. 竞价 询价 定价 租借 清算与结算 交割 国际板 黄金ETF. 延时行情 行情走势 历史行情数据 上海金基准价 上海银基准价 行情周报 行情月报 黄金ETF专栏 行情产品服务 询价市场价格基准 黄金租借参考费率 现金交割专栏 黄金资管统计数据 票据查验. 会员名录与查询 下载专区 发票EMS查询 水平考试成绩查询 从业人员信息查询 从业人员培训 会员之窗. 黄金大讲堂 市场合作与推广 工作研究 风险教育提示 投教园地 上金所年报 社会责任报告 PFMI. 黄金市场相关政策 业务规则 竞价 询价 清算与结算 交割 定价 反洗钱专栏. **现货实盘合约  **现货即期合约  **现货延期交收合约  **现金交割延期合约  **产品参数表  **机构名单* 询价. ## 黄金ETF. 黄金ETF基金（ExchangeTradedFund）是指将绝大部分基金财产投资于上海黄金交易所挂盘交易的黄金品种，紧密跟踪黄金价格，使用黄金品种组合或基金合同约定的方式进行申购赎回，并在证券交易所上市交易的开放式基金。目前，我国主要有两类黄金ETF产品，一类跟踪上海黄金交易所Au99.99现货实盘合约价格，另一类跟踪上海黄金交易所上海金集中定价合约（合约代码：SHAU）价格。. ## 管理办法及收费标准. | 申购/赎回登记结算费 | 30万/年 | 基金管理人 |. ## 会员超级用户权限申请. ## 二级系统接口权限申请. | 1 | 华安易富黄金交易型开放式证券投资基金 | 518880 | Au99.99 合约收盘价 |. | 2 | 国泰黄金交易型开放式证券投资基金 | 518800 | Au99.99 合约收盘价 |. | 6 | 工银",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "黄金ETF-上海黄金交易所",
+          "url": "http://www.sge.com.cn/cpfw/hjetf",
+          "snippet": "交易所介绍 公告 品牌中心 大事记 博士后工作站 国际交流与合作 人才招聘 联系我们. 聚焦二十大 交易所新闻 媒体报道 战疫情 稳运行. 竞价 询价 定价 租借 清算与结算 交割 国际板 黄金ETF. 延时行情 行情走势 历史行情数据 上海金基准价 上海银基准价 行情周报 行情月报 黄金ETF专栏 行情产品服务 询价市场价格基准 黄金租借参考费率 现金交割专栏 黄金资管统计数据 票据查验. 会员名录与查询 下载专区 发票EMS查询 水平考试成绩查询 从业人员信息查询 从业人员培训 会员之窗. 黄金大讲堂 市场合作与推广 工作研究 风险教育提示 投教园地 上金所年报 社会责任报告 PFMI. 黄金市场相关政策 业务规则 竞价 询价 清算与结算 交割 定价 反洗钱专栏. **现货实盘合约  **现货即期合约  **现货延期交收合约  **现金交割延期合约  **产品参数表  **机构名单* 询价. ## 黄金ETF. 黄金ETF基金（ExchangeTradedFund）是指将绝大部分基金财产投资于上海黄金交易所挂盘交易的黄金品种，紧密跟踪黄金价格，使用黄金品种组合或基金合同约定的方式进行申购赎回，并在证券交易所上市交易的开放式基金。目前，我国主要有两类黄金ETF产品，一类跟踪上海黄金交易所Au99.99现货实盘合约价格，另一类跟踪上海黄金交易所上海金集中定价合约（合约代码：SHAU）价格。. ## 管理办法及收费标准. | 申购/赎回登记结算费 | 30万/年 | 基金管理人 |. ## 会员超级用户权限申请. ## 二级系统接口权限申请. | 1 | 华安易富黄金交易型开放式证券投资基金 | 518880 | Au99.99 合约收盘价 |. | 2 | 国泰黄金交易型开放式证券投资基金 | 518800 | Au99.99 合约收盘价 |. | 6 | 工银",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "上海黄金交易所au99.99 - 搜狗搜索",
+          "url": "https://www.sogou.com/web?user_ip=86.43.222.13&s_from=hint_last&bh=1&hintidx=7&query=%E4%B8%8A%E6%B5%B7%E9%BB%84%E9%87%91%E4%BA%A4%E6%98%93%E6%89%80au99.99&sessiontime=1773099483622&w=01020600&interation=&interV=kKIOkrELjbkRmLkElbkTkKIMkrELjboImLkEk74TkKIRmLkEk78TkKILkY%3D%3D_-115092183&htdbg=on&ie=utf8",
+          "snippet": "**相关推荐** au99.99%真黄金吗 黄金含量999.9%是什么意思 足金999.99%是什么意思 中国黄金au99.99 上海金交所官方网站 上海黄金国际交易中心 上海黄金交易所最新价 上海黄金交易所首页 上海黄金交易所个人交割 24k99上海黄金交易所 黄金au99.99和au999.9区别 上海黄金交易所交易平台 上海黄金官方交易app 易金通上海黄金交易所 上海黄金交易所交易app. ### *上海黄金交易所*金价首次突破500元!\\_新浪财经\\_新浪网. ### *上金所*：*Au99.99*合约交易单位调整为10克/手. ### 历史首次!*上海金交所Au99.99*(一号金)突破500*...*|*黄金*价格\\_网易订阅. ### 金价先涨后跌,未来走势如何?|金条|期货|购*金*|*黄金*价格\\_网易订阅. ### 金价飙升!*上海黄金交易所AU99.99*创历史新高,背后的原因是什么?... ### 【992|关注】金价先涨后跌,未来走势如何? “五一”小长假后的四个交易日,*上海黄金交易所AU99.99*收盘价均维持在每克540元以上,比去年同期上涨20%,比今年年初上涨13%.从金饰价格可窥见一斑.记者走访了解到,5月9日,北京一家周大福门店足金饰品报价为每克710元,相较4月每克超730元的高点出现一定回落.... ### *上海黄金交易所*国际版是什么-今日头条. ### 中国银行*上海黄金交易所*-今日头条. ### *上海黄金交易所* *Au99.99* 合约参数表 - 希财网. ### 以下关于*上海黄金交易所*合约*Au99.99*的说法正确的是（）。 - 问答库. | 中国黄金au99.99 | 黄金au99.99和au999.9区别 |.",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "黄金ETF 518880 最新净值 涨跌幅",
+      "dataType": "etf_nav",
+      "results": [
+        {
+          "title": "黄金ETF(518880)_基金最新净值_中财网",
+          "url": "https://quote.cfi.cn/quote16859_518880.html",
+          "snippet": "| 基金概况 基金最新净值 基金收益分配 基金管理 基金档案 基金净值 基金投资组合(持股) 基金公开信息 基金财报全文 公告全文 | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- ",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "黄金ETF(518880)_基金最新净值_中财网",
+          "url": "https://gg.cfi.cn/quote.aspx?stockid=16859&lm=outlinejj&client=pc",
+          "snippet": "| 基金概况 基金最新净值 基金收益分配 基金管理 基金档案 基金净值 基金投资组合(持股) 基金公开信息 基金财报全文 公告全文 | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- ",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "黄金ETF(518880)_基金最新净值_中财网",
+          "url": "https://quote.cfi.cn/quote.aspx?stockid=16859&lm=outlinejj&client=pc",
+          "snippet": "| 基金概况 基金最新净值 基金收益分配 基金管理 基金档案 基金净值 基金投资组合(持股) 基金公开信息 基金财报全文 公告全文 | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- ",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "US dollar index DXY today",
+      "dataType": "dxy",
+      "results": [
+        {
+          "title": "Us (2019 film)",
+          "url": "https://en.wikipedia.org/wiki/Us_(2019_film)",
+          "snippet": "Peele saw the characters of the film as an \"archetypal foursome\", with Adelaide being the leader, Zora being the warrior, Gabe being jester/fool and Jason being the wiz/magician.[[14]](#cite_note-14) For her role, Nyong'o had to use a different voice for the character of Red. She said her performance was inspired by the condition [spasmodic dysphonia](https://en.wikipedia.org/wiki/Spasmodic_dysphonia \"Spasmodic dysphonia\"), a condition that causes a person's voice to go into periods of [spasm](https://en.wikipedia.org/wiki/Spasm \"Spasm\"). Due to the track's popularity upon the trailer's release, it was edited into the final cut of the film, appearing during the climax.[[20]](#cite_note-20) [Waxwork Records](https://en.wikipedia.org/wiki/Waxwork_Records \"Waxwork Records\") announced in Augus",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Us (2019)",
+          "url": "https://www.imdb.com/title/tt6857112",
+          "snippet": "*   [User reviews](https://www.imdb.com/title/tt6857112/reviews/?ref_=tt_ov_ql_2). The family is shocked...[Read all](https://www.imdb.com/title/tt6857112/plotsummary/?ref_=tt_ov_pl)In order to get away from their busy lives, the Wilson family takes a vacation to Santa Cruz, California. *   [Jordan Peele](https://www.imdb.com/name/nm1443502/?ref_=tt_ov_1_1). *   [Jordan Peele](https://www.imdb.com/name/nm1443502/?ref_=tt_ov_2_1). *   [Jordan Peele](https://www.imdb.com/name/nm1443502/?ref_=tt_ov_1_1). *   [Jordan Peele](https://www.imdb.com/name/nm1443502/?ref_=tt_ov_2_1). *   [3.7K User reviews](https://www.imdb.com/title/tt6857112/reviews/?ref_=tt_ov_ururv). *   [586 Critic reviews](https://www.imdb.com/title/tt6857112/externalreviews/?ref_=tt_ov_crv). [How to Survive a Horror Movie in 2",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "U.S. Department of State – Home",
+          "url": "https://www.state.gov",
+          "snippet": "*   [Intelligence and Research](https://www.state.gov/bureaus-offices/secretary-of-state/bureau-of-intelligence-and-research/). *   [Legislative Affairs](https://www.state.gov/bureaus-offices/secretary-of-state/bureau-of-legislative-affairs/). *   [Under Secretary for Arms Control and International Security](https://www.state.gov/bureaus-offices/under-secretary-for-arms-control-and-international-security-affairs/). *   [Arms Control and Nonproliferation](https://www.state.gov/bureaus-offices/under-secretary-for-arms-control-and-international-security-affairs/bureau-of-arms-control-and-nonproliferation/). *   [AUKUS Senior Advisor](https://www.state.gov/bureaus-offices/under-secretary-for-arms-control-and-international-security-affairs/office-of-the-aukus-senior-advisor/). *   [Counterterro",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "US 10 year treasury yield TIPS real yield today",
+      "dataType": "us10y",
+      "results": [
+        {
+          "title": "United States Rates & Bonds",
+          "url": "https://www.bloomberg.com/markets/rates-bonds/government-bonds/us",
+          "snippet": "Bloomberg the Company & Its Products The Company & its ProductsBloomberg Terminal Demo RequestBloomberg Anywhere Remote Login Bloomberg Anywhere LoginBloomberg Customer Support Customer Support. Connecting decision makers to a dynamic network of information, people and ideas, Bloomberg quickly and accurately delivers business and financial information, news and insight around the world. *   Manage Products and Account Information. | Name, not sorted | Coupon, not sorted | Price, not sorted | Yield, not sorted | 1 Month, not sorted | 1 Year, not sorted | Time (EDT), not sorted |. | GB12:GOV 12 Month | 0.00 | 3.85 | +4.02% | +5 | –7 | 6:29 AM |. | Rate, not sorted | Yield, not sorted | 1 Year Prior, not sorted |. | Name, not sorted | Yield, not sorted | 1 Day, not sorted | 1 Month, not sorte",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Treasury Inflation-Protected Securities",
+          "url": "https://www.wsj.com/market-data/bonds/tips",
+          "snippet": "# Markets. #### Topics. #### C-Suite. #### WSJ Professional. #### Market Data. #### Columnists. #### Newsletters. #### Reviews. ## Find what you're looking for. Search for topics like \"tariffs\", your favorite authors, companies or even a more specific query like \"dollar's role as a reserve currency\". ### Treasury Inflation-Protected Securities.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "What Are Treasury Inflation-Protected Securities (TIPS)?",
+          "url": "https://www.investopedia.com/terms/t/tips.asp",
+          "snippet": "# What Are Treasury Inflation-Protected Securities (TIPS)? :max_bytes(150000):strip_icc():format(webp)/gordonscottphoto-5bfc26c446e0fb00265b0ed4.jpg). Treasury Inflation-Protected Securities (TIPS) are a type of Treasury bond that is indexed to an inflationary gauge to protect investors from a decline in the purchasing power of their money. Since you wouldn’t be alone if you did, the U.S. Treasury created Treasury Inflation-Protected Securities (TIPS) in 1997—special government bonds designed to help protect investors when prices rise across the economy. When inflation rises, both the principal amount you invested and the interest payments you receive increase to help maintain your purchasing power. While TIPS typically offer lower initial interest rates than conventional Treasury bonds, t",
+          "sourceGrade": "B"
+        }
+      ]
+    }
+  ]
+}
