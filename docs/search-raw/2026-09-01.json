@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-08-01T02:00:33.207Z",
-  "date": "2026-08-01",
+  "timestamp": "2026-09-01T02:00:22.939Z",
+  "date": "2026-09-01",
   "queries": [
     {
       "query": "gold price XAUUSD spot today 2026",
@@ -9,19 +9,19 @@
         {
           "title": "Gold (XAU) Spot Rate",
           "url": "https://www.bloomberg.com/quote/XAU:CUR",
-          "snippet": "# Bloomberg. Contact us](https://www.bloomberg.com/feedback). ## We've detected unusual activity from your computer network. To continue, please click the box below to let us know you're not a robot. ### Why did this happen? Please make sure your browser supports JavaScript and cookies and that you are not blocking them from loading. For more information you can review our [Terms of Service](https://www.bloomberg.com/notices/tos) and [Cookie Policy](https://www.bloomberg.com/notices/tos). ### Need Help? For inquiries related to this message please [contact our support team](https://www.bloomberg.com/feedback) and provide the reference ID below. Block reference ID:97f17fd1-8b0f-11f1-b0fc-85630adb7b86. Get the most important global markets news at your fingertips with a [Bloomberg.com](https",
-          "sourceGrade": "B"
-        },
-        {
-          "title": "Gold Aug 26 (GC=F)",
-          "url": "https://finance.yahoo.com/quote/GC%3DF",
-          "snippet": "Skip to navigation  Skip to right column. # Yahoo Finance. # Gold Aug 26 (GC=F). As of July 31 at 4:59:54 PM EDT. Loading chart for GC=F. Customize your GC=F view in AlphaSpace. * Settlement Date  2026-08-27. * Last Price  4,160.60. * Day's Range  4,076.40 - 4,170.70. ### Recent News.",
+          "snippet": "Updated spot exchange rate of Gold (XAU) against the US dollar index. Close 4,437.3800 XAU 4,460.7300 XAU",
           "sourceGrade": "B"
         },
         {
           "title": "XAU to USD Exchange Rate",
           "url": "https://www.bloomberg.com/quote/XAUUSD:CUR",
-          "snippet": "Current exchange rate Gold (XAU) to US DOLLAR (USD) (USD) 4,051.2500 52.16–1.27% Close 4,103.4100 USD 4,050.1100 USD",
+          "snippet": "Current exchange rate Gold (XAU) to US DOLLAR (USD) Close 4,455.1100 USD 4,432.7500 USD",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Price, News, Quote & History",
+          "url": "https://finance.yahoo.com/quote/GC%3DF",
+          "snippet": "Skip to navigation  Skip to right column. # Yahoo Finance. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 2. 50/30/20 Budget Calculator. 6. Asking for a Trend. # Gold Dec 26 (GC=F). As of 2:46:52 AM EDT. Loading chart for GC=F. * Settlement Date  2026-12-29. * Last Price  4,529.90. * Day's Range  4,445.60 - 4,521.50. ## Recent News.",
           "sourceGrade": "B"
         }
       ]
@@ -31,21 +31,21 @@
       "dataType": "xauusd_alt",
       "results": [
         {
-          "title": "Gold Aug 26 (GC=F)",
+          "title": "Gold Dec 26 (GC=F) Stock Price, News, Quote & History",
           "url": "https://finance.yahoo.com/quote/GC%3DF",
-          "snippet": "Skip to navigation  Skip to right column. # Yahoo Finance. # Gold Aug 26 (GC=F). As of July 31 at 4:59:54 PM EDT. Loading chart for GC=F. Customize your GC=F view in AlphaSpace. * Settlement Date  2026-08-27. * Last Price  4,160.60. * Day's Range  4,076.40 - 4,170.70. ### Recent News.",
+          "snippet": "Skip to navigation  Skip to right column. # Yahoo Finance. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 2. 50/30/20 Budget Calculator. 6. Asking for a Trend. # Gold Dec 26 (GC=F). As of 2:46:52 AM EDT. Loading chart for GC=F. * Settlement Date  2026-12-29. * Last Price  4,529.90. * Day's Range  4,445.60 - 4,521.50. ## Recent News.",
           "sourceGrade": "B"
         },
         {
-          "title": "Gold (XAU) Spot Rate",
-          "url": "https://www.bloomberg.com/quote/XAU:CUR",
-          "snippet": "# Bloomberg. Contact us](https://www.bloomberg.com/feedback). ## We've detected unusual activity from your computer network. To continue, please click the box below to let us know you're not a robot. ### Why did this happen? Please make sure your browser supports JavaScript and cookies and that you are not blocking them from loading. For more information you can review our [Terms of Service](https://www.bloomberg.com/notices/tos) and [Cookie Policy](https://www.bloomberg.com/notices/tos). ### Need Help? For inquiries related to this message please [contact our support team](https://www.bloomberg.com/feedback) and provide the reference ID below. Block reference ID:97f17fd1-8b0f-11f1-b0fc-85630adb7b86. Get the most important global markets news at your fingertips with a [Bloomberg.com](https",
+          "title": "A.M. Kitco Metals Roundup: Gold Lower Amid Surge In ...",
+          "url": "https://www.forbes.com/sites/kitconews/2013/11/01/a-m-kitco-metals-roundup-gold-lower-amid-surge-in-u-s-dollar-index",
+          "snippet": "Spot gold was last quoted down $8.90 at $1314.25. The London A.M. gold fix is $1,314.75 … week's high of $1,361.80. at $1,309.50.",
           "sourceGrade": "B"
         },
         {
-          "title": "The Price of Gold Sinks Under $4,000 for the First Time Since November",
-          "url": "https://www.investopedia.com/gold-sinks-under-usd4-000-for-the-first-time-in-months-12005599",
-          "snippet": "Gold bars stacked in the shape of a pyramid against a black background.:max_bytes(150000):strip_icc():format(webp)/GettyImages-2259321333-64af61de792d48e3a12b9b7b386fe92d.jpg). Precious metals prices have hit a new low for the year, with spot gold on Wednesday falling 3% to below $4,000 per ounce, a level it hasn't touched since November. A trader works on the floor of the New York Stock Exchange :max_bytes(150000):strip_icc():format(webp)/GettyImages-2287221937-b40d4f61197f4a29bb4d07c11114b227.jpg). A trader works on the floor of the New York Stock Exchange. Traders are seen working on the floor of the New York Stock Exchange.:max_bytes(150000):strip_icc():format(webp)/GettyImages-2285062874-a466e8631838462b95c6fe5e4f6a0c42.jpg). Traders are seen working on the floor of the New York Stock",
+          "title": "LBMA PM Gold Price Set $15 Below Spot Market",
+          "url": "https://www.forbes.com/sites/kitconews/2017/04/12/lbma-pm-gold-price-set-15-below-spot-market",
+          "snippet": "# LBMA PM Gold Price Set $15 Below Spot Market. **(Kitco News) -** Gold buyers, settling contracts using the London Bullion Market Association PM Gold Price, got a great deal Tuesday as the benchmark ended up being set almost $15 dollars below where spot prices were trading at the time. In a statement to Kitco News, the LBMA said that it is currently reviewing what happened during the PM auction. The large discrepancy between spot and the benchmark once again put the market’s transparency in the spotlight; however, Jeff Christian, managing director at CPM Group, a leading commodity research firm, said that he doesn’t see it as nefarious manipulation but the effects of poorly conceived regulations and a faulty price discovery mechanism. He said that the problem is that the auction process s",
           "sourceGrade": "B"
         }
       ]
@@ -57,19 +57,19 @@
         {
           "title": "Gold Continuous Contract Futures Prices and News | GC00",
           "url": "https://www.wsj.com/market-data/quotes/futures/GC00",
-          "snippet": "Continuous Contract prices today. Comex Gold Settles 0.04% Lower at $4034.70. Slip At the Close 07/23/26 … 4049.50 -50.60 4102.40",
+          "snippet": "MONTH, LAST, CHG, OPEN, HIGH, LOW, DATE, TIME. Front Month, 4432.80, -45.30, 4430.00, 4466.90, 4410.90, 08/31/26, 12:49. Gold Sep 2026, 4432.80, -45.30",
           "sourceGrade": "B"
         },
         {
-          "title": "Gold Aug 26 (GC=F)",
+          "title": "Gold Dec 26 (GC=F) Stock Price, News, Quote & History",
           "url": "https://finance.yahoo.com/quote/GC%3DF",
-          "snippet": "Skip to navigation  Skip to right column. # Yahoo Finance. # Gold Aug 26 (GC=F). As of July 31 at 4:59:54 PM EDT. Loading chart for GC=F. Customize your GC=F view in AlphaSpace. * Settlement Date  2026-08-27. * Last Price  4,160.60. * Day's Range  4,076.40 - 4,170.70. ### Recent News.",
+          "snippet": "Skip to navigation  Skip to right column. # Yahoo Finance. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 2. 50/30/20 Budget Calculator. 6. Asking for a Trend. # Gold Dec 26 (GC=F). As of 2:46:52 AM EDT. Loading chart for GC=F. * Settlement Date  2026-12-29. * Last Price  4,529.90. * Day's Range  4,445.60 - 4,521.50. ## Recent News.",
           "sourceGrade": "B"
         },
         {
-          "title": "Gold Aug 26 (GC=F) Stock Historical Prices & Data",
-          "url": "https://finance.yahoo.com/quote/GC=F/history",
-          "snippet": "2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 3. How to get approved. | Date | Open | High | Low | Close  Close price adjusted for splits. | Adj Close  Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Jun 30, 2026 | 4,002.60 | 4,049.70 | 3,962.50 | 4,022.90 | 4,022.90 | 1,108 |.",
+          "title": "Precious and Industrial Metals - Bloomberg.com",
+          "url": "https://www.bloomberg.com/markets/commodities/futures/metals",
+          "snippet": "Bloomberg the Company & Its Products The Company & its ProductsBloomberg Terminal Demo RequestBloomberg Anywhere Remote Login Bloomberg Anywhere LoginBloomberg Customer Support Customer Support. Connecting decision makers to a dynamic network of information, people and ideas, Bloomberg quickly and accurately delivers business and financial information, news and insight around the world. *   Manage Products and Account Information. # Precious and Industrial Metals. | GC1:COM Gold (Comex) | USD/t oz. | JG1:COM Gold (Tokyo) | JPY/g | 24,100.00 | 161.00 | 0.67% | Jun 2027 | 08/23/2026 |. | XAUUSD:CUR Gold Spot | USD/t oz. | XAUEUR:CUR Gold/Euro Spot | EUR/t oz. | XAUJPY:CUR Gold/Japanese Yen Spot | JPY/t oz. | SI1:COM Silver (Comex) | USD/t oz. | JI1:COM Silver (Tokyo) | JPY/g | 350.00 | 20.00",
           "sourceGrade": "B"
         }
       ]
@@ -77,14 +77,7 @@
     {
       "query": "上海金 Au99.99 今日行情 2026",
       "dataType": "shanghai_gold",
-      "results": [
-        {
-          "title": "京東推最低11299元黃金手機殼秒售罄",
-          "url": "https://hk.finance.yahoo.com/news/%E4%BA%AC%E6%9D%B1%E6%8E%A8%E6%9C%80%E4%BD%8E11-299%E5%85%83%E9%BB%83%E9%87%91%E6%89%8B%E6%A9%9F%E6%AE%BC%E7%A7%92%E5%94%AE%E7%BD%84-200004713.html",
-          "snippet": "Jan 22, 2026 — 更新時間2026年1月22日 9618. 一款AU99.99 黃金手機殼・ 標價11,299 元、20g 標價22,499 元、30g 標價33,699 元、50g 標 ・ 飾克價逼近1,500 元。 權©",
-          "sourceGrade": "B"
-        }
-      ]
+      "results": []
     },
     {
       "query": "上海黄金交易所 Au99.99 收盘价",
@@ -103,9 +96,9 @@
           "sourceGrade": "B"
         },
         {
-          "title": "上海黄金交易所au99.99 - 搜狗搜索",
+          "title": "QQ浏览器搜索",
           "url": "https://www.sogou.com/web?user_ip=86.43.222.13&s_from=hint_last&bh=1&hintidx=7&query=%E4%B8%8A%E6%B5%B7%E9%BB%84%E9%87%91%E4%BA%A4%E6%98%93%E6%89%80au99.99&sessiontime=1773099483622&w=01020600&interation=&interV=kKIOkrELjbkRmLkElbkTkKIMkrELjboImLkEk74TkKIRmLkEk78TkKILkY%3D%3D_-115092183&htdbg=on&ie=utf8",
-          "snippet": "**相关推荐** au99.99%真黄金吗 黄金含量999.9%是什么意思 足金999.99%是什么意思 上海黄金交易所入口 中国黄金au99.99 上海交易所官网入口 上海黄金交易所今日实时行情 24k99上海黄金交易所 上海黄金交易所最新价 上海黄金交易所个人交割 上海黄金交易所首页 黄金au99.99和au999.9区别 上海黄金官方交易app 易金通上海黄金交易所 上海黄金交易所交易app. ### 现货实盘合约-*上海黄金交易所*. ### 历史首次!*上海金交所Au99.99*(一号金)突破500*...*|*黄金*价格\\_网易订阅. ### 今日*上海黄金交易所黄金*最新价格行情表-CBC金属网. ### *上海黄金交易所* *Au99.99* 合约参数表 - 希财网. ### 以下关于*上海黄金交易所*合约*Au99.99*的说法正确的是()。 - 问答库. ### *上海黄金交易所* *AU99.99*：前9月涨 24% - 今日头条. ### *上海黄金交易所*国际版是什么-今日头条. ### 金价飙升！*上海黄金交易所AU99.99*创历史新高,背后的原因是什么？... | 中国黄金au99.99 | 黄金au99.99和au999.9区别 |. ### Firefox搜索引擎插件.",
+          "snippet": "相关搜索 上海黄金交易所au9999  黄金交易所au99.99  上海黄金交易所个人开户条件  黄金au99.99和au999.9哪个好  黄金au99.99与au999.9的区别  99.99黄金和999.9黄金  上海黄金交易所价格表查询  黄金au99.99和au999.9区别  99.99%黄金今日价格  黄金今日价格9999纯金近期价目表  上海交易所官网入口  黄金au9999和au99.99哪个贵  黄金au99.99和au999.9  上海黄金交易所金条怎么买  黄金au999.9和au99.99. ## *上海黄金交易所au99.99* - 精选视频. ### 大家还在搜. ## 工商银行:停办代理*上海黄金交易所Au99.99*、Au100g等合约个人贵金属竞价交易业务. ## 多维关注. ### AU99.99黄金的定义与特性. ### AU99.99黄金与其他黄金的区别. ### AU99.99黄金的投资与回收. ### AU99.99黄金的市场行情. ### 今日*上海黄金交易所黄金*最新价格行情表 - CBC金属网. ## *上金所*金价周报|*Au99.99*最高冲上1012元/克后回落,单周微涨1.21%! ### 历史首次!*上海金交所Au99.99*(一号金)突破500元!|期货|购... ### 金价先涨后跌,未来走势如何?|金条|期货|购*金*|*黄金*价格 - 网易订阅. ### 延时行情 - *上海黄金交易所*. ### *上海黄金交易所*国际版是什么 - 今日头条. ### *上金所*:*Au99.99*合约交易单位调整为10克/手. ### *上海黄金交易所*金价首次突破500元! ### 相关搜索.",
           "sourceGrade": "B"
         }
       ]
@@ -139,19 +132,19 @@
       "dataType": "dxy",
       "results": [
         {
-          "title": "US Dollar Index (DX-Y.NYB)",
+          "title": "US Dollar Index (DX-Y.NYB) Charts, Data & News - Yahoo Finance",
           "url": "https://finance.yahoo.com/quote/DX-Y.NYB",
-          "snippet": "Skip to navigation  Skip to right column. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 6. Asking for a Trend. # US Dollar Index (DX-Y.NYB). As of July 31 at 4:59:59 PM EDT. Loading chart for DX-Y.NYB. Customize your DX-Y.NYB view in AlphaSpace. * Day's Range  99.69 - 100.46. * 52 Week Range  95.55 - 101.80. ### ICE US Dollar Index - Index - C Heatmap. ^FVX  Treasury Yield 5 Years. ^XAX  NYSE American Composite Index. IMOEX.ME  MOEX Russia Index. 000001.SS  SSE Composite Index. ^AXJO  S&P/ASX 200. ^BSESN  S&P BSE SENSEX. ^NZ50  S&P/NZX 50 INDEX GROSS ( GROSS. ^TWII  TWSE Capital",
+          "snippet": "Skip to navigation  Skip to right column. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 2. 50/30/20 Budget Calculator. 6. Asking for a Trend. # US Dollar Index (DX-Y.NYB). Loading chart for DX-Y.NYB. * Day's Range  99.35 - 99.48. * 52 Week Range  95.55 - 101.80. ### ICE US Dollar Index - Index - C Heatmap. ^TNX  CBOE Interest Rate 10 Year T No. TLT  iShares 20+ Year Treasury Bond ETF. ^FVX  Treasury Yield 5 Years. ^XAX  NYSE American Composite Index. ^STOXX50E  EURO STOXX 50 I. IMOEX.ME  MOEX Russia Index. 000001.SS  SSE Composite Index. ^AXJO  S&P/ASX 200 [XJO]. ^BSESN  S&P BSE",
           "sourceGrade": "B"
         },
         {
           "title": "DOLLAR INDEX SPOT (DXY) Spot Rate",
           "url": "https://www.bloomberg.com/quote/DXY:CUR",
-          "snippet": "# Bloomberg. Contact us](https://www.bloomberg.com/feedback). ## We've detected unusual activity from your computer network. To continue, please click the box below to let us know you're not a robot. ### Why did this happen? Please make sure your browser supports JavaScript and cookies and that you are not blocking them from loading. For more information you can review our [Terms of Service](https://www.bloomberg.com/notices/tos) and [Cookie Policy](https://www.bloomberg.com/notices/tos). ### Need Help? For inquiries related to this message please [contact our support team](https://www.bloomberg.com/feedback) and provide the reference ID below. Block reference ID:697e7776-8a84-11f1-8c7e-693374151aec. Get the most important global markets news at your fingertips with a [Bloomberg.com](https",
+          "snippet": "Updated spot exchange rate of DOLLAR INDEX SPOT (DXY) against the US dollar index. Close 99.4280 USD 99.4580 USD",
           "sourceGrade": "B"
         },
         {
-          "title": "U.S. Dollar Index (DXY) Price & News",
+          "title": "U.S. Dollar Index (DXY) Price & News - WSJ",
           "url": "https://www.wsj.com/market-data/quotes/index/DXY/historical-prices",
           "snippet": "**Stocks:** Real-time U.S. stock quotes reflect trades reported through Nasdaq only; comprehensive quotes and volume reflect trading in all markets and are delayed at least 15 minutes. **Indexes:** Index quotes may be real-time or delayed as per exchange requirements; refer to time stamps for information on any delays. **Markets Diary:** Data on U.S. Overview page represent trading in all U.S. markets and updates until 8 p.m. See Closing Diaries table for 4 p.m. closing data. Change value during the period between open outcry settle and the commencement of the next day's trading is calculated as the difference between the last trade and the prior day's settle. FactSet (a) does not make any express or implied warranties of any kind regarding the data, including, without limitation, any warr",
           "sourceGrade": "B"
@@ -165,7 +158,7 @@
         {
           "title": "United States Rates & Bonds",
           "url": "https://www.bloomberg.com/markets/rates-bonds/government-bonds/us",
-          "snippet": "Bloomberg the Company & Its Products The Company & its ProductsBloomberg Terminal Demo RequestBloomberg Anywhere Remote Login Bloomberg Anywhere LoginBloomberg Customer Support Customer Support. Connecting decision makers to a dynamic network of information, people and ideas, Bloomberg quickly and accurately delivers business and financial information, news and insight around the world. *   Manage Products and Account Information. | Name, not sorted | Coupon, not sorted | Price, not sorted | Yield, not sorted | 1 Month, not sorted | 1 Year, not sorted | Time (EDT), not sorted |. | GB12:GOV 12 Month | 0.00 | 3.85 | +4.02% | +5 | –7 | 6:29 AM |. | Rate, not sorted | Yield, not sorted | 1 Year Prior, not sorted |. | Name, not sorted | Yield, not sorted | 1 Day, not sorted | 1 Month, not sorte",
+          "snippet": "Bloomberg the Company & Its Products The Company & its ProductsBloomberg Terminal Demo RequestBloomberg Anywhere Remote Login Bloomberg Anywhere LoginBloomberg Customer Support Customer Support. Connecting decision makers to a dynamic network of information, people and ideas, Bloomberg quickly and accurately delivers business and financial information, news and insight around the world. *   Manage Products and Account Information. | Name, not sorted | Coupon, not sorted | Price, not sorted | Yield, not sorted | 1 Month, not sorted | 1 Year, not sorted | Time (EDT), not sorted |. | GB3:GOV 3 Month | 0.00 | 3.70 | +3.79% | +1 | –43 | 4:59 PM |. | Rate, not sorted | Yield, not sorted | 1 Year Prior, not sorted |. | Name, not sorted | Yield, not sorted | 1 Day, not sorted | 1 Month, not sorted",
           "sourceGrade": "B"
         },
         {
@@ -175,9 +168,9 @@
           "sourceGrade": "B"
         },
         {
-          "title": "What Are Treasury Inflation-Protected Securities (TIPS)?",
-          "url": "https://www.investopedia.com/terms/t/tips.asp",
-          "snippet": "# What Are Treasury Inflation-Protected Securities (TIPS)? :max_bytes(150000):strip_icc():format(webp)/gordonscottphoto-5bfc26c446e0fb00265b0ed4.jpg). Treasury Inflation-Protected Securities (TIPS) are a type of Treasury bond that is indexed to an inflationary gauge to protect investors from a decline in the purchasing power of their money. Since you wouldn’t be alone if you did, the U.S. Treasury created Treasury Inflation-Protected Securities (TIPS) in 1997—special government bonds designed to help protect investors when prices rise across the economy. When inflation rises, both the principal amount you invested and the interest payments you receive increase to help maintain your purchasing power. While TIPS typically offer lower initial interest rates than conventional Treasury bonds, t",
+          "title": "CBOE Interest Rate 10 Year T No (^TNX) Charts, Data & News - Yahoo Finance",
+          "url": "https://finance.yahoo.com/quote/%5ETNX",
+          "snippet": "Skip to navigation  Skip to right column. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 2. 50/30/20 Budget Calculator. # CBOE Interest Rate 10 Year T No (^TNX). At close: August 31 at 1:59:52 PM CDT. * Day's Range  4.7260 - 4.7680. * 52 Week Range  3.9470 - 4.7680. ### CBOE Interest Rate 10 Year T No Heatmap. ^FVX  Treasury Yield 5 Years. ^IRX  13 WEEK TREASURY BILL. DX-Y.NYB  US Dollar Index. ^XAX  NYSE American Composite Index. ^STOXX50E  EURO STOXX 50 I. IMOEX.ME  MOEX Russia Index. 000001.SS  SSE Composite Index. ^AXJO  S&P/ASX 200 [XJO]. ^BSESN  S&P BSE SENSEX. ^NZ50  S&P/N",
           "sourceGrade": "B"
         }
       ]
