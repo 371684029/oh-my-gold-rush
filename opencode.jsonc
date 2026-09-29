@@ -1,5 +1,5 @@
 {
   "plugin": ["oh-my-openagent@latest"],
   "$schema": "https://opencode.ai/config.json",
-  "model": "opencode-go/deepseek-v4-flash-vision-exp"
+  "model": "deepseek/deepseek-flash"
 }

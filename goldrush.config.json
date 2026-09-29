@@ -1,13 +1,13 @@
 {
   "models": {
-    "dataCollector": { "providerID": "opencode-go", "modelID": "deepseek-v4-flash-vision-exp" },
-    "validator": { "providerID": "opencode-go", "modelID": "deepseek-v4-flash-vision-exp" },
-    "technical": { "providerID": "opencode-go", "modelID": "deepseek-v4-flash-vision-exp" },
-    "fundamental": { "providerID": "opencode-go", "modelID": "deepseek-v4-flash-vision-exp" },
-    "sentiment": { "providerID": "opencode-go", "modelID": "deepseek-v4-flash-vision-exp" },
-    "fund": { "providerID": "opencode-go", "modelID": "deepseek-v4-flash-vision-exp" },
-    "rebuttal": { "providerID": "opencode-go", "modelID": "deepseek-v4-flash-vision-exp" },
-    "orchestrator": { "providerID": "opencode-go", "modelID": "deepseek-v4-flash-vision-exp" }
+    "dataCollector": { "providerID": "deepseek", "modelID": "deepseek-flash" },
+    "validator": { "providerID": "deepseek", "modelID": "deepseek-flash" },
+    "technical": { "providerID": "deepseek", "modelID": "deepseek-flash" },
+    "fundamental": { "providerID": "deepseek", "modelID": "deepseek-flash" },
+    "sentiment": { "providerID": "deepseek", "modelID": "deepseek-flash" },
+    "fund": { "providerID": "deepseek", "modelID": "deepseek-flash" },
+    "rebuttal": { "providerID": "deepseek", "modelID": "deepseek-flash" },
+    "orchestrator": { "providerID": "deepseek", "modelID": "deepseek-flash" }
   },
   "search": {
     "tavilyApiKey": "",

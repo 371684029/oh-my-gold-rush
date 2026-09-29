@@ -2,60 +2,60 @@
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
     "oracle": {
-      "model": "opencode-go/deepseek-v4-pro"
+      "model": "deepseek/deepseek-flash"
     },
     "prometheus": {
-      "model": "opencode-go/deepseek-v4-pro"
+      "model": "deepseek/deepseek-flash"
     },
     "metis": {
-      "model": "opencode-go/deepseek-v4-pro"
+      "model": "deepseek/deepseek-flash"
     },
     "momus": {
-      "model": "opencode-go/deepseek-v4-pro"
+      "model": "deepseek/deepseek-flash"
     },
     "atlas": {
-      "model": "opencode-go/deepseek-v4-pro"
+      "model": "deepseek/deepseek-flash"
     },
     "sisyphus-junior": {
-      "model": "opencode-go/deepseek-v4-pro"
+      "model": "deepseek/deepseek-flash"
     },
     "explore": {
-      "model": "opencode-go/deepseek-v4-flash"
+      "model": "deepseek/deepseek-flash"
     },
     "librarian": {
-      "model": "opencode-go/deepseek-v4-flash"
+      "model": "deepseek/deepseek-flash"
     },
     "hephaestus": {
-      "model": "opencode-go/minimax-m2.7"
+      "model": "deepseek/deepseek-flash"
     },
     "multimodal-looker": {
-      "model": "opencode-go/minimax-m2.7"
+      "model": "deepseek/deepseek-flash"
     }
   },
   "categories": {
     "ultrabrain": {
-      "model": "opencode-go/deepseek-v4-pro"
+      "model": "deepseek/deepseek-flash"
     },
     "deep": {
-      "model": "opencode-go/deepseek-v4-pro"
+      "model": "deepseek/deepseek-flash"
     },
     "unspecified-high": {
-      "model": "opencode-go/deepseek-v4-pro"
+      "model": "deepseek/deepseek-flash"
     },
     "quick": {
-      "model": "opencode-go/minimax-m2.7"
+      "model": "deepseek/deepseek-flash"
     },
     "visual-engineering": {
-      "model": "opencode-go/minimax-m2.7"
+      "model": "deepseek/deepseek-flash"
     },
     "artistry": {
-      "model": "opencode-go/minimax-m2.7"
+      "model": "deepseek/deepseek-flash"
     },
     "unspecified-low": {
-      "model": "opencode-go/minimax-m2.7"
+      "model": "deepseek/deepseek-flash"
     },
     "writing": {
-      "model": "opencode-go/minimax-m2.7"
+      "model": "deepseek/deepseek-flash"
     }
   }
 }
