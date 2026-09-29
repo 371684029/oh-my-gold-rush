@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-06",
+  "generatedAt": "2026-09-06T02:01:58.389Z",
+  "score": 50,
+  "direction": "neutral",
+  "scoreLow": null,
+  "scoreHigh": null,
+  "quantScore": null,
+  "quantCoverage": null,
+  "midTermScore": 43,
+  "position": {
+    "targetPct": 32,
+    "label": "偏轻",
+    "tilt": "reduce",
+    "headline": "风险偏高，仓位已自动收一收",
+    "action": "建议相对计划仓约 32%（偏轻）；定投层为主（85%），少做波段加仓"
+  },
+  "advice": {
+    "label": "偏轻",
+    "headline": "风险偏高，仓位已自动收一收",
+    "action": "建议相对计划仓约 32%（偏轻）；定投层为主（85%），少做波段加仓",
+    "source": "position"
+  },
+  "gate": {
+    "tier": "green",
+    "actionable": true,
+    "overallConfidence": 95
+  },
+  "dual": {
+    "alignment": "quant_missing",
+    "delta": null,
+    "actionPolicy": "llm_only",
+    "llmScore": 50,
+    "quantScore": null
+  },
+  "reliability": {
+    "score": 88,
+    "level": "high"
+  },
+  "short": {
+    "label": "短期",
+    "direction": "neutral",
+    "score": 50,
+    "confidence": null,
+    "stance": "建议仓位 32%"
+  },
+  "mid": {
+    "label": "3 个月",
+    "direction": "bearish",
+    "score": 42,
+    "confidence": "moderate",
+    "stance": "维持"
+  },
+  "long": {
+    "label": "3年",
+    "direction": "neutral",
+    "score": 44,
+    "confidence": "low",
+    "stance": "中性"
+  },
+  "midTerm": {
+    "score": 43,
+    "direction": "neutral",
+    "coverage": 1,
+    "factors": {
+      "trend_structure": {
+        "name": "趋势结构(MA50/MA200)",
+        "rawValue": 2.91,
+        "normalizedScore": 59,
+        "weight": 0.22,
+        "effectiveWeight": 0.22,
+        "contribution": 12.98,
+        "note": "金价相对 MA50 +2.9%（样本不足 200 日，未计入长均线排列）"
+      },
+      "valuation": {
+        "name": "估值分位(近一年)",
+        "rawValue": 73.5,
+        "normalizedScore": 41,
+        "weight": 0.12,
+        "effectiveWeight": 0.12,
+        "contribution": 4.92,
+        "note": "金价处于近一年 74% 分位（中位）"
+      },
+      "real_rate_trend": {
+        "name": "实际利率趋势(TIPS)",
+        "rawValue": 23,
+        "normalizedScore": 41,
+        "weight": 0.25,
+        "effectiveWeight": 0.25,
+        "contribution": 10.25,
+        "note": "近 60 日实际利率 +23bp，上行（利空黄金）；当前 2.42%"
+      },
+      "dollar_trend": {
+        "name": "美元趋势(DXY/MA60)",
+        "rawValue": 6.23,
+        "normalizedScore": 5,
+        "weight": 0.18,
+        "effectiveWeight": 0.18,
+        "contribution": 0.9,
+        "note": "美元指数相对 60 日均线 +6.23%，美元偏强（压制金价）"
+      },
+      "positioning": {
+        "name": "持仓拥挤度(CFTC)",
+        "rawValue": 4,
+        "normalizedScore": 70,
+        "weight": 0.13,
+        "effectiveWeight": 0.13,
+        "contribution": 9.1,
+        "note": "CFTC 净多头处 4% 分位，仓位已出清，中期反弹弹性较好"
+      },
+      "official_flow": {
+        "name": "官方/ETF 买盘",
+        "rawValue": 52,
+        "normalizedScore": 52,
+        "weight": 0.1,
+        "effectiveWeight": 0.1,
+        "contribution": 5.2,
+        "note": "主力综合信号 52/100（CFTC + ETF + 央行）"
+      }
+    },
+    "horizons": [
+      {
+        "months": 1,
+        "label": "1 个月",
+        "direction": "neutral",
+        "biasScore": 43,
+        "confidence": "moderate",
+        "stance": "hold",
+        "action": "未来 1 个月方向不明，维持现有仓位与定投节奏，等结构变化再动"
+      },
+      {
+        "months": 3,
+        "label": "3 个月",
+        "direction": "bearish",
+        "biasScore": 42,
+        "confidence": "moderate",
+        "stance": "hold",
+        "action": "未来 3 个月方向不明，维持现有仓位与定投节奏，等结构变化再动"
+      }
+    ],
+    "drivers": [
+      "美元趋势(DXY/MA60)：美元指数相对 60 日均线 +6.23%，美元偏强（压制金价）",
+      "持仓拥挤度(CFTC)：CFTC 净多头处 4% 分位，仓位已出清，中期反弹弹性较好",
+      "实际利率趋势(TIPS)：近 60 日实际利率 +23bp，上行（利空黄金）；当前 2.42%"
+    ],
+    "watchTriggers": [
+      "实际利率明确回落（TIPS 较当前下行 25bp 以上）→ 中期偏空逻辑失效",
+      "金价站稳 MA50 且 MA50 转向上 → 趋势结构转多",
+      "中期判断以「结构」为准；单日大涨大跌不构成推翻理由"
+    ],
+    "summary": "1 个月与 3 个月方向不一致（43 vs 42）：近端扰动与结构方向分歧，以定投为主、波段仓放轻。"
+  },
+  "longTerm": {
+    "summary": "长期档置信整体偏低：以配置纪律与历史分位参考为主，不宜把名义累计区间当点位预测；近端波动不自动等于多年趋势。",
+    "horizons": [
+      {
+        "years": 1,
+        "label": "1年",
+        "direction": "bearish",
+        "biasScore": 44,
+        "confidence": "low",
+        "trendLabel": "温和偏空",
+        "returnBand": "置信偏低，不展示名义累计点位区间；以配置档位与定投纪律为准",
+        "allocationStance": "neutral",
+        "drivers": [
+          "宏观阶段：实际利率压制",
+          "美元/利率逻辑：未知（分析异常）",
+          "利率：未知（分析异常）",
+          "官方买盘：未知（分析异常）"
+        ],
+        "risks": [
+          "实际利率若长期偏高，压制黄金实际回报",
+          "反驳分析超时，无法生成看空论据",
+          "名义回报≠实际购买力；区间非承诺"
+        ],
+        "dcaAdvice": "维持基础定投，少择时"
+      },
+      {
+        "years": 3,
+        "label": "3年",
+        "direction": "neutral",
+        "biasScore": 44,
+        "confidence": "low",
+        "trendLabel": "宽幅震荡 / 配置中性",
+        "returnBand": "置信偏低，不展示名义累计点位区间；以配置档位与定投纪律为准",
+        "allocationStance": "neutral",
+        "drivers": [
+          "宏观阶段：实际利率压制",
+          "美元/利率逻辑：未知（分析异常）",
+          "利率：未知（分析异常）",
+          "央行储备：未知（分析异常）"
+        ],
+        "risks": [
+          "实际利率若长期偏高，压制黄金实际回报",
+          "政策与地缘路径高度不确定，历史分位不能外推未来",
+          "名义回报≠实际购买力；区间非承诺"
+        ],
+        "dcaAdvice": "维持基础定投，按日历执行，少做择时"
+      },
+      {
+        "years": 5,
+        "label": "5年",
+        "direction": "neutral",
+        "biasScore": 44,
+        "confidence": "low",
+        "trendLabel": "宽幅震荡 / 配置中性",
+        "returnBand": "置信偏低，不展示名义累计点位区间；以配置档位与定投纪律为准",
+        "allocationStance": "neutral",
+        "drivers": [
+          "宏观阶段：实际利率压制",
+          "美元/利率逻辑：未知（分析异常）",
+          "利率：未知（分析异常）",
+          "央行储备：未知（分析异常）"
+        ],
+        "risks": [
+          "实际利率若长期偏高，压制黄金实际回报",
+          "政策与地缘路径高度不确定，历史分位不能外推未来",
+          "名义回报≠实际购买力；区间非承诺"
+        ],
+        "dcaAdvice": "标准定投为主；估值显著偏低时小幅加码"
+      }
+    ],
+    "disclaimer": "长期档为本地慢变量规则 + 可选历史分位，非精确预测；置信 low 时不展示点位式累计区间。黄金波动大，请控制仓位。"
+  }
+}

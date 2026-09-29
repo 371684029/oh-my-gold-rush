@@ -1,0 +1,198 @@
+{
+  "timestamp": "2026-09-17T02:00:21.423Z",
+  "date": "2026-09-17",
+  "queries": [
+    {
+      "query": "gold price XAUUSD spot today 2026",
+      "dataType": "xauusd",
+      "results": [
+        {
+          "title": "Bloomberg - Are you a robot?",
+          "url": "https://www.bloomberg.com/quote/XAU:CUR",
+          "snippet": "# Bloomberg. Contact us](https://www.bloomberg.com/feedback). ## We've detected unusual activity from your computer network. To continue, please click the box below to let us know you're not a robot. ### Why did this happen? Please make sure your browser supports JavaScript and cookies and that you are not blocking them from loading. For more information you can review our [Terms of Service](https://www.bloomberg.com/notices/tos) and [Cookie Policy](https://www.bloomberg.com/notices/tos). ### Need Help? For inquiries related to this message please [contact our support team](https://www.bloomberg.com/feedback) and provide the reference ID below. Block reference ID:8e17a783-b098-11f1-9520-19b387497cad. Get the most important global markets news at your fingertips with a [Bloomberg.com](https",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "XAU to USD Exchange Rate - Bloomberg.com",
+          "url": "https://www.bloomberg.com/quote/XAUUSD:CUR",
+          "snippet": "Current exchange rate Gold (XAU) to US DOLLAR (USD) 4,263.6300 0.02–0.00 1Y .6500 USD 4,263.6400",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Dec 26 (GC=F) - Yahoo Finance",
+          "url": "https://finance.yahoo.com/quote/GC=F",
+          "snippet": "USD Gold Dec 26 (GC=F) 4,294.70 -92.80 (-2.12%) Open High Low Volume -- 2026-12-29 4,301.40 4,294.90 4,387.50 … targets higher-grade gold zone",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "London gold spot price Kitco Investing.com 2026",
+      "dataType": "xauusd_alt",
+      "results": [
+        {
+          "title": "Gold prices today, Monday, July 20, 2026",
+          "url": "https://finance.yahoo.com/personal-finance/investing/article/gold-prices-today-monday-july-20-2026-gold-holds-above-4000-despite-continued-violence-in-the-middle-east-152926843.html",
+          "snippet": "Jul 20, 2026 — Gold (GC=F) August futures opened at $4,005.60 per troy ounce on Monday, July 20, 2026, down 0.3% from Friday's closing price.Read more",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Price, News, Quote & History - Yahoo Finance",
+          "url": "https://finance.yahoo.com/quote/GC%3DF",
+          "snippet": "*   [Finance](https://finance.yahoo.com/). *   [Finance](https://finance.yahoo.com/). *   [My portfolio](https://finance.yahoo.com/portfolios/). *   [News](https://finance.yahoo.com/news/). *   [Markets](https://finance.yahoo.com/markets/). *   [Community](https://finance.yahoo.com/community/). *   [Personal finance](https://finance.yahoo.com/personal-finance/). *   [Videos](https://finance.yahoo.com/videos/). 1.   [My Portfolio](https://finance.yahoo.com/portfolios/). 2.   [News](https://finance.yahoo.com/topic/latest-news/). 1.   [Markets](https://finance.yahoo.com/topic/stock-market-news/). 1.   [Stock market](https://finance.yahoo.com/topic/stock-market-news/). 2.   [Crypto](https://finance.yahoo.com/markets/crypto/). 3.   [Housing](https://finance.yahoo.com/topic/housing-market/). 4. ",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold price outlook: Could prices hit $6,000 in 2026? - Yahoo Finance",
+          "url": "https://finance.yahoo.com/personal-finance/investing/article/gold-price-outlook-could-prices-hit-6000-in-2026-150000589.html",
+          "snippet": "# Yahoo Finance. 2. Best High-Yield Savings Accounts. 3. Best Money Market Accounts. 4. Best Free Checking Accounts. 3. Balance Transfer Credit Cards. 4. 0% APR Credit Cards. 4. Best Places for Loans. 6. Paying off Student Loans. 2. Types of Car Insurance. 2. 50/30/20 Budget Calculator. Some offers on this page are from advertisers who pay us, which may affect which products we write about, but not our recommendations. # Gold price outlook: Could prices hit $6,000 in 2026? Gold has a reputation as a safe haven for investors. When the stock market fluctuates and inflation rises, investors often allocate more capital to precious metals like gold and silver. With the war in Iran affecting oil prices and the stock market, along with ongoing issues in Europe and South America, gold is more popu",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "COMEX gold futures close price today",
+      "dataType": "xauusd_alt2",
+      "results": [
+        {
+          "title": "Gold Continuous Contract Futures Prices and News | GC00 - WSJ",
+          "url": "https://www.wsj.com/market-data/quotes/futures/GC00",
+          "snippet": "Gold Continuous Contract prices today … $4310.00 USD -77.50. Price 4387.50 (09/16/26) Futures 6:48 PM ET",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Price, News, Quote & History - Yahoo Finance",
+          "url": "https://finance.yahoo.com/quote/GC%3DF",
+          "snippet": "*   [Finance](https://finance.yahoo.com/). *   [Finance](https://finance.yahoo.com/). *   [My portfolio](https://finance.yahoo.com/portfolios/). *   [News](https://finance.yahoo.com/news/). *   [Markets](https://finance.yahoo.com/markets/). *   [Community](https://finance.yahoo.com/community/). *   [Personal finance](https://finance.yahoo.com/personal-finance/). *   [Videos](https://finance.yahoo.com/videos/). 1.   [My Portfolio](https://finance.yahoo.com/portfolios/). 2.   [News](https://finance.yahoo.com/topic/latest-news/). 1.   [Markets](https://finance.yahoo.com/topic/stock-market-news/). 1.   [Stock market](https://finance.yahoo.com/topic/stock-market-news/). 2.   [Crypto](https://finance.yahoo.com/markets/crypto/). 3.   [Housing](https://finance.yahoo.com/topic/housing-market/). 4. ",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Historical Prices & Data - Yahoo Finance",
+          "url": "https://finance.yahoo.com/quote/GC=F/history",
+          "snippet": "2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 3. How to get approved. 2. 50/30/20 Budget Calculator. | Date | Open | High | Low | Close  Close price adjusted for splits. | Adj Close  Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Aug 31, 2026 | 4,483.20 | 4,521.50 | 4,445.60 | 4,481.50 | 4,481.50 | 152,216 |.",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "上海金 Au99.99 今日行情 2026",
+      "dataType": "shanghai_gold",
+      "results": [
+        {
+          "title": "上海黄金au99.99今日价格 - 搜狗搜索",
+          "url": "https://www.sogou.com/web?query=%E4%B8%8A%E6%B5%B7%E9%BB%84%E9%87%91au99.99%E4%BB%8A%E6%97%A5%E4%BB%B7%E6%A0%BC&s_from=pc_wendaka&sessiontime=1773099483622",
+          "snippet": "IP：159.146.104.39. 访问时间：2026.09.17 00:23:03.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "黄金Au99.99专区_黄金Au99.99行情价格_最新黄金Au99.99相关行情价格-91金属",
+          "url": "https://hq.91jinshu.com/topic/%E9%BB%84%E9%87%91Au99.99",
+          "snippet": "Title: 黄金Au99.99专区_黄金Au99.99行情价格_最新黄金Au99.99相关行情价格-91金属\n黄金  上海黄金交易所黄金原料99.99今天多少一克（2025年10月24日）金条产品名称产品价格价格单位上海黄金交易所Au99.99941.5元/克. 黄金  上海黄金交易所黄金原料99.99今天多少一克（2025年10月22日）金条产品名称产品价格价格单位上海黄金交易所Au99.99940.5元/克. 黄金  上海黄金交易所黄金板料Au99.99今天多少一克（2025年9月30日）金条产品名称产品价格最高-最低上海黄金交易所Au99.99871.0元/克869-873. 黄金  91金属网黄金Au99.99金锭报价（2025年7月1日）金锭产品名称产品价格价格单位金锭Au9999（1千克）、上海外滩金库772.5元/克. 91金属欢迎和行业媒体、协会、企业、研究机构、展会等商务合作等。. 客服电话：021-60820701、15000687998（微信号）. COPYRIGHT © 91金属网 版权所有 沪B2-20210258 沪ICP备09016038号-9.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "搜狗搜索",
+          "url": "https://www.sogou.com/web?user_ip=81.104.129.21&s_from=hint_up&bh=1&hintidx=1&query=au99.99%E4%BB%8A%E6%97%A5%E4%BB%B7%E6%A0%BC&sessiontime=1773099483622&w=01020600&interation=&interV=kKIOkrELjbkRmLkElbkTkKIMkrELjboImLkEk74TkKIRmLkEk78TkKILkY%3D%3D_-115092183&htdbg=on",
+          "snippet": "IP：189.6.236.221. 访问时间：2026.09.16 11:44:18.",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "上海黄金交易所 Au99.99 收盘价",
+      "dataType": "shanghai_gold_alt",
+      "results": [
+        {
+          "title": "shanghai gold exchange",
+          "url": "https://en.sge.com.cn/h5_data_PriceChart?pro_name=iLAu995",
+          "snippet": "## Price Chart. Copyright © 2016 Shanghai Gold Exchange All rights reserved.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "PriceChart",
+          "url": "https://en.sge.com.cn/data_PriceChart?pro_name=Au99.99",
+          "snippet": "SBMA Visits Shanghai Gold Exchange **2025-07-17. Monthly Report of Data Highlights(August, 2026) **2026-09-04. **International Members and Clients**|View All. **Shanghai Gold Benchmark Price**|View All. **Shanghai Silver Benchmark Price**|View All. **Licensed Market Data Distributors**|View All. Daily Monthly Annual Cash Settlement. **List of members (International Board)**|View All. **List of members (main board)**|View All. **Members and Clients**|View All. What you need to know News of International Members & Clients. **How to join us**|View All. What you need to know What you need to do. **Articles of Association**|View All. ## data. ## Price Chart. #### News & Announcement. #### Trading. #### Education. #### Membership. Contact Us ( FOR MORE INFORMATION ). **Address: 2/F,No.669. Di",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "shanghai gold exchange",
+          "url": "https://en.sge.com.cn/h5_data_DelayedQuotes",
+          "snippet": "### Delayed Quotes. | Variety | Latest | High | Low | Open |. | Au(T+N1) | 0.0 | 0.0 | 0.0 | 0.0 |. | PGC30g | 930.0 | 937.0 | 930.0 | 937.0 |. Copyright © 2016 Shanghai Gold Exchange All rights reserved.",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "黄金ETF 518880 最新净值 涨跌幅",
+      "dataType": "etf_nav",
+      "results": [
+        {
+          "title": "华安黄金ETF(518880)费率结构- 基金 - 行情中心- 新浪",
+          "url": "http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_JJFL.php?symbol=518880",
+          "snippet": "# ƽETF. | λֵ:8.9101 | ֵ:0.92% | ۼƾֵ:3.3646 | ֹ:2026/9/16 |. | ¹ģ:917.44Ԫ | յȼ: | 깺״̬:깺 | ״̬: |  |  |. | ͶC\") | 1.7451 | 1.22% |. | ̩ƽ | 9.3412 | 0.92% |. ### ͬϵ. \\*ע˲ƾѣɺṩοʽΪ׼.  ΥͲϢٱ ˲ƾ԰. ˼ | About Sina |  | ϵ | ƸϢ | վʦ | SINA English | ֤ͨע | Ʒ. ˲ƾṩƱծȯԼϾغΪûȡϢ֮ĿģͶʽ顣. ˲ƾԼΪҳṩϢĴ󡢲ȱӳٻϢȡκжгзգͶ. ### ½.",
+          "sourceGrade": "A"
+        },
+        {
+          "title": "华安黄金ETF518880 R3风险ETF",
+          "url": "https://www.huaan.com.cn/funds/518880/index.shtml",
+          "snippet": "| 基金简称 | 华安黄金ETF | 成立日期 | 2013-07-18 |. * 任职日期：2013-07-18~至今. #### 以下数据截止2026-06-30报告期末基金资产组合情况：. | 1 | **权益投资** | 00.00 | 0.00 |. | **其中：股票** | 00.00 | 0.00 |. | **资产支持证券** | 00.00 | 0.00 |. | 4 | **金融衍生品投资** | 00.00 | 0.00 |. | 5 | **买入返售金融资产** | 00.00 | 0.00 |. | **其中：买断式回购的买入返售金融资产** | 00.00 | 0.00 |. #### 以下数据截止2026-06-30报告期末按行业分类的股票投资组合：. | **采矿业** | 00.00 | 0.00 |. | **批发和零售业** | 00.00 | 0.00 |. | **交通运输、仓储和邮政业** | 00.00 | 0.00 |. | **住宿和餐饮业** | 00.00 | 0.00 |. | **租赁和商务服务业** | 00.00 | 0.00 |. | **科学研究和技术服务业** | 00.00 | 0.00 |. | **卫生和社会工作** | 00.00 | 0.00 |. #### 以下数据截止2026-06-30报告期末按公允价值占基金资产净值比例大小排序的前十名股票投资明细：. #### 以下数据截止2026-06-30报告期末按债券品种分类的债券投资组合：. | 序号 | 项目 | 金额（元） | 占基金资产净值的比例（%） |. | 2 | **央行票据** | 00.00 | 0.00 |. | 3 | **金融债券** | 00.00 | 0.00 |. | 其中：政策性金融债 | 00.00 | 0.00",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "华安黄金ETF(518880)_基金行情_新浪财经",
+          "url": "http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_FLWJ.php?symbol=518880",
+          "snippet": "# ƽETF. | λֵ:8.9101 | ֵ:0.92% | ۼƾֵ:3.3646 | ֹ:2026/9/16 |. | ¹ģ:917.44Ԫ | յȼ: | 깺״̬:깺 | ״̬: |  |  |. | ͶC\") | 1.7451 | 1.22% |. | ̩ƽ | 9.3412 | 0.92% |. ### ͬϵ. | ׸ƽͿʽ֤ȯͶʻͬ | 2020/3/7 |. | ׸ƽͿʽ֤ȯͶʻµļ˵飨20261ţ | 2026/3/17 |. | ׸ƽͿʽ֤ȯͶʻµļ˵ | 2019/8/31 |. \\*ע˲ƾѣɺṩοʽΪ׼.  ΥͲϢٱ ˲ƾ԰. ˼ | About Sina |  | ϵ | ƸϢ | վʦ | SINA English | ֤ͨע | Ʒ. ˲ƾṩƱծȯԼϾغΪûȡϢ֮ĿģͶʽ顣. ˲ƾԼΪҳṩϢĴ󡢲ȱӳٻϢȡκжгзգͶ. ### ½.",
+          "sourceGrade": "A"
+        }
+      ]
+    },
+    {
+      "query": "US dollar index DXY today",
+      "dataType": "dxy",
+      "results": [
+        {
+          "title": "US Dollar Index (DX-Y.NYB) - Yahoo Finance",
+          "url": "https://finance.yahoo.com/quote/DX-Y.NYB",
+          "snippet": "USD US Dollar Index (DX-Y.NYB) 100.34 +0.09 (+0.09%) 95.55 - 101.80 0 \" airs every day at 12:00 p.m.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "DOLLAR INDEX SPOT (DXY) Spot Rate - Bloomberg.com",
+          "url": "https://www.bloomberg.com/quote/DXY:CUR",
+          "snippet": "Updated spot exchange rate of DOLLAR INDEX SPOT (DXY) against the US dollar index. Close 99.6150 USD 100.2400 USD",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "U.S. Dollar Index (DXY) Price & News - WSJ",
+          "url": "https://www.wsj.com/market-data/quotes/index/DXY/historical-prices",
+          "snippet": "U.S. Dollar Index (DXY) U.S. Dollar Index (DXY) Day Range 99.54 - 99.75 52 Week Range 95.55 - 101.80 (01/27/26 - 06/24/26)",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "US 10 year treasury yield TIPS real yield today",
+      "dataType": "us10y",
+      "results": [
+        {
+          "title": "Market Yield on U.S. Treasury Securities at 10-Year Constant ...",
+          "url": "https://fred.stlouisfed.org/series/dfii10",
+          "snippet": "*   [Embed in Website](https://fred.stlouisfed.org/series/dfii10#). Board of Governors of the Federal Reserve System (US), Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity, Quoted on an Investment Basis, Inflation-Indexed [DFII10], retrieved from FRED, Federal Reserve Bank of St. Louis; https://fred.stlouisfed.org/series/DFII10, September 14, 2026. [![Image 13](https://fred.stlouisfed.org/images/loading.svg)](https://fred.stlouisfed.org/series/DFII5 \"Market Yield on U.S. Treasury Securities at 5-Year Constant Maturity, Quoted on an Investment Basis, Inflation-Indexed\"). [**Market Yield on U.S. Treasury Securities at 5-Year Constant Maturity, Quoted on an Investment Basis, Inflation-Indexed**](https://fred.stlouisfed.org/series/DFII5 \"Market Yield on U.S. Treasury Secur",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "United States 10 Year TIPS Yield - Quote - Chart",
+          "url": "https://tradingeconomics.com/united-states/10-year-tips-yield",
+          "snippet": "# United States 10 Year TIPS YieldQuote - Chart - Historical Data - News. ## The yield on 10 Year TIPS Yield held steady at 2.61% on September 16, 2026. ## Historically, the United States 10 Year TIPS Yield reached an all time high of 4.41 in January of 2000. This page includes a chart with historical data for the United States 10 Year TIPS Yield. United States 10 Year TIPS Yield - data, forecasts, historical chart - was last updated on September 16 of 2026. ### The United States 10 Year TIPS Yield is expected to trade at 2.44 percent by the end of this quarter, according to Trading Economics global macro models and analysts expectations. | US 4W | 3.85 |  | 0.005% | 0.152% | -0.230% | Sep/16 |. | US 10Y TIPS | 2.61 |  | -0.002% | 0.174% | 0.919% | Sep/16 |.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "US - 10Y Treasury vs. TIPS Bond Yields",
+          "url": "https://en.macromicro.me/collections/51/us-treasury-bond/84600/us-10-year-treasury-bond-and-inflation-bond-yields",
+          "snippet": "Latest Stats · 10-Year Treasury Yield. 2026-09-14. 4.98%. 4.95% · 10-Year TIPS Yield. 2026-09-10. 2.55%. 2.46% · BEI (10Y Treasury Yield Minus 10Y TIPS Yield).",
+          "sourceGrade": "B"
+        }
+      ]
+    }
+  ]
+}

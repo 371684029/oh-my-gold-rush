@@ -1,0 +1,198 @@
+{
+  "timestamp": "2026-09-23T02:00:19.661Z",
+  "date": "2026-09-23",
+  "queries": [
+    {
+      "query": "gold price XAUUSD spot today 2026",
+      "dataType": "xauusd",
+      "results": [
+        {
+          "title": "Gold prices today, Tuesday, September 1, 2026 - Yahoo Finance",
+          "url": "https://finance.yahoo.com/personal-finance/investing/article/gold-prices-today-tuesday-september-1-2026-gold-moves-lower-as-rate-hike-expectations-grow-120810063.html",
+          "snippet": "$4498.70 per troy ounce on Tuesday, September 1, 2026, The price of gold is down this morning at $4,432.20 per troy ounce as of 7:56 a.m. ET.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold prices today, Thursday, July 2, 2026 - Yahoo Finance",
+          "url": "https://finance.yahoo.com/personal-finance/investing/article/gold-prices-today-thursday-july-2-2026-prices-break-above-4100-following-a-disappointing-june-jobs-report-120224733.html",
+          "snippet": "Gold August futures opened at $4049.20 per troy ounce on Thursday, July 2, 2026, down 0.8% from Wednesday's closing price. The price of gold",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold price today, Wednesday, August 26, 2026 - Yahoo Finance",
+          "url": "https://finance.yahoo.com/personal-finance/investing/article/gold-price-today-wednesday-august-26-2026-gold-pulls-back-from-mornings-high-over-4700-120804724.html",
+          "snippet": "Gold pulled back from highs reached this morning to $4,674.60 per troy ounce as of 7:51 a.m. ET. Gold opened over $4,700 for the second day,",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "London gold spot price Kitco Investing.com 2026",
+      "dataType": "xauusd_alt",
+      "results": [
+        {
+          "title": "Gold prices today, Thursday, August 13, 2026: Gold up nearly 10% month-over-month ahead of PPI report",
+          "url": "https://finance.yahoo.com/personal-finance/investing/article/gold-prices-today-thursday-august-13-2026-gold-up-nearly-10-month-over-month-ahead-of-ppi-report-120512700.html",
+          "snippet": "August 13, 2026 - Gold (GC=F) December futures opened at $4,468.80 per troy ounce on Thursday, August 13, 2026, flat compared to Wednesday's closing price. The price of gold shifted down some this morning, trading at $4,441.10 as of 7:53 a.m. ET.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold prices today, Monday, July 13, 2026: Prices move lower following weekend airstrikes",
+          "url": "https://finance.yahoo.com/personal-finance/investing/article/gold-prices-today-monday-july-13-2026-prices-move-lower-following-weekend-airstrikes-123120098.html",
+          "snippet": "July 13, 2026 - The spot price is lower than what you'd pay to buy gold coins, bullion, or jewelry, since your total price will include a markup called the gold premium that covers refining, marketing, dealer overhead, and profits. The spot price is more like a wholesale price, and the spot price plus the gold premium is the retail price. Learn more: Thinking of buying gold? Here's what investors should watch for.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold prices today, Friday, July 31, 2026: Gold price finally breaks above $4,100 as U.S. paused airstrikes overnight",
+          "url": "https://finance.yahoo.com/personal-finance/investing/article/gold-prices-today-friday-july-31-2026-gold-price-finally-breaks-above-4100-as-us-paused-airstrikes-overnight-123436216.html",
+          "snippet": "July 31, 2026 - Gold futures opened at $4,102.40 per troy ounce on Friday, July 31, 2026, up 0.1% from Thursday's closing price. The gold price moved higher this morning to $4,112.90 at 8:22 a.m. ET.",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "COMEX gold futures close price today",
+      "dataType": "xauusd_alt2",
+      "results": [
+        {
+          "title": "COMEX Gold price information - FT.com - Markets data",
+          "url": "https://markets.ft.com/data/commodities/tearsheet/summary?c=COMEX+Gold",
+          "snippet": "* Today's Change-17.80 / -0.41%. Data delayed at least 15 minutes, as of Sep 21 2026 01:55 BST. | RBOB Gasoline As of Sep 21 2026 16:05 BST. | Natural Gas As of Sep 21 2026 16:05 BST. | Brent Crude Oil As of Sep 21 2026 16:05 BST. | Heating Oil As of Sep 21 2026 16:05 BST. Commodity | Last price/ contract | Today's change | 1-year trend | Low52-weekHigh || Copper As of Sep 21 2026 15:51 BST. | Platinum As of Sep 21 2026 16:05 BST. | Palladium As of Sep 21 2026 16:05 BST. | COMEX Gold As of Sep 21 2026 01:55 BST. Commodity | Last price/ contract | Today's change | 1-year trend | Low52-weekHigh || Orange Juice As of Sep 21 2026 16:02 BST. | Corn As of Sep 21 2026 16:05 BST. | Wheat As of Sep 21 2026 16:05 BST. | Soybeans As of Sep 21 2026 16:05 BST. | Cattle As of Sep 21 2026 16:05 BST.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "COMEX Live | COMEX Commodity | COMEX Futures",
+          "url": "https://comexlive.org",
+          "snippet": "| COMEX Palladium | 1,319.50 | +11.40 | +0.87% | 0.00 | 1,319.50 | 1,319.50 | 20-Sep 18:14 |. The Commodity Exchange (COMEX) is one of the world’s most influential commodities futures exchanges. Based in New York and now a division of the CME Group, COMEX serves as the global benchmark for precious metals and a vital hub for commodity derivatives trading. Gold, silver, copper, and aluminum futures on COMEX set international price standards and play a critical role in global trade, hedging, and investment strategies. By offering a transparent marketplace with deep liquidity, COMEX allows producers, consumers, and investors to manage risk while providing real-time price discovery for some of the world’s most important raw materials. In 1994, COMEX merged with the New York Mercantile Exchange",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Continuous Contract Futures Prices and News | GC00 - WSJ",
+          "url": "https://www.wsj.com/market-data/quotes/futures/GC00",
+          "snippet": "Gold Continuous Contract GC00 (U.S.: Nymex) · 7:16 PM EDT 09/22/26 · 4399.20 USD · 22.80 0.52%.",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "上海金 Au99.99 今日行情 2026",
+      "dataType": "shanghai_gold",
+      "results": [
+        {
+          "title": "au99.99今日价格 - 搜狗搜索",
+          "url": "https://www.sogou.com/web?user_ip=146.70.94.78&s_from=hint_up&bh=1&sessiontime=1773099483622&w=01020600&interation=&interV=kKIOkrELjbkRmLkElbkTkKIMkrELjboImLkEk74TkKIRmLkEk78TkKILkY%3D%3D_-115092183&htdbg=on&ie=utf8&hintidx=3&query=au99.99%E4%BB%8A%E6%97%A5%E4%BB%B7%E6%A0%BC",
+          "snippet": "Title: au99.99今日价格 - 搜狗搜索\n**相关推荐** au99.99%真黄金吗 au99.99实时价格 au99.99价格走势 au99.99黄金今日价格 au99.99最新价格 au99.99现货价格 黄金au99.99最新报价 au99.99中国黄金价格 au9999实时行情 七匹狼au999.9金砖烟 黄金au99.99价格明细 au99.99回收价格 黄金au99.99和au999.9区别 金砖au999.9多少钱一盒 七匹狼au999.9多少钱. ### 上海*黄金au99.99*-au99.99黄金*价格*走势图-上海黄金交易所-汇通网-Fx... ### *黄金*(*Au99.99*)交易*价格*趋势日报. 黄金(*Au99.99*)*价格*趋势 - 日报1. 昨日黄金*价格* 1049.11 元相比前1个交易日 1050.48 元 ↓降 1.37 元.相比前7个交易日 1048.35 元 ↑涨 0.76 元.相比前30个交易日 1150.42 元 ↓降 101.31 元.相比前90个交易日 949.32 元 ↑涨 92.61 元.相比前180个交易日 775.34 元 ↑涨 273.77 元.相比前365个交易... ### 上海黄金*价格* *9*月20*日*实物黄金*价格*(*AU99.99*)市场*行情*\\_黄金*行情*... ### *au*9999黄金现货实时*行情*及*今日价格*走势图【2026年】\\_金价查询网. ### *今日*金价上海黄金-*今日*头条. ### 2024年6月26*日*:全球黄金市场动态与品牌*价格*一览\\_显示\\_波动\\_投资. ### 上海黄金交易所延时*行情*. ### 邮储银行邮储金投资金条*价格**今天*多少一克（2026年05月01日）\\_金条... ### *Au99.99*大幅度上涨,每克上",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "au99.99今日价格 - 搜狗搜索",
+          "url": "https://www.sogou.com/web?user_ip=84.71.49.195&s_from=hint_up&bh=1&sessiontime=1773099483622&w=01020600&interation=&interV=kKIOkrELjbkRmLkElbkTkKIMkrELjboImLkEk74TkKIRmLkEk78TkKILkY%3D%3D_-115092183&htdbg=on&ie=utf8&hintidx=3&query=au99.99%E4%BB%8A%E6%97%A5%E4%BB%B7%E6%A0%BC",
+          "snippet": "Title: au99.99今日价格 - 搜狗搜索\n**相关推荐** au99.99%真黄金吗 au99.99实时价格 au99.99价格走势 上海黄金au99.99今日价格 au99.99价格查询 au99.99最新价格 au99.99现货价格 黄金au99.99最新报价 au99.99中国黄金价格 au9999实时行情 七匹狼au999.9金砖烟 黄金au99.99价格明细 au99.99回收价格 今日金价au9999 黄金au99.99和au999.9区别. ### 上海*黄金au99.99*-au99.99黄金*价格*走势图-上海黄金交易所-汇通网-Fx... ### *黄金*(*Au99.99*)交易*价格*趋势日报. 黄金(*Au99.99*)*价格*趋势 - 日报1. 昨日黄金*价格* 1049.11 元相比前1个交易日 1050.48 元 ↓降 1.37 元.相比前7个交易日 1048.35 元 ↑涨 0.76 元.相比前30个交易日 1150.42 元 ↓降 101.31 元.相比前90个交易日 949.32 元 ↑涨 92.61 元.相比前180个交易日 775.34 元 ↑涨 273.77 元.相比前365个交易... ### 上海黄金*价格* *9*月20*日*实物黄金*价格*(*AU99.99*)市场*行情*\\_黄金*行情*... ### *au*9999黄金现货实时*行情*及*今日价格*走势图【2026年】\\_金价查询网. ### *今日*金价上海黄金-*今日*头条. ### 2024年6月26*日*:全球黄金市场动态与品牌*价格*一览\\_显示\\_波动\\_投资. ### 邮储银行邮储金投资金条*价格**今天*多少一克（2026年05月01日）\\_金条... ### 上海黄金交易所延时*行情*. ### 金店遇冷！有店主说从业20年这个五一假期生意",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "au99.99今日价格 - 搜狗搜索",
+          "url": "https://www.sogou.com/web?user_ip=86&bh=1&hintidx=2&query=au99.99%E4%BB%8A%E6%97%A5%E4%BB%B7%E6%A0%BC&w=01020600&sessiontime=1773099483622&interation=&interV=kKIOkrELjbkRmLkElbkTkKIMkrELjboImLkEk74TkKIRmLkEk78TkKILkY%3D%3D_-115092183&htdbg=on&ie=utf8&s_from=hint_middle",
+          "snippet": "Title: au99.99今日价格 - 搜狗搜索\n**相关推荐** au99.99%真黄金吗 au99.99实时价格 au99.99价格走势 上海黄金au99.99今日价格 au99.99最新价格 au99.99现货价格 黄金au99.99最新报价 au99.99中国黄金价格 au9999实时行情 七匹狼au999.9金砖烟 黄金au99.99价格明细 au99.99回收价格 今日金价au9999 黄金au99.99和au999.9区别 金砖au999.9多少钱一盒. ### 上海*黄金au99.99*-au99.99黄金*价格*走势图-上海黄金交易所-汇通网-Fx... ### *黄金*(*Au99.99*)交易*价格*趋势日报. 黄金(*Au99.99*)*价格*趋势 - 日报1. 昨日黄金*价格* 1049.11 元相比前1个交易日 1050.48 元 ↓降 1.37 元.相比前7个交易日 1048.35 元 ↑涨 0.76 元.相比前30个交易日 1150.42 元 ↓降 101.31 元.相比前90个交易日 949.32 元 ↑涨 92.61 元.相比前180个交易日 775.34 元 ↑涨 273.77 元.相比前365个交易... ### 上海黄金*价格* *9*月20*日*实物黄金*价格*(*AU99.99*)市场*行情*\\_黄金*行情*... ### *au*9999黄金现货实时*行情*及*今日价格*走势图【2026年】\\_金价查询网. ### *今日*金价上海黄金-*今日*头条. ### 2024年6月26*日*:全球黄金市场动态与品牌*价格*一览\\_显示\\_波动\\_投资. ### 邮储银行邮储金投资金条*价格**今天*多少一克（2026年05月01日）\\_金条... ### 上海黄金交易所延时*行情*. ### 金店遇冷！有店主说从业20年这个五一假",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "上海黄金交易所 Au99.99 收盘价",
+      "dataType": "shanghai_gold_alt",
+      "results": [
+        {
+          "title": "news_Announcement_details",
+          "url": "https://en.sge.com.cn/eng_news_Announcement/10002446",
+          "snippet": "**International Members and Clients**|View All. **Shanghai Gold Benchmark Price**|View All. **List of members (International Board)**|View All. **List of members (main board)**|View All. **Members and Clients**|View All. What you need to know News of International Members & Clients. 1.From January 1, 2026, to December 31, 2026, the transaction fee rates for Au(T+D) and mAu(T+D) will be 0.015%, and for Ag(T+D) will be 0.012%. 3.From January 1, 2026, to December 31, 2026, transaction fees for Shanghai Gold and Shanghai Silver benchmark price contracts, Panda Gold Coin contracts and performance-guarantee price asking contracts will be exempted. 4.From January 1, 2026, to December 31, 2026, the transaction fee rate for main board price asking contracts via SGE platform and interbank gold price",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "shanghai gold exchange",
+          "url": "https://en.sge.com.cn/h5_data_PriceChart?pro_name=iLAu995",
+          "snippet": "## Price Chart. Copyright © 2016 Shanghai Gold Exchange All rights reserved.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "shanghai gold exchange",
+          "url": "https://en.sge.com.cn/h5_trading_ProductsIntroduce_physicaldetails?pro_id=943334364135858176",
+          "snippet": "| Minimum Price Fluctuation | 0.01 yuan/g |. | Daily Price Limit | 30% above or below the closing price of the previous trading day |. | Minimum Quotation Size | 1 lot |. | Trading Hours | Day Session: 9:00 -15:30; Night Session: 20:00 -02:30 |. | Settlement Method | Delivery-versus-payment |. | Deliverable Bullions | 1kg gold ingot; Fineness no less than 99.99% |. | Time of Delivery | T+0 |. | Quality Standards | Standard physical bullions produced by SGE certified gold producers and meet SGEB1-2002 quality standards, or produced by qualified producers certified by London Bullion Market Association (LBMA). | Delivery Location | SGE certified vaults |. | Transaction Fee | 0.035% of Settlement Amount |. | Listing Date | October 30th, 2002 |. Copyright © 2016 Shanghai Gold Exchange All right",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "黄金ETF 518880 最新净值 涨跌幅",
+      "dataType": "etf_nav",
+      "results": [
+        {
+          "title": "华安易富黄金(518880)ETF净值查询,今天ETF行情,最新走势分析_英为财情",
+          "url": "https://cn.investing.com/etfs/huaan-yi-fu-gold",
+          "snippet": "| 名称 | 年初至今 | 3个月 | 1年 | 3年 | 5年 | 10年 |. | 基数为1000的增长 | 983 | 975 | 1,223 | 2,035 | 2,479 | 3,234 |. | 基金回报 | -1.74% | -2.49% | +22.27% | +26.73% | +19.91% | +12.46% |. |  | 名称 | 代码 | 权重 | 价格 | 涨跌幅 | 股份 |. | 亨通光电 | 68.64 | +4.95% | 1.76亿 |  |. | 京东方Ａ | 5.67 | +4.04% | 17.52亿 |  |. | 光迅科技 | 190.78 | +3.01% | 4,623.83万 |  |. | 天孚通信 | 277.08 | +3.20% | 3,164.48万 |  |. | \"ShenGu Co.\" | 13.06 | +197.49% | 1.31亿 |  |. | 近岸蛋白 | 100.04 | +19.10% | 934.96万 |  |. | 华宝股份 | 26.73 | +18.07% | 1,938.83万 |  |. | 华谊兄弟 | 1.80 | -9.55% | 1.59亿 |  |. | 中新赛克 | 23.31 | -8.98% | 2,177.64万 |  |. | 威尔高 | 74.83 | -8.50% | 1,793.20万 |  |.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "黄金ETF华安(SH518880)股票股价",
+          "url": "https://xueqiu.com/S/SH518880",
+          "snippet": "# 黄金ETF华安(SH:518880). 09-22 15:30:00 北京时间. | 最高：8.941 | 今开：8.937 | 涨停：9.823 | 成交量：584.35万手 |. | 最低：8.854 | 昨收：8.930 | 跌停：8.037 | 成交额：51.96亿 |. | 换手：-- | 市价：8.859 | 单位净值：8.864 | 基金份额：120.75亿 |. | 振幅：0.97% | 溢价率：-0.02% | 累计净值：3.347 | 资产净值：1069.75亿 |. | 成立日：2013-07-17 | 净值日期：2026-09-21 | 到期日：-- | 货币单位：CNY |. ### **专栏** 黄金，顽强抵抗. 美联储加息预期，因为多位美联储官员的鹰派言论，出现了明显上涨。不过，又因为原油的大跌，加息预期又被压下来不少。. $黄金ETF华安(SH518880)$放了一点量，收阴线。 MACD下跌趋势进一步缩小，今天算是倒车接人了，止损就放在8.774之下。. 以大约283元/克的价格卖出11.3kg的au9999，价值320万元。然后下一周au就开启了长达7年的上涨行情，最高达到1256元/克。卖出的那周就是起涨点。. ### **专栏** 黄金，美联储施压. 古尔斯比说通胀不全是能源和关税，需求也在推，加息是\"唯一出路\"；穆萨莱姆说当前利率还在\"宽松一侧\"，得尽早渐进地加。. 纳指里面很多头部科技公司，持续大额回购股票，同时逐年提升分红，企业盈利实实在在增长，这也是这一轮纳指走强非常扎实的根基。依托AI产业爆发预期，短期爆发力... 上上下下，今天红利现金流集体反弹，本周赚钱效应好于上周，不过看到个数据，除了货币基金，所有类型的基金都在净赎回，这看起来真是——人心散了，队伍不好带了。. 修改于09-20 23:12· 来自雪球. 传统金油",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "华安黄金ETF(518880)历史公告信息- 基金 - 行情中心- 新浪",
+          "url": "http://stock.finance.sina.com.cn/fundInfo/view/FundInfo_LSGG.php?symbol=518880",
+          "snippet": "# ƽETF. | λֵ:8.9222 | ֵ:-0.95% | ֵ:-0.95% | ۼƾֵ:3.3691 | ֹ:2026/9/21 |. | ¹ģ:918.68Ԫ | յȼ: | 깺״̬:깺 | ״̬: |  |  |. | ͶC\") | 1.8112 | 0.88% |. | ʵϺ | 1.9285 | -0.87% |. ### ͬϵ. | ƽETF(518880)ʷϢ |. | ڲ֤ͨȯɷ޹˾ֹΪ׸ƽͿʽ֤ȯͶʻ... | ڹ̩֤ͨȯɷ޹˾Ϊ׸ƽͿʽ֤ȯͶʻ... | ڹ֤ȯɷ޹˾Ϊ׸ƽͿʽ֤ȯͶʻṩ... | ޹˾²ֻ2026ڱʾԹ | ڱʾ | 2026/8/31 |. | ļƷյȼ¼(2026.08.05)\") | յȼ | 2026/8/5 |. | ޹˾²ֻ20262ȱʾԹ | 𼾶ȱʾ | 2026/7/21 |. | ׸ƽͿʽ֤ȯͶʻ20262ȱ | Ͷ | 2026/7/21 |. | ޹˾²ֻӽڽ֤ȯɷ޹˾Ϊһ... | ޹˾²ֻӹʢ֤ȯɷ޹˾Ϊһ... | ƷյȼֹͶ߷ճ˵ | յȼ | 2026/6/4 |. | ŽͶ֤ȯɷ޹˾Ϊ׸ƽͿʽ֤ȯͶʻ... | ׸ƽͿʽ֤ȯͶʻ2025ȱ | ȱ | 2026/3/31 |. | ׸ƽͿʽ֤ȯͶʻƷϸҪ | ƷϸҪ | 2026/3/17 |. *272*¼ һҳ;) ҳΣ*1*/*14* תҳ. \\*ע˲ƾѣɺṩοʽΪ׼.  ΥͲϢٱ ˲ƾ԰. ˼ | About Sina |  | ϵ | ƸϢ | վʦ | SINA English | ֤ͨע | Ʒ. ˲ƾṩƱծȯԼϾغΪûȡϢ֮ĿģͶʽ顣. ˲ƾԼΪҳṩϢĴ󡢲ȱӳٻϢȡκжгзգͶ. ### ½.",
+          "sourceGrade": "A"
+        }
+      ]
+    },
+    {
+      "query": "US dollar index DXY today",
+      "dataType": "dxy",
+      "results": [
+        {
+          "title": "Current DXY Value Today | US Dollar Index | AhaSignals",
+          "url": "https://ahasignals.com/current-dxy-value",
+          "snippet": "Title: Current DXY Value Today | US Dollar Index | AhaSignals\n## AhaSignals Weekly. Weekly research on market divergence, prediction markets, and cross-asset fragility. # Current DXY Value Today — US Dollar Index. The US Dollar Index (DXY) is at 98.23 as of April 17, 2026. The index is up 2.1% year-to-date, trading within a 52-week range of 95.55–101.98. Wall Street consensus implies DXY at ~99 by Q4 2026. Last updated: Apr 17, 2026. ## What's Driving the Current Value. Markets price in Fed rate cuts ahead of ECB, compressing the US-EU yield differential and weighing on USD. Rising US debt-to-GDP and Treasury supply concerns are a primary driver of the 2025–2026 dollar decline. Ongoing geopolitical tensions provide some floor for USD as reserve currency demand persists. Long-run trend: gra",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "dollar index DXY today at DuckDuckGo",
+          "url": "https://html.duckduckgo.com/html?q=dollar+index+DXY+today",
+          "snippet": "Title: dollar index DXY today at DuckDuckGo\n## DXY | U.S. Dollar Index (DXY) Overview | MarketWatch. www.marketwatch.com/investing/index/dxy      2026-08-26T00:00:00.0000000. **DXY** | A complete U.S. **Dollar** **Index** (**DXY**) **index** overview by MarketWatch. View stock market news, stock market data and trading information. ## DXY — U.S. Dollar Index Chart — TradingView. www.tradingview.com/symbols/TVC-DXY/. **Dollar** **Index** chart to track latest **index** dynamics. TVC:DXY ideas, forecasts and market news are at your disposal as well. ## US Dollar Index (DXY) - Investing.com. www.investing.com/indices/usdollar      2026-08-26T00:00:00.0000000. Get detailed information on the US **Dollar** **Index** including charts, technical analysis, components and more. ## US Dollar Index (",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "US Dollar Index (DXY) Today",
+          "url": "https://www.dealplexus.com/markets/usd-index-dxy",
+          "snippet": "# US Dollar Index (DXY). The US Dollar Index (DXY) measures the value of the US dollar relative to a basket of six major foreign currencies: Euro (57.6% weight), Japanese Yen (13.6%), British Pound (11.9%), Canadian Dollar (9.1%), Swedish Krona (4.2%), and Swiss Franc (3.6%). The DXY is critical for emerging markets like India because a strengthening dollar (rising DXY) typically leads to capital outflows from emerging markets, commodity price declines (as most commodities are USD-denominated), and currency depreciation. Traders watch the DXY as a barometer of global risk appetite and USD strength. If you had invested in US Dollar Index (DXY):. Average monthly returns for US Dollar Index (DXY)based on available history. ## US Dollar Index (DXY)— Summary Data. Key facts and insights for inv",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "US 10 year treasury yield TIPS real yield today",
+      "dataType": "us10y",
+      "results": [
+        {
+          "title": "U.S. 10 Year Treasury Note Price & News - WSJ | TMUBMUSD10Y",
+          "url": "https://www.wsj.com/market-data/quotes/bond/BX/TMUBMUSD10Y",
+          "snippet": "Yield 4.970% 0.014 Price 97 3/32 26 Government Bond Yields Finish Near Multiyear Highs Amid Rate-Rise. Real-time U.S. stock quotes reflect trades reported",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "CBOE Interest Rate 10 Year T No (^TNX) - Yahoo Finance",
+          "url": "https://finance.yahoo.com/quote/%5ETNX",
+          "snippet": "10-year Treasury yield briefly tops 5% for the first time since 2023. Yahoo Finance • 8d ago",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "See the 10-Year Treasury Yield's Wild Ride on the Road to ...",
+          "url": "https://www.wsj.com/finance/investing/see-the-10-year-treasury-yields-wild-ride-on-the-road-to-5-22e4bbc2",
+          "snippet": "The bond market has caught one bad break after another over the past several years, and it finally pushed the 10-year Treasury yield to a 19-year high above 5% this past week. First the pandemic and then war have restricted the supply of goods, pushing inflation higher. At the same time, government deficits have flooded the market with bonds and fueled consumer spending. Copyright ©2026 Dow Jones & Company, Inc. All Rights Reserved.",
+          "sourceGrade": "B"
+        }
+      ]
+    }
+  ]
+}

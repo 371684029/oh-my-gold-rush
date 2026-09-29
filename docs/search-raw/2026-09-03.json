@@ -1,0 +1,179 @@
+{
+  "timestamp": "2026-09-03T02:00:20.283Z",
+  "date": "2026-09-03",
+  "queries": [
+    {
+      "query": "gold price XAUUSD spot today 2026",
+      "dataType": "xauusd",
+      "results": [
+        {
+          "title": "Gold (XAU) Spot Rate",
+          "url": "https://www.bloomberg.com/quote/XAU:CUR",
+          "snippet": "# Bloomberg. Contact us](https://www.bloomberg.com/feedback). ## We've detected unusual activity from your computer network. To continue, please click the box below to let us know you're not a robot. ### Why did this happen? Please make sure your browser supports JavaScript and cookies and that you are not blocking them from loading. For more information you can review our [Terms of Service](https://www.bloomberg.com/notices/tos) and [Cookie Policy](https://www.bloomberg.com/notices/tos). ### Need Help? For inquiries related to this message please [contact our support team](https://www.bloomberg.com/feedback) and provide the reference ID below. Block reference ID:83903d57-a62f-11f1-9456-0163f2d57d28. Get the most important global markets news at your fingertips with a [Bloomberg.com](https",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "XAU to USD Exchange Rate - Bloomberg",
+          "url": "https://www.bloomberg.com/quote/XAUUSD:CUR",
+          "snippet": "Current exchange rate Gold (XAU) to US DOLLAR (USD) 4,381.5800 0.10–0.00% As of 5:00 PM EDT 09/02/26 .",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Price, News, Quote & History",
+          "url": "https://finance.yahoo.com/quote/GC=F",
+          "snippet": "Skip to navigation  Skip to right column. # Yahoo Finance. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 2. 50/30/20 Budget Calculator. 6. Asking for a Trend. # Gold Dec 26 (GC=F). As of 9:26:43 PM EDT. Loading chart for GC=F. * Settlement Date  2026-12-29. * Last Price  4,414.60. * Day's Range  4,426.70 - 4,454.70. ### Recent News.",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "London gold spot price Kitco Investing.com 2026",
+      "dataType": "xauusd_alt",
+      "results": [
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Price, News, Quote & History",
+          "url": "https://finance.yahoo.com/quote/GC%3DF",
+          "snippet": "Skip to navigation  Skip to right column. # Yahoo Finance. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 2. 50/30/20 Budget Calculator. 6. Asking for a Trend. # Gold Dec 26 (GC=F). As of 2:46:52 AM EDT. Loading chart for GC=F. * Settlement Date  2026-12-29. * Last Price  4,529.90. * Day's Range  4,445.60 - 4,521.50. ## Recent News.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold prices today, Monday, July 20, 2026 - Yahoo Finance",
+          "url": "https://finance.yahoo.com/personal-finance/investing/article/gold-prices-today-monday-july-20-2026-gold-holds-above-4000-despite-continued-violence-in-the-middle-east-152926843.html",
+          "snippet": "# Yahoo Finance. 2. Best High-Yield Savings Accounts. 3. Best Money Market Accounts. 4. Best Free Checking Accounts. 3. Balance Transfer Credit Cards. 4. 0% APR Credit Cards. 4. Best Places for Loans. 6. Paying off Student Loans. 2. Types of Car Insurance. 2. 50/30/20 Budget Calculator. Some offers on this page are from advertisers who pay us, which may affect which products we write about, but not our recommendations. # Gold prices today, Monday, July 20, 2026: Gold holds above $4,000 despite continued violence in the Middle East. Gold (GC=F) August futures opened at **$4,005.60** per troy ounce on **Monday, July 20, 2026**, down 0.3% from Friday's closing price. As of 8:15 a.m. ET, the price of gold was up to $4,016.10.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "LBMA PM Gold Price Set $15 Below Spot Market",
+          "url": "https://www.forbes.com/sites/kitconews/2017/04/12/lbma-pm-gold-price-set-15-below-spot-market",
+          "snippet": "# LBMA PM Gold Price Set $15 Below Spot Market. **(Kitco News) -** Gold buyers, settling contracts using the London Bullion Market Association PM Gold Price, got a great deal Tuesday as the benchmark ended up being set almost $15 dollars below where spot prices were trading at the time. In a statement to Kitco News, the LBMA said that it is currently reviewing what happened during the PM auction. The large discrepancy between spot and the benchmark once again put the market’s transparency in the spotlight; however, Jeff Christian, managing director at CPM Group, a leading commodity research firm, said that he doesn’t see it as nefarious manipulation but the effects of poorly conceived regulations and a faulty price discovery mechanism. He said that the problem is that the auction process s",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "COMEX gold futures close price today",
+      "dataType": "xauusd_alt2",
+      "results": [
+        {
+          "title": "Gold Continuous Contract Futures Prices and News | GC00 - WSJ",
+          "url": "https://www.wsj.com/market-data/quotes/futures/GC00",
+          "snippet": "Gold Continuous Contract prices today. EDT 09/02/26 $4429.80 USD 15.20. Front Month 4385.80 37.80 4328.00. Futures 6:57 PM ET 09/02/26 … are delayed at least",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Dec 26 (GC=F) Stock Price, News, Quote & History",
+          "url": "https://finance.yahoo.com/quote/GC%3DF",
+          "snippet": "Skip to navigation  Skip to right column. # Yahoo Finance. 3. Most active penny stocks. 2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 2. Types of car insurance. 2. Tax brackets and rates. 3. How to get approved. 2. 50/30/20 Budget Calculator. 6. Asking for a Trend. # Gold Dec 26 (GC=F). As of 2:46:52 AM EDT. Loading chart for GC=F. * Settlement Date  2026-12-29. * Last Price  4,529.90. * Day's Range  4,445.60 - 4,521.50. ## Recent News.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "Gold Dec 26 (GC=F) - Yahoo Finance",
+          "url": "https://finance.yahoo.com/quote/GC%3DF/history",
+          "snippet": "2. Best 0% APR cards. 3. Best balance transfer cards. 2. Best high-yield savings accounts. 3. Best money market accounts. 4. Best free checking accounts. 3. How to get approved. 2. 50/30/20 Budget Calculator. | Date | Open | High | Low | Close  Close price adjusted for splits. | Adj Close  Adjusted close price adjusted for splits and dividend and/or capital gain distributions. | Jul 31, 2026 | 4,102.40 | 4,102.40 | 4,022.40 | 4,049.10 | 4,049.10 | 1,166 |.",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "上海金 Au99.99 今日行情 2026",
+      "dataType": "shanghai_gold",
+      "results": [
+        {
+          "title": "上海黄金au99.99今日价格 - 搜狗搜索",
+          "url": "https://www.sogou.com/web?query=%E4%B8%8A%E6%B5%B7%E9%BB%84%E9%87%91au99.99%E4%BB%8A%E6%97%A5%E4%BB%B7%E6%A0%BC&s_from=pc_wendaka&sessiontime=1773099483622",
+          "snippet": "IP：103.217.219.254. 访问时间：2026.09.03 00:07:53.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "黄金Au99.99专区_黄金Au99.99行情价格_最新黄金Au99.99相关行情价格-91金属",
+          "url": "https://hq.91jinshu.com/topic/%E9%BB%84%E9%87%91Au99.99",
+          "snippet": "Title: 黄金Au99.99专区_黄金Au99.99行情价格_最新黄金Au99.99相关行情价格-91金属\n黄金  上海黄金交易所黄金原料99.99今天多少一克（2025年10月24日）金条产品名称产品价格价格单位上海黄金交易所Au99.99941.5元/克. 黄金  上海黄金交易所黄金原料99.99今天多少一克（2025年10月22日）金条产品名称产品价格价格单位上海黄金交易所Au99.99940.5元/克. 黄金  上海黄金交易所黄金板料Au99.99今天多少一克（2025年9月30日）金条产品名称产品价格最高-最低上海黄金交易所Au99.99871.0元/克869-873. 黄金  91金属网黄金Au99.99金锭报价（2025年7月1日）金锭产品名称产品价格价格单位金锭Au9999（1千克）、上海外滩金库772.5元/克. 91金属欢迎和行业媒体、协会、企业、研究机构、展会等商务合作等。. 客服电话：021-60820701、15000687998（微信号）. COPYRIGHT © 91金属网 版权所有 沪B2-20210258 沪ICP备09016038号-9.",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "au99.99今日价格 - 搜狗搜索",
+          "url": "https://www.sogou.com/web?user_ip=81.104.129.21&s_from=hint_up&bh=1&hintidx=1&query=au99.99%E4%BB%8A%E6%97%A5%E4%BB%B7%E6%A0%BC&sessiontime=1773099483622&w=01020600&interation=&interV=kKIOkrELjbkRmLkElbkTkKIMkrELjboImLkEk74TkKIRmLkEk78TkKILkY%3D%3D_-115092183&htdbg=on",
+          "snippet": "**相关推荐**au99.99%真黄金吗au99.99今日价格查询au99.99实时价格上海黄金au99.99今日价格au99.99价格走势au99.99最新价格au99.99中国黄金价格au99.99现货价格金砖au999.9au99.99与au9999区别七匹狼au999.9黄金au99.99价格明细au99.99回收价格au99.99和au999.9哪个好黄金au99.99价格. ### 黄金 _价格_ 下跌14元/克！_今日_ 黄金 _价格_ _行情_（2025/05/12 11:20）|黄金... 黄金 _价格_ 下跌14元/克！_今日_ 黄金 _价格_ _行情_（2025/05/12 11:20） （转自：_今日_ 金价 _行情_） ”呗~ 种类 人民币 国际 黄金 _Au_ 销售 770.51 3279.66 回购 769.... Image 4新浪财经 https://finance.sina.com.cn/r...2025-05-12. au99.99今日价格查询au99.99实时价格上海黄金au99.99今日价格au99.99中国黄金价格au99.99黄金价格走势au99.99最新价格au99.99现货价格黄金au99.99价格明细au99.99黄金回收价格金砖au999.9. 上海黄金交易所延时数据显示,_Au99.99_ 合约 _今日_ 开盘价为550.1元/克,最高触及551.0元/克,最低点为545.0元/克,最终收盘于546.19元/克。这一 _价格_ 变动反映了国内投资者对黄金的买卖情况。 各大品牌黄金 _价格_ 同步调... Image 6: cite搜狐网 https://www.sohu.com/a...2024-06-26. _Au99.99_ _价格_ 涨至历史最高点。当日，开盘价为567.01元/克，收盘价为558.68元/克，最",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "上海黄金交易所 Au99.99 收盘价",
+      "dataType": "shanghai_gold_alt",
+      "results": [
+        {
+          "title": "黄金ETF-上海黄金交易所",
+          "url": "https://sge.com.cn/cpfw/hjetf",
+          "snippet": "交易所介绍 公告 品牌中心 大事记 博士后工作站 国际交流与合作 人才招聘 联系我们. 聚焦二十大 交易所新闻 媒体报道 战疫情 稳运行. 竞价 询价 定价 租借 清算与结算 交割 国际板 黄金ETF. 延时行情 行情走势 历史行情数据 上海金基准价 上海银基准价 行情周报 行情月报 黄金ETF专栏 行情产品服务 询价市场价格基准 黄金租借参考费率 现金交割专栏 黄金资管统计数据 票据查验. 会员名录与查询 下载专区 发票EMS查询 水平考试成绩查询 从业人员信息查询 从业人员培训 会员之窗. 黄金大讲堂 市场合作与推广 工作研究 风险教育提示 投教园地 上金所年报 社会责任报告 PFMI. 黄金市场相关政策 业务规则 竞价 询价 清算与结算 交割 定价 反洗钱专栏. **现货实盘合约  **现货即期合约  **现货延期交收合约  **现金交割延期合约  **产品参数表  **机构名单* 询价. ## 黄金ETF. 黄金ETF基金（ExchangeTradedFund）是指将绝大部分基金财产投资于上海黄金交易所挂盘交易的黄金品种，紧密跟踪黄金价格，使用黄金品种组合或基金合同约定的方式进行申购赎回，并在证券交易所上市交易的开放式基金。目前，我国主要有两类黄金ETF产品，一类跟踪上海黄金交易所Au99.99现货实盘合约价格，另一类跟踪上海黄金交易所上海金集中定价合约（合约代码：SHAU）价格。. ## 管理办法及收费标准. | 申购/赎回登记结算费 | 30万/年 | 基金管理人 |. ## 会员超级用户权限申请. ## 二级系统接口权限申请. | 1 | 华安易富黄金交易型开放式证券投资基金 | 518880 | Au99.99 合约收盘价 |. | 2 | 国泰黄金交易型开放式证券投资基金 | 518800 | Au99.99 合约收盘价 |. | 6 | 工银",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "黄金ETF-上海黄金交易所",
+          "url": "http://www.sge.com.cn/cpfw/hjetf",
+          "snippet": "交易所介绍 公告 品牌中心 大事记 博士后工作站 国际交流与合作 人才招聘 联系我们. 聚焦二十大 交易所新闻 媒体报道 战疫情 稳运行. 竞价 询价 定价 租借 清算与结算 交割 国际板 黄金ETF. 延时行情 行情走势 历史行情数据 上海金基准价 上海银基准价 行情周报 行情月报 黄金ETF专栏 行情产品服务 询价市场价格基准 黄金租借参考费率 现金交割专栏 黄金资管统计数据 票据查验. 会员名录与查询 下载专区 发票EMS查询 水平考试成绩查询 从业人员信息查询 从业人员培训 会员之窗. 黄金大讲堂 市场合作与推广 工作研究 风险教育提示 投教园地 上金所年报 社会责任报告 PFMI. 黄金市场相关政策 业务规则 竞价 询价 清算与结算 交割 定价 反洗钱专栏. **现货实盘合约  **现货即期合约  **现货延期交收合约  **现金交割延期合约  **产品参数表  **机构名单* 询价. ## 黄金ETF. 黄金ETF基金（ExchangeTradedFund）是指将绝大部分基金财产投资于上海黄金交易所挂盘交易的黄金品种，紧密跟踪黄金价格，使用黄金品种组合或基金合同约定的方式进行申购赎回，并在证券交易所上市交易的开放式基金。目前，我国主要有两类黄金ETF产品，一类跟踪上海黄金交易所Au99.99现货实盘合约价格，另一类跟踪上海黄金交易所上海金集中定价合约（合约代码：SHAU）价格。. ## 管理办法及收费标准. | 申购/赎回登记结算费 | 30万/年 | 基金管理人 |. ## 会员超级用户权限申请. ## 二级系统接口权限申请. | 1 | 华安易富黄金交易型开放式证券投资基金 | 518880 | Au99.99 合约收盘价 |. | 2 | 国泰黄金交易型开放式证券投资基金 | 518800 | Au99.99 合约收盘价 |. | 6 | 工银",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "上海黄金交易所au99.99 - 搜狗搜索",
+          "url": "https://www.sogou.com/web?user_ip=86.43.222.13&s_from=hint_last&bh=1&hintidx=7&query=%E4%B8%8A%E6%B5%B7%E9%BB%84%E9%87%91%E4%BA%A4%E6%98%93%E6%89%80au99.99&sessiontime=1773099483622&w=01020600&interation=&interV=kKIOkrELjbkRmLkElbkTkKIMkrELjboImLkEk74TkKIRmLkEk78TkKILkY%3D%3D_-115092183&htdbg=on&ie=utf8",
+          "snippet": "相关搜索 99.99%黄金今日价格  上海交易所官网入口  黄金交易所au99.99  上海黄金au99.99  上海黄金交易所实时银价  上海金交所今日价目表  黄金au99.99和au999.9哪个好  上海黄金交易所au9999价格  黄金au999.9和au99.99  上海黄金交易所app下载官方  黄金au99.99与au999.9的区别  黄金au99.99和au9999的区别  黄金au99.99和au999.9  上海黄金交易所au9999  上海黄金交易中心实时金价. ## *上海黄金交易所au99.99* - 精选视频. ### 大家还在搜. ## 工商银行:停办代理*上海黄金交易所Au99.99*、Au100g等合约个人贵金属竞价交易业务. ## 多维关注. ### AU99.99黄金的定义与特性. ### AU99.99黄金与其他黄金的区别. ### AU99.99黄金的投资与回收. ### AU99.99黄金的市场行情. ### 今日*上海黄金交易所黄金*最新价格行情表 - CBC金属网. ## *上金所*金价周报|*Au99.99*最高冲上1012元/克后回落,单周微涨1.21%! ### 历史首次!*上海金交所Au99.99*(一号金)突破500元!|期货|购... ### 延时行情 - *上海黄金交易所*. ### *上海黄金交易所* *Au99.99* 合约参数表 - 希财网. ### *上海黄金交易所*国际版是什么 - 今日头条. ### 金价飙升!*上海黄金交易所AU99.99*创历史新高,背后的原因是什么? ### *上海黄金交易所AU*99是什么? ### 相关搜索.",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "黄金ETF 518880 最新净值 涨跌幅",
+      "dataType": "etf_nav",
+      "results": []
+    },
+    {
+      "query": "US dollar index DXY today",
+      "dataType": "dxy",
+      "results": [
+        {
+          "title": "US Dollar Index (DX-Y.NYB) Charts, Data & News",
+          "url": "https://finance.yahoo.com/quote/DX-Y.NYB",
+          "snippet": "[News • 2 days ago The manual transmission is back — but only for the supercar](https://finance.yahoo.com/markets/article/the-manual-transmission-is-back--but-only-for-the-supercar-123046098.html?.tsrc=fin-notif). [News • 3 days ago The Dow, S&P 500, and Nasdaq ended the week on a down note as rate-hike bets jumped after Warsh's speech](https://finance.yahoo.com/markets/live/stock-market-today-friday-august-28-dow-sp-500-nasdaq-dip-fed-warsh-jackson-hole-speech-081514091.html?.tsrc=fin-notif). [News • 3 days ago The Dow, S&P 500, Nasdaq are mixed and mostly flat as the focus turns to Kevin Warsh's 10 AM ET Jackson Hole speech.](https://finance.yahoo.com/markets/live/stock-market-today-friday-august-28-dow-sp-500-nasdaq-fed-warsh-jackson-hole-081514091.html?.tsrc=fin-notif). [News • 4 days ",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "DOLLAR INDEX SPOT (DXY) Spot Rate - Bloomberg.com",
+          "url": "https://www.bloomberg.com/quote/DXY:CUR",
+          "snippet": "Updated spot exchange rate of DOLLAR INDEX SPOT (DXY) against the US dollar index. Close 99.6770 USD 99.6060 USD 15:10 22:30 1:17 4:03 6:50 9:36 99.5950 USD",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "U.S. Dollar Index (DXY) Price & News",
+          "url": "https://www.wsj.com/market-data/quotes/index/DXY/historical-prices",
+          "snippet": "**Stocks:** Real-time U.S. stock quotes reflect trades reported through Nasdaq only; comprehensive quotes and volume reflect trading in all markets and are delayed at least 15 minutes. **Indexes:** Index quotes may be real-time or delayed as per exchange requirements; refer to time stamps for information on any delays. **Markets Diary:** Data on U.S. Overview page represent trading in all U.S. markets and updates until 8 p.m. See Closing Diaries table for 4 p.m. closing data. Change value during the period between open outcry settle and the commencement of the next day's trading is calculated as the difference between the last trade and the prior day's settle. FactSet (a) does not make any express or implied warranties of any kind regarding the data, including, without limitation, any warr",
+          "sourceGrade": "B"
+        }
+      ]
+    },
+    {
+      "query": "US 10 year treasury yield TIPS real yield today",
+      "dataType": "us10y",
+      "results": [
+        {
+          "title": "US 10-Year Treasury Yield Today | DealPlexus",
+          "url": "https://www.dealplexus.com/markets/us-10-year-treasury-yield",
+          "snippet": "# US 10-Year Treasury Yield. The US 10-Year Treasury yield is arguably the most important interest rate in global finance. It represents the yield on US government debt with a 10-year maturity and serves as the global benchmark risk-free rate, influencing everything from mortgage rates to corporate bond pricing to emerging market capital flows. For Indian markets, the US 10Y yield is critical because rising US yields attract capital away from emerging markets (including India), weaken the rupee, and pressure FPI flows. The spread between US and India 10Y yields is closely watched by foreign investors making asset allocation decisions. If you had invested in US 10-Year Treasury Yield:. Changes cascade to home loan EMIs, FD rates, and bond yields within weeks of the policy announcement. Rate",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "10-year TIPS reopening auction gets real yield of 1.734% to weak demand | Treasury Inflation-Protected Securities",
+          "url": "https://tipswatch.com/2025/09/18/10-year-tips-reopening-auction-gets-real-yield-of-1-734-to-weak-demand?replytocom=41370",
+          "snippet": "Title: 10-year TIPS reopening auction gets real yield of 1.734% to weak demand | Treasury Inflation-Protected Securities\n## 10-year TIPS reopening auction gets real yield of 1.734% to weak demand. One day after the Federal Reserve acted to lower short-term interest rates, the Treasury’s offering of $19 billion in a reopened 10-year Treasury Inflation-Protected Security — CUSIP 91282CNS6 — drew surprisingly weak demand from investors. The auctioned real yield to maturity for this 9-year, 10-month TIPS ended up at 1.734%, well above the “when-issued” market prediction of 1.684%. This TIPS had been trading on the secondary market with a real yield of 1.69% just before the auction’s close. So the auction goes down as a flop for the Treasury, but a good deal for investors, drawing a real yield ",
+          "sourceGrade": "B"
+        },
+        {
+          "title": "10-year TIPS reopening auction gets real yield of 1.734% to weak demand | Treasury Inflation-Protected Securities",
+          "url": "https://tipswatch.com/2025/09/18/10-year-tips-reopening-auction-gets-real-yield-of-1-734-to-weak-demand?replytocom=41365",
+          "snippet": "Title: 10-year TIPS reopening auction gets real yield of 1.734% to weak demand | Treasury Inflation-Protected Securities\n## 10-year TIPS reopening auction gets real yield of 1.734% to weak demand. One day after the Federal Reserve acted to lower short-term interest rates, the Treasury’s offering of $19 billion in a reopened 10-year Treasury Inflation-Protected Security — CUSIP 91282CNS6 — drew surprisingly weak demand from investors. The auctioned real yield to maturity for this 9-year, 10-month TIPS ended up at 1.734%, well above the “when-issued” market prediction of 1.684%. This TIPS had been trading on the secondary market with a real yield of 1.69% just before the auction’s close. So the auction goes down as a flop for the Treasury, but a good deal for investors, drawing a real yield ",
+          "sourceGrade": "B"
+        }
+      ]
+    }
+  ]
+}
