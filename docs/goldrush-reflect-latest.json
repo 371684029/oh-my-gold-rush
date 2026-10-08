@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-09-27T02:01:26.415Z",
+  "generatedAt": "2026-10-04T02:05:55.735Z",
   "period": {
     "days": 14,
-    "from": "2026-09-14",
-    "to": "2026-09-21"
+    "from": "2026-09-21",
+    "to": "2026-10-04"
   },
   "totals": {
-    "eligible": 8,
-    "hits": 0,
+    "eligible": 6,
+    "hits": 1,
     "misses": 0,
-    "flats": 8,
-    "pending": 0,
-    "hitRate": null
+    "flats": 2,
+    "pending": 3,
+    "hitRate": 100
   },
   "reasonCounts": {},
   "cases": [],
@@ -22,6 +22,6 @@
     "周末只更新阅读清单，不自动改 DEFAULT_WEIGHTS；权重变更需人工确认 + calibrate --ic。"
   ],
   "recurringThemes": [],
-  "headline": "近 14 日 8 个交易日，方向样本不足",
-  "summary": "近 14 日 8 个交易日，方向样本不足 本窗无方向打脸样本：保持定投纪律，仍以可信度与仓位%为准，勿因短期命中加杠杆。"
+  "headline": "近 14 日方向命中 100%（1/1）· 打脸 0 次",
+  "summary": "近 14 日方向命中 100%（1/1）· 打脸 0 次 本窗无方向打脸样本：保持定投纪律，仍以可信度与仓位%为准，勿因短期命中加杠杆。"
 }
