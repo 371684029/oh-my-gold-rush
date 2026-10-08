@@ -1,49 +1,49 @@
 {
   "schemaVersion": 1,
   "date": "2026-10-08",
-  "generatedAt": "2026-10-08T02:07:55.684Z",
-  "score": 51,
+  "generatedAt": "2026-10-08T07:19:27.280Z",
+  "score": 47,
   "direction": "neutral",
   "scoreLow": null,
   "scoreHigh": null,
-  "quantScore": 57,
+  "quantScore": 53,
   "quantCoverage": 1,
   "midTermScore": 49,
   "position": {
-    "targetPct": 21,
-    "label": "极轻",
+    "targetPct": 33,
+    "label": "偏轻",
     "tilt": "reduce",
-    "headline": "数据不可靠，建议维持轻仓纪律仓",
-    "action": "建议相对计划仓约 21%（定投层 85% / 波段层 15%）；暂停加仓，修好数据再评估"
+    "headline": "风险偏高，仓位已自动收一收",
+    "action": "建议相对计划仓约 33%（偏轻）；定投层为主（85%），少做波段加仓"
   },
   "advice": {
-    "label": "数据不可用",
-    "headline": "数据质量不足，暂停依据本报告操作",
-    "action": "维持既有定投纪律或观望；修复数据后重新 analysis",
-    "source": "data_gate"
+    "label": "偏轻",
+    "headline": "风险偏高，仓位已自动收一收",
+    "action": "建议相对计划仓约 33%（偏轻）；定投层为主（85%），少做波段加仓",
+    "source": "position"
   },
   "gate": {
-    "tier": "red",
-    "actionable": false,
-    "overallConfidence": 38
+    "tier": "green",
+    "actionable": true,
+    "overallConfidence": 83
   },
   "dual": {
     "alignment": "aligned",
     "delta": -6,
-    "actionPolicy": "hold_on_conflict",
-    "llmScore": 51,
-    "quantScore": 57
+    "actionPolicy": "both",
+    "llmScore": 47,
+    "quantScore": 53
   },
   "reliability": {
-    "score": 30,
-    "level": "blocked"
+    "score": 84,
+    "level": "high"
   },
   "short": {
     "label": "短期",
     "direction": "neutral",
-    "score": 51,
+    "score": 47,
     "confidence": null,
-    "stance": "建议仓位 21%"
+    "stance": "建议仓位 33%"
   },
   "mid": {
     "label": "3 个月",
@@ -55,7 +55,7 @@
   "long": {
     "label": "3年",
     "direction": "neutral",
-    "score": 52,
+    "score": 51,
     "confidence": "low",
     "stance": "中性"
   },
@@ -66,30 +66,30 @@
     "factors": {
       "trend_structure": {
         "name": "趋势结构(MA50/MA200)",
-        "rawValue": -0.59,
-        "normalizedScore": 48,
+        "rawValue": -5.44,
+        "normalizedScore": 34,
         "weight": 0.22,
         "effectiveWeight": 0.22,
-        "contribution": 10.56,
-        "note": "金价相对 MA50 -0.6%（样本不足 200 日，未计入长均线排列）"
+        "contribution": 7.48,
+        "note": "金价相对 MA50 -5.4%（样本不足 200 日，未计入长均线排列）"
       },
       "valuation": {
         "name": "估值分位(近一年)",
-        "rawValue": 61.74,
-        "normalizedScore": 45,
+        "rawValue": 32.2,
+        "normalizedScore": 57,
         "weight": 0.12,
         "effectiveWeight": 0.12,
-        "contribution": 5.4,
-        "note": "金价处于近一年 62% 分位（中位）"
+        "contribution": 6.84,
+        "note": "金价处于近一年 32% 分位（中位）"
       },
       "real_rate_trend": {
         "name": "实际利率趋势(TIPS)",
-        "rawValue": 45,
-        "normalizedScore": 32,
+        "rawValue": 48,
+        "normalizedScore": 31,
         "weight": 0.25,
         "effectiveWeight": 0.25,
-        "contribution": 8,
-        "note": "近 60 日实际利率 +45bp，上行（利空黄金）；当前 2.88%"
+        "contribution": 7.75,
+        "note": "近 60 日实际利率 +48bp，上行（利空黄金）；当前 2.91%"
       },
       "dollar_trend": {
         "name": "美元趋势(DXY/MA60)",
@@ -141,8 +141,8 @@
     ],
     "drivers": [
       "美元趋势(DXY/MA60)：美元指数相对 60 日均线 -9.74%，美元偏弱（利多金价）",
-      "实际利率趋势(TIPS)：近 60 日实际利率 +45bp，上行（利空黄金）；当前 2.88%",
-      "官方/ETF 买盘：主力综合信号 58/100（CFTC + ETF + 央行）"
+      "实际利率趋势(TIPS)：近 60 日实际利率 +48bp，上行（利空黄金）；当前 2.91%",
+      "趋势结构(MA50/MA200)：金价相对 MA50 -5.4%（样本不足 200 日，未计入长均线排列）"
     ],
     "watchTriggers": [
       "实际利率明确回落（TIPS 较当前下行 25bp 以上）→ 中期偏空逻辑失效",
@@ -158,20 +158,20 @@
         "years": 1,
         "label": "1年",
         "direction": "neutral",
-        "biasScore": 52,
+        "biasScore": 49,
         "confidence": "low",
         "trendLabel": "宽幅震荡 / 配置中性",
         "returnBand": "置信偏低，不展示名义累计点位区间；以配置档位与定投纪律为准",
         "allocationStance": "neutral",
         "drivers": [
           "宏观阶段：实际利率压制",
-          "美元/利率逻辑：美元指数101.9、日内-0.26%,美元边际走弱降低非美买家购买黄金的成本,理",
-          "利率：10Y美债收益率5.27%,扣减TIPS 2.88%后实际利率约2.39",
-          "官方买盘：PBOC 9月增持约74万盎司至约7747万盎司,连续23个月增持；1—"
+          "美元/利率逻辑：美元指数101.9、当日-0.26%,处于中性偏弱水平,对美元计价的黄金构成温和",
+          "利率：10Y名义利率5.27%、TIPS实际利率2.91%,双双处于历史高位,",
+          "官方买盘：偏多但边际转弱：中国央行连续23个月增持（9月约7747万金衡盎司）,1"
         ],
         "risks": [
           "实际利率若长期偏高，压制黄金实际回报",
-          "实际利率约2.39%(10Y名义5.27%-TIPS2.88%)处于历史高位,黄金零息资产的机会",
+          "实际利率与名义利率双双处于2008年以来最高位,持有无息黄金的机会成本达到数十年极值",
           "名义回报≠实际购买力；区间非承诺"
         ],
         "dcaAdvice": "维持基础定投，少择时"
@@ -180,16 +180,16 @@
         "years": 3,
         "label": "3年",
         "direction": "neutral",
-        "biasScore": 52,
+        "biasScore": 51,
         "confidence": "low",
         "trendLabel": "宽幅震荡 / 配置中性",
         "returnBand": "置信偏低，不展示名义累计点位区间；以配置档位与定投纪律为准",
         "allocationStance": "neutral",
         "drivers": [
           "宏观阶段：实际利率压制",
-          "美元/利率逻辑：美元指数101.9、日内-0.26%,美元边际走弱降低非美买家购买黄金的成本,理",
-          "利率：10Y美债收益率5.27%,扣减TIPS 2.88%后实际利率约2.39",
-          "央行储备：PBOC 9月增持约74万盎司至约7747万盎司,连续23个月增持；1—8月全球"
+          "美元/利率逻辑：美元指数101.9、当日-0.26%,处于中性偏弱水平,对美元计价的黄金构成温和",
+          "利率：10Y名义利率5.27%、TIPS实际利率2.91%,双双处于历史高位,",
+          "央行储备：偏多但边际转弱：中国央行连续23个月增持（9月约7747万金衡盎司）,1-8月全"
         ],
         "risks": [
           "实际利率若长期偏高，压制黄金实际回报",
@@ -209,9 +209,9 @@
         "allocationStance": "neutral",
         "drivers": [
           "宏观阶段：实际利率压制",
-          "美元/利率逻辑：美元指数101.9、日内-0.26%,美元边际走弱降低非美买家购买黄金的成本,理",
-          "利率：10Y美债收益率5.27%,扣减TIPS 2.88%后实际利率约2.39",
-          "央行储备：PBOC 9月增持约74万盎司至约7747万盎司,连续23个月增持；1—8月全球"
+          "美元/利率逻辑：美元指数101.9、当日-0.26%,处于中性偏弱水平,对美元计价的黄金构成温和",
+          "利率：10Y名义利率5.27%、TIPS实际利率2.91%,双双处于历史高位,",
+          "央行储备：偏多但边际转弱：中国央行连续23个月增持（9月约7747万金衡盎司）,1-8月全"
         ],
         "risks": [
           "实际利率若长期偏高，压制黄金实际回报",

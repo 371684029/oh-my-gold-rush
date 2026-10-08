@@ -1,7 +1,7 @@
 {
   "asOf": "2026-10-08",
   "windowDays": 90,
-  "sampleEligible": 72,
+  "sampleEligible": 73,
   "llm": {
     "hits": 13,
     "total": 24,
@@ -12,13 +12,13 @@
     "beatsBaseline": false
   },
   "quant": {
-    "hits": 7,
+    "hits": 10,
     "total": 13,
-    "hitRate": 53.8,
-    "ciLow": 29.1,
-    "ciHigh": 76.8,
+    "hitRate": 76.9,
+    "ciLow": 49.7,
+    "ciHigh": 91.8,
     "significant": true,
-    "beatsBaseline": false
+    "beatsBaseline": true
   },
   "midTerm": {
     "hits": 0,
@@ -30,7 +30,7 @@
     "beatsBaseline": false
   },
   "midTermHorizonDays": 20,
-  "baselineUpRate": 53.7,
+  "baselineUpRate": 47.8,
   "baselineN": 67,
   "highScoreUpRate": 0,
   "highScoreN": 1,
@@ -49,8 +49,8 @@
     {
       "range": "30-50",
       "sample": 40,
-      "upRate": 57.5,
-      "avgReturn": 2.49
+      "upRate": 47.5,
+      "avgReturn": 1.47
     },
     {
       "range": "50-60",
@@ -66,6 +66,22 @@
     }
   ],
   "recent": [
+    {
+      "date": "2026-10-08",
+      "llmScore": 47,
+      "quantScore": 53,
+      "direction": "neutral",
+      "pred": "flat",
+      "actual5dPct": null,
+      "hit": null,
+      "status": "pending",
+      "alignPct": null,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": null,
+      "quantPred": "flat",
+      "quantHit": null,
+      "quantStatus": "pending"
+    },
     {
       "date": "2026-10-08",
       "llmScore": 51,
@@ -120,12 +136,12 @@
       "quantScore": 52,
       "direction": "neutral",
       "pred": "flat",
-      "actual5dPct": 3.8,
+      "actual5dPct": -1.83,
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": 1.31,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -3.3,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -136,15 +152,15 @@
       "quantScore": 42,
       "direction": "neutral",
       "pred": "flat",
-      "actual5dPct": 5.31,
+      "actual5dPct": -0.39,
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": 2.82,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -1.86,
       "quantPred": "down",
-      "quantHit": false,
-      "quantStatus": "miss"
+      "quantHit": true,
+      "quantStatus": "hit"
     },
     {
       "date": "2026-10-03",
@@ -152,15 +168,15 @@
       "quantScore": 41,
       "direction": "neutral",
       "pred": "flat",
-      "actual5dPct": 4.55,
+      "actual5dPct": -1.11,
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": 2.06,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -2.58,
       "quantPred": "down",
-      "quantHit": false,
-      "quantStatus": "miss"
+      "quantHit": true,
+      "quantStatus": "hit"
     },
     {
       "date": "2026-10-02",
@@ -168,15 +184,15 @@
       "quantScore": 39,
       "direction": "neutral",
       "pred": "flat",
-      "actual5dPct": 22.6,
+      "actual5dPct": -1.43,
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": 20.11,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -2.9,
       "quantPred": "down",
-      "quantHit": false,
-      "quantStatus": "miss"
+      "quantHit": true,
+      "quantStatus": "hit"
     },
     {
       "date": "2026-10-01",
@@ -188,8 +204,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": 2.18,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": 3.2,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -204,8 +220,8 @@
       "hit": false,
       "status": "miss",
       "alignPct": -0.69,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -1.8,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -0.78,
       "quantPred": "down",
       "quantHit": false,
       "quantStatus": "miss"
@@ -220,8 +236,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -5.32,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -4.3,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -268,8 +284,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -2.68,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -1.66,
       "quantPred": "down",
       "quantHit": true,
       "quantStatus": "hit"
@@ -284,8 +300,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -0.56,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": 0.46,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -300,8 +316,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": 0.49,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": 1.51,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -316,8 +332,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -4.09,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -3.07,
       "quantPred": "down",
       "quantHit": true,
       "quantStatus": "hit"
@@ -332,8 +348,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -4.09,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -3.07,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -348,8 +364,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -4.72,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -3.7,
       "quantPred": "down",
       "quantHit": true,
       "quantStatus": "hit"
@@ -380,8 +396,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": 2.89,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": 3.91,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -396,8 +412,8 @@
       "hit": false,
       "status": "miss",
       "alignPct": -9.47,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": 6.98,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": 8,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -412,8 +428,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": 6.98,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": 8,
       "quantPred": "down",
       "quantHit": false,
       "quantStatus": "miss"
@@ -428,8 +444,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -4.03,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -3.01,
       "quantPred": "down",
       "quantHit": true,
       "quantStatus": "hit"
@@ -444,8 +460,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -2.63,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -1.61,
       "quantPred": "down",
       "quantHit": true,
       "quantStatus": "hit"
@@ -508,8 +524,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": 2.24,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": 3.26,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -556,8 +572,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": 2.39,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": 3.41,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -652,8 +668,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -4.13,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -3.11,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -668,8 +684,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -2.5,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -1.48,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -684,8 +700,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -2.82,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -1.8,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -700,8 +716,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -3.68,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -2.66,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -764,8 +780,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": 0.98,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": 2,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -780,8 +796,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": 7.32,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": 8.34,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -796,8 +812,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": 2.81,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": 3.83,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -812,8 +828,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": 5.16,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": 6.18,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -828,8 +844,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": 2.01,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": 3.03,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -844,8 +860,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": null,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": 1,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": 2.02,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -860,8 +876,8 @@
       "hit": true,
       "status": "hit",
       "alignPct": 0.41,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -2.9,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -1.88,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -876,8 +892,8 @@
       "hit": false,
       "status": "miss",
       "alignPct": -0.13,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -2.36,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -1.34,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -892,8 +908,8 @@
       "hit": null,
       "status": "flat",
       "alignPct": 0,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -2.49,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -1.47,
       "quantPred": "up",
       "quantHit": null,
       "quantStatus": "flat"
@@ -908,8 +924,8 @@
       "hit": false,
       "status": "miss",
       "alignPct": -2.11,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -0.38,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": 0.64,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -924,8 +940,8 @@
       "hit": false,
       "status": "miss",
       "alignPct": -1.37,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -1.12,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -0.1,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -972,8 +988,8 @@
       "hit": true,
       "status": "hit",
       "alignPct": 1.64,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -4.13,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -3.11,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -1004,8 +1020,8 @@
       "hit": false,
       "status": "miss",
       "alignPct": -1.14,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -1.35,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -0.33,
       "quantPred": "flat",
       "quantHit": null,
       "quantStatus": "flat"
@@ -1084,8 +1100,8 @@
       "hit": true,
       "status": "hit",
       "alignPct": 1.43,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -3.92,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -2.9,
       "quantPred": "down",
       "quantHit": true,
       "quantStatus": "hit"
@@ -1132,8 +1148,8 @@
       "hit": true,
       "status": "hit",
       "alignPct": 0.72,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -3.21,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -2.19,
       "quantPred": "up",
       "quantHit": false,
       "quantStatus": "miss"
@@ -1180,8 +1196,8 @@
       "hit": true,
       "status": "hit",
       "alignPct": 2.21,
-      "bucketAvgReturn": 2.49,
-      "vsBucketPct": -4.7,
+      "bucketAvgReturn": 1.47,
+      "vsBucketPct": -3.68,
       "quantPred": null,
       "quantHit": null,
       "quantStatus": null
@@ -1219,5 +1235,5 @@
       "quantStatus": null
     }
   ],
-  "summary": "LLM 方向命中 13/24（54%，95%CI 35–72%）｜基准 54%（未显著跑赢） · 量化命中 7/13（54%，95%CI 29–77%）｜基准 54%（未显著跑赢） · 中期(20日)命中 0/2（0%）· 样本不足 10 次，不具统计意义 · 永远看涨基准 54%（36/67） · 低分段(≤40) 5日涨 40% · 冲突日 1（跟量化 0 / 跟LLM 1）"
+  "summary": "LLM 方向命中 13/24（54%，95%CI 35–72%）｜基准 48%（未显著跑赢） · 量化命中 10/13（77%，95%CI 50–92%）｜基准 48%（显著跑赢） · 中期(20日)命中 0/2（0%）· 样本不足 10 次，不具统计意义 · 永远看涨基准 48%（32/67） · 低分段(≤40) 5日涨 40% · 冲突日 1（跟量化 0 / 跟LLM 1）"
 }
