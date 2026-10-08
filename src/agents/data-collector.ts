@@ -260,7 +260,12 @@ export class DataCollectorAgent extends BaseAgent {
     };
   }
 
-  /** 用直连锚定源覆盖 N/A 或 0 占位，不覆盖已有有效 LLM/搜索提取 */
+  /**
+   * 用直连锚定源补齐价格字段（先锚定后搜索的最终防线）：
+   * - 缺失/0 → 直接锚定填充
+   * - LLM 抽价与锚定偏差 >3% → 锚定优先（LLM 原值进 altPrices 供审计），
+   *   防止「LLM 从垃圾 snippet 抽错价写库」（如 5158.7 污染案例）
+   */
   private async enrichWithLiveAnchors(data: MarketData): Promise<MarketData> {
     try {
       const anchors = await fetchLiveAnchors();
@@ -274,19 +279,70 @@ export class DataCollectorAgent extends BaseAgent {
         verifiedAt: a.timestamp || now,
       });
 
-      if (anchors.gold && isMissingPrice(data.london?.price)) {
-        data.london = {
-          ...data.london,
-          price: toPrice(anchors.gold),
-          altPrices: data.london?.altPrices ?? [],
+      // 返回 { 最终价, 被替换的 LLM 原值(replaced) }；replaced 非空表示发生了锚定优先覆盖
+      const applyAnchor = (
+        current: SourcedPrice,
+        anchor: LiveAnchorPrice | null,
+        label: string,
+      ): { price: SourcedPrice; replaced: SourcedPrice | null } => {
+        if (!anchor || !Number.isFinite(anchor.price) || anchor.price <= 0) {
+          return { price: current, replaced: null };
+        }
+        if (isMissingPrice(current)) {
+          console.log(`  ⚓ ${label}锚定: ${anchor.price} (${anchor.source})`);
+          return { price: toPrice(anchor), replaced: null };
+        }
+        if (isValidMarketNumber(current.value) && current.value > 0) {
+          const dev = (Math.abs(current.value - anchor.price) / anchor.price) * 100;
+          if (dev > 3) {
+            console.warn(
+              `  ⚠️ ${label}: LLM抽价 ${current.value} 与直连锚定 ${anchor.price} 偏差 ${dev.toFixed(1)}% > 3%，锚定优先`,
+            );
+            return { price: toPrice(anchor), replaced: current };
+          }
+        }
+        return { price: current, replaced: null };
+      };
+
+      if (anchors.gold) {
+        const cur = data.london?.price ?? {
+          value: 0, change: 0, source: 'N/A', sourceGrade: 'C' as const, verifiedAt: now,
         };
-        console.log(`  ⚓ 金价锚定: $${anchors.gold.price} (${anchors.gold.source})`);
-      } else if (anchors.gold && data.london?.price && isValidMarketNumber(data.london.price.value)) {
-        // 已有报价时把锚定源加入 altPrices 供交叉验证
-        const alts = data.london.altPrices ?? [];
-        const exists = alts.some(a => a.source === anchors.gold!.source);
-        if (!exists) alts.push(toPrice(anchors.gold));
-        data.london.altPrices = alts.slice(0, 3);
+        const { price, replaced } = applyAnchor(cur, anchors.gold, '金价');
+        const alts = [...(data.london?.altPrices ?? [])];
+        if (replaced) {
+          if (!alts.some(a => a.source === cur.source)) alts.push(cur); // 被覆盖的 LLM 值进 alt 供审计
+        } else if (!isMissingPrice(cur) && isValidMarketNumber(cur.value)) {
+          if (!alts.some(a => a.source === anchors.gold!.source)) alts.push(toPrice(anchors.gold)); // 锚定进 alt 交叉验证
+        }
+        data.london = { ...data.london, price, altPrices: alts.slice(0, 3) };
+      }
+
+      if (anchors.shanghai) {
+        const cur = data.shanghai?.price ?? {
+          value: 0, change: 0, source: 'N/A', sourceGrade: 'C' as const, verifiedAt: now,
+        };
+        const { price, replaced } = applyAnchor(cur, anchors.shanghai, '上海金');
+        const alts = [...(data.shanghai?.altPrices ?? [])];
+        if (replaced) {
+          if (!alts.some(a => a.source === cur.source)) alts.push(cur);
+        } else if (!isMissingPrice(cur) && isValidMarketNumber(cur.value)) {
+          if (!alts.some(a => a.source === anchors.shanghai!.source)) alts.push(toPrice(anchors.shanghai));
+        }
+        data.shanghai = { ...data.shanghai, price, altPrices: alts.slice(0, 3) };
+      }
+
+      if (anchors.etf) {
+        const cur = data.etf?.nav ?? {
+          value: 0, change: 0, source: 'N/A', sourceGrade: 'C' as const, verifiedAt: now,
+        };
+        const { price } = applyAnchor(cur, anchors.etf, '黄金ETF 518880');
+        data.etf = {
+          ...data.etf,
+          code: data.etf?.code ?? '518880',
+          name: data.etf?.name ?? '华安黄金ETF',
+          nav: price,
+        };
       }
 
       if (anchors.dxy && isMissingPrice(data.dollarIndex?.value)) {

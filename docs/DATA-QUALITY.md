@@ -67,11 +67,19 @@ macro-regime / 因果链 / 置信度 / 叙事全部失真
 |--------|-----|------|
 | 1 | Yahoo（短超时） | `yahoo-live` / `yahoo-gold-history` |
 | 2 | gold-api.com XAU | `live-anchors.fetchGoldApiLive` |
-| 3 | 新浪 `hf_GC` 等 | `live-anchors.fetchSinaHq` |
+| 3 | 新浪 `hf_GC` / `gds_AU9999` / `sh518880` | `live-anchors.fetchSinaHq`（自动识别贵金属/A股格式） |
 | 4 | LBMA 定盘历史 | `fetchLbmaGoldHistory`（回填） |
 | 5 | FRED（常超时） | 10Y / TIPS / 宽美元 |
 
-采集后：`DataCollectorAgent.enrichWithLiveAnchors` 只补 **缺失** 字段，不盲目覆盖已有有效提取。
+**每个价格字段都必须有零 LLM 直连锚定**（伦敦金 / 上海金 Au99.99 / 黄金ETF 518880），
+搜索+LLM 只能作补充，不能作唯一来源——Tavily snippet 常是 SEO 聚合页，**没有数字可抽**。
+
+采集后：`DataCollectorAgent.enrichWithLiveAnchors`：
+1. 缺失/0 → 锚定填充；
+2. LLM 抽价与锚定**偏差 >3%** → **锚定优先**（LLM 原值进 `altPrices` 供审计），
+   防止「垃圾 snippet → 错价写库」（如 2026-10-07 `london_close=5158.7` vs 锚定 4147.6 污染案例）。
+
+> 上海金换算自检（10-08 实测）：USDCNY≈6.70 → 理论 887 元/克，新浪 `gds_AU9999`=890.75 偏差 0.4%；校验时勿再用旧假设「汇率≈7.1」。
 
 ### 3.5 校验层
 

@@ -38,7 +38,7 @@ GoldRush（黄金投资研究 Agent）核心是 **CLI 工具**。入口 `src/ind
 1. **禁止把 0 当有效金价**：`isValidMarketNumber` / `isMissingPrice`（`schemas/market.ts`）；`saveSnapshot` 与 `GoldPricesRepo.upsert` 不写入、不覆盖有效列为 0。
 2. **读库净化**：`mapRow` 将历史脏数据 `0` 映射为 `null`，避免 MA/RSI 被污染。
 3. **forwardFill 跳过 ≤0**：`price-series.ts`；否则会出现「偏离 MA20 -100%」假信号。
-4. **先锚定后搜索**：`collectMarketData` 先直连 gold-api/新浪，再 Tavily+LLM 补全；锚定失败且无金价则 fail-fast。
+4. **先锚定后搜索**：`collectMarketData` 先直连 gold-api/新浪，再 Tavily+LLM 补全；锚定失败且无金价则 fail-fast。**每个价格字段（伦敦金/上海金 Au99.99/黄金ETF 518880）都必须有零 LLM 直连锚定**（新浪 `hf_GC`/`gds_AU9999`/`sh518880`），Tavily snippet 常无数字可抽，不能当唯一来源；LLM 抽价与锚定**偏差>3% 锚定优先**（`enrichWithLiveAnchors`，原值进 altPrices 审计）。
 5. **置信度**：A 级单源 **72**；伦敦金字段权重 50%；锚定一致时 LLM 权重 0.2。
 6. **门禁**（`data-quality-gate.ts`）：**勿用 conf&lt;55 硬拦**。红档=无金价 / 锚定偏差&gt;3% / conf&lt;35 → 关闭操作结论；黄档可出报告；绿档 conf≥70 且锚定贴合。
 7. **双打分**（`dual-score.ts`）：LLM 分与量化分**始终并排**；`|Δ|&gt;15` 或方向相反 → **仓位受限（≤50%）+ 定投为主**，文案须写清谁偏哪边与具体仓位%，**勿**千篇一律「双体系不一致」；四维弱一致单独不等于双体系冲突；不抬某一侧权重；`calibrate` 分轨统计谁更准；量化因子 `event_heat` 默认 0，无效因子可在 `DEFAULT_WEIGHTS` 置 0。

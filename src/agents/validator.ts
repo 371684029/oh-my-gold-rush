@@ -6,6 +6,7 @@ import { getDb } from '../db/index.js';
 import { SearchCacheRepo } from '../db/search-cache.js';
 import { SearchRouter } from '../data/search-router.js';
 import { fetchGoldLive, fetchDxyLive } from '../data/yahoo-live.js';
+import { fetchLiveAnchors } from '../data/live-anchors.js';
 import { checkPriceConsistency } from '../utils/price-consistency.js';
 import {
   crossValidate,
@@ -90,10 +91,11 @@ export class ValidatorAgent extends BaseAgent {
     /** 直连锚定金价（用于数据质量门禁） */
     anchorGoldPrice: number | null;
   }> {
-    // 预取 Yahoo 实时数据作为 A 级锚定源（失败不影响流程）
-    const [yahooGold, yahooDxy] = await Promise.all([
+    // 预取 Yahoo 实时数据作为 A 级锚定源（失败不影响流程）；锚定还提供 USDCNY 供伦敦-上海换算校验
+    const [yahooGold, yahooDxy, anchors] = await Promise.all([
       fetchGoldLive().catch(() => null),
       fetchDxyLive().catch(() => null),
+      fetchLiveAnchors().catch(() => null),
     ]);
 
     const validations: ValidationResult[] = [];
@@ -184,6 +186,7 @@ export class ValidatorAgent extends BaseAgent {
       londonVal,
       shanghaiVal ?? null,
       yahooGold?.price ?? null,
+      anchors?.usdcny?.price ?? null,
     ) : null;
     if (consistency) {
       warnings.push(...consistency.warnings);

@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { parseSinaQuoteLine } from '../src/data/live-anchors';
 import { parsePbocReservesFromText } from '../src/data/pboc-grabber';
 import { isValidMarketNumber, isMissingPrice, parseMarketData } from '../src/schemas/market';
 import { forwardFillCloses } from '../src/utils/price-series';
@@ -93,5 +94,41 @@ describe('parseGldHoldingsFromText', () => {
     expect(r!.tons).toBeCloseTo(1002.449, 2);
     expect(r!.change).toBeCloseTo(-3.199, 2);
     expect(r!.asOf).toMatch(/-07-10$/);
+  });
+});
+
+describe('parseSinaQuoteLine — 新浪行情行解析（零 LLM 直连锚定）', () => {
+  it('SGE 贵金属格式（gds_AU9999 上海金）：现价第 0 位，昨收第 7 位', () => {
+    const q = parseSinaQuoteLine(
+      'var hq_str_gds_AU9999="890.75,0,890.61,890.75,896.30,889.00,14:07:19,907.32,890.50,1129200,150.00,550.00,2026-10-08,99黄金";',
+    );
+    expect(q).toEqual({ price: 890.75, prev: 907.32 });
+  });
+
+  it('期货格式（hf_XAU）：现价第 0 位，昨收第 7/8 位兜底', () => {
+    const q = parseSinaQuoteLine(
+      'var hq_str_hf_XAU="4118.77,4110.680,4118.77,4119.12,4143.16,4103.25,14:07:00,4110.68,4115.25,0,0,0,2026-10-08,伦敦金现货黄金";',
+    );
+    expect(q).toEqual({ price: 4118.77, prev: 4110.68 });
+  });
+
+  it('A股/ETF 格式（sh518880）：第 0 位是名称，现价第 3 位、昨收第 2 位', () => {
+    const q = parseSinaQuoteLine(
+      'var hq_str_sh518880="黄金ETF华安,8.486,8.633,8.472,8.519,8.468,8.471,8.472,314669410,2673891380.000,36700,8.471,1529100,8.470,299000,8.469,885000,8.468,484700,8.467,354600,8.472,120800,8.473,511600,8.474,910900,8.475,87500,8.476,2026-10-08,14:07:14,00,";',
+    );
+    expect(q).toEqual({ price: 8.472, prev: 8.633 });
+  });
+
+  it('外汇格式（fx_susdcny）：跳过首字段时间，汇率在第 1 位', () => {
+    const q = parseSinaQuoteLine(
+      'var hq_str_fx_susdcny="14:20:02,6.7015000000,6.7017000000,6.7050000000,28.0000000000,6.7030000000,6.7039000000,6.7011000000,6.7015000000,在岸人民币,-0.0522,-0.0035,0.0028,新浪财经美元外汇,0.00";',
+    );
+    expect(q).not.toBeNull();
+    expect(q!.price).toBeCloseTo(6.7015, 4);
+  });
+
+  it('垃圾/空输入返回 null', () => {
+    expect(parseSinaQuoteLine('var hq_str_AU9999="";')).toBeNull();
+    expect(parseSinaQuoteLine('no quote here')).toBeNull();
   });
 });

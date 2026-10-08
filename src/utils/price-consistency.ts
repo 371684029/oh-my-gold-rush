@@ -22,11 +22,12 @@ export interface ConsistencyReport {
 
 // 上海金 vs 伦敦金换算常量
 const OZ_TO_GRAM = 31.1035;
-const USDCNY_APPROX = 7.25; // 近似汇率，±3% 容差覆盖
+const USDCNY_APPROX = 7.25; // 兜底近似汇率（无实时锚定时用；实际以锚定为准）
 
-/** 伦敦金 USD/oz → 上海金 CNY/g 近似换算 */
-function londonToShanghai(londonUsdPerOz: number): number {
-  return (londonUsdPerOz * USDCNY_APPROX) / OZ_TO_GRAM;
+/** 伦敦金 USD/oz → 上海金 CNY/g 近似换算（usdcny 传入实时锚定时优先） */
+function londonToShanghai(londonUsdPerOz: number, usdcny: number | null): number {
+  const rate = usdcny != null && usdcny > 0 ? usdcny : USDCNY_APPROX;
+  return (londonUsdPerOz * rate) / OZ_TO_GRAM;
 }
 
 /**
@@ -34,11 +35,13 @@ function londonToShanghai(londonUsdPerOz: number): number {
  * @param londonPrice 伦敦金价 (LLM 提取, USD/oz)
  * @param shanghaiPrice 上海金价 (LLM 提取, CNY/g)
  * @param yahooGoldPrice Yahoo GC=F 实时价 (null if unavailable)
+ * @param usdcny 实时 USDCNY 锚定价（新浪 fx_susdcny；null 则回退近似值）
  */
 export function checkPriceConsistency(
   londonPrice: number,
   shanghaiPrice: number | null,
   yahooGoldPrice: number | null,
+  usdcny: number | null = null,
 ): ConsistencyReport {
   const warnings: string[] = [];
   let bonus = 0;
@@ -62,7 +65,7 @@ export function checkPriceConsistency(
   let impliedShanghai: number | null = null;
 
   if (shanghaiPrice != null && shanghaiPrice > 0) {
-    impliedShanghai = londonToShanghai(londonPrice);
+    impliedShanghai = londonToShanghai(londonPrice, usdcny);
     crossDeviation = Math.abs((shanghaiPrice - impliedShanghai) / shanghaiPrice) * 100;
 
     if (crossDeviation < 2) {
@@ -75,7 +78,7 @@ export function checkPriceConsistency(
       bonus += 5;
     } else if (crossDeviation < 10) {
       // 偏差较大，可能是上海溢价/折价
-      warnings.push(`🟡 伦敦-上海价偏差 ${crossDeviation.toFixed(1)}%（可能为上海溢价，汇率近似值 ±${USDCNY_APPROX}）`);
+      warnings.push(`🟡 伦敦-上海价偏差 ${crossDeviation.toFixed(1)}%（可能为上海溢价，汇率 ${usdcny != null ? usdcny.toFixed(2) : `近似值 ±${USDCNY_APPROX}`}）`);
     } else {
       // 严重偏差，可能某一方数据错误
       warnings.push(`🔴 伦敦-上海价偏差 ${crossDeviation.toFixed(1)}%，可能存在数据错误`);
