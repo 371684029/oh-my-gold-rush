@@ -48,7 +48,7 @@ function macTitlebar(label = '') {
 
 const PORT = parseInt(process.env.PORT || '80', 10);
 const HOST = process.env.HOST || '0.0.0.0';
-const DOCS_DIR = path.resolve(__dirname, 'docs');
+const DOCS_DIR = path.resolve(process.env.GOLDRUSH_DOCS_DIR || path.join(__dirname, 'docs'));
 const DOCS_ROOT = DOCS_DIR + path.sep;
 /** 校准样本少于此数时醒目提示「样本不足」 */
 const CALIBRATION_SAMPLE_WARN = 5;
@@ -1800,6 +1800,11 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(PORT, HOST, () => {
-  console.log(`🥇 GoldRush Docs Server running on http://${HOST}:${PORT}`);
-});
+// 桌面壳 / 测试嵌入时自己选端口监听；不用 require.main 判断，pm2 等进程管理器下它不等于本模块
+if (process.env.GOLDRUSH_EMBEDDED !== '1') {
+  server.listen(PORT, HOST, () => {
+    console.log(`🥇 GoldRush Docs Server running on http://${HOST}:${PORT}`);
+  });
+}
+
+module.exports = { server, DOCS_DIR };
