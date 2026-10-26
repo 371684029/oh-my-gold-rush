@@ -341,6 +341,37 @@ node server.cjs
 - 📁 **智能折叠**：默认只展开策略+情景
 - 🏦 **主力仪表盘**：CFTC/ETF/央行 评分条
 
+### 桌面版（Windows / macOS / Linux）
+
+桌面版是 Electron 壳：进程内启动同一个 `server.cjs`（只监听 `127.0.0.1` 随机端口），窗口里看日报，不需要 80 端口和服务器。独立子项目 `desktop/`，**不装 better-sqlite3、不跑 CLI 分析**，所以打包时不会触发原生模块重编译。
+
+**推荐：用 GitHub Actions 打包（无需本机环境）**
+
+- Actions → `desktop` → Run workflow，跑完在 Artifacts 下载 `GoldRush-win` / `GoldRush-mac` / `GoldRush-linux`
+- 推送 `desktop-v*` 标签（如 `desktop-v0.1.0`）会自动发 GitHub Release
+- 改动 `server.cjs` / `web/` / `desktop/` 的 PR 会自动跑三平台打包，坏了在合并前就能看到
+
+**本机打包**
+
+```bash
+cd desktop
+npm ci
+npm start              # 开发预览
+npm run dist           # 打当前平台的包，产物在 desktop/dist/
+```
+
+国内网络下载 Electron 慢或失败时，先设置镜像再 `npm ci` / `npm run dist`：
+
+```bash
+export ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/
+export ELECTRON_BUILDER_BINARIES_MIRROR=https://npmmirror.com/mirrors/electron-builder-binaries/
+# Windows PowerShell: $env:ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron/" 等
+```
+
+`npm run dist` 会先跑 `stage`（复制 server/web/docs 并体检依赖）和 Electron 运行时冒烟，任一失败直接给出中文原因，不会产出一个装好就白屏的包。
+
+安装包内置打包时刻的 `docs/` 快照；菜单「报告 → 选择报告目录」可指向本地 clone 的 `docs/` 以看最新日报。macOS 包未签名，首次打开需右键 → 打开。
+
 ### 每日定时分析
 
 已在服务器设置每日自动执行分析并生成 Markdown 报告（cron，以服务器实际为准）：
