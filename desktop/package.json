@@ -1,0 +1,67 @@
+{
+  "name": "goldrush-desktop",
+  "productName": "GoldRush",
+  "version": "0.1.0",
+  "description": "GoldRush 黄金研究日报 · 桌面版",
+  "author": "wll <371684029@qq.com>",
+  "private": true,
+  "desktopName": "goldrush-desktop.desktop",
+  "main": "main.cjs",
+  "scripts": {
+    "stage": "node scripts/stage.cjs",
+    "smoke": "npm run stage && node scripts/smoke-electron.cjs",
+    "start": "npm run stage && electron .",
+    "dist": "npm run smoke && electron-builder --publish never",
+    "dist:win": "npm run smoke && electron-builder --win --publish never",
+    "dist:mac": "npm run smoke && electron-builder --mac --publish never",
+    "dist:linux": "npm run smoke && electron-builder --linux --publish never"
+  },
+  "dependencies": {
+    "isomorphic-dompurify": "^3.18.0",
+    "marked": "^18.0.5"
+  },
+  "devDependencies": {
+    "electron": "45.0.0",
+    "electron-builder": "26.18.0"
+  },
+  "build": {
+    "appId": "com.goldrush.desktop",
+    "productName": "GoldRush",
+    "artifactName": "GoldRush-${version}-${os}-${arch}.${ext}",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.cjs",
+      "bundle/**/*",
+      "package.json"
+    ],
+    "npmRebuild": false,
+    "buildDependenciesFromSource": false,
+    "mac": {
+      "target": [
+        { "target": "dmg", "arch": ["arm64", "x64"] }
+      ],
+      "category": "public.app-category.finance",
+      "identity": null
+    },
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ]
+    },
+    "portable": {
+      "artifactName": "GoldRush-${version}-win-${arch}-portable.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "linux": {
+      "target": ["AppImage"],
+      "category": "Office",
+      "syncDesktopName": true
+    }
+  }
+}

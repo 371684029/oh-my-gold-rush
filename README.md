@@ -341,6 +341,57 @@ node server.cjs
 - 📁 **智能折叠**：默认只展开策略+情景
 - 🏦 **主力仪表盘**：CFTC/ETF/央行 评分条
 
+### 桌面版（Windows / macOS / Linux）
+
+桌面版是 Electron 壳：进程内启动同一个 `server.cjs`（只监听 `127.0.0.1` 随机端口），窗口里看日报，不需要 80 端口和服务器。独立子项目 `desktop/`，**不装 better-sqlite3、不跑 CLI 分析**，所以打包时不会触发原生模块重编译。
+
+**推荐：用 GitHub Actions 打包（无需本机环境）**
+
+- Actions → `desktop` → Run workflow，跑完在 Artifacts 下载 `GoldRush-win` / `GoldRush-mac` / `GoldRush-linux`
+- 推送 `desktop-v*` 标签（如 `desktop-v0.1.0`）会自动发 GitHub Release
+- 改动 `server.cjs` / `web/` / `desktop/` 的 PR 会自动跑三平台打包，坏了在合并前就能看到
+
+**本机打包**
+
+```bash
+cd desktop
+npm ci
+npm start              # 开发预览
+npm run dist           # 打当前平台的包，产物在 desktop/dist/
+```
+
+国内网络下载 Electron 慢或失败时，先设置镜像再 `npm ci` / `npm run dist`：
+
+```bash
+export ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/
+export ELECTRON_BUILDER_BINARIES_MIRROR=https://npmmirror.com/mirrors/electron-builder-binaries/
+# Windows PowerShell: $env:ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron/" 等
+```
+
+`npm run dist` 会先跑 `stage`（复制 server/web/docs 并体检依赖）和 Electron 运行时冒烟，任一失败直接给出中文原因，不会产出一个装好就白屏的包。
+
+安装包内置打包时刻的 `docs/` 快照；菜单「报告 → 选择报告目录」可指向本地 clone 的 `docs/` 以看最新日报。macOS 包未签名，首次打开需右键 → 打开。
+
+#### 打包经验教训（2026-10，必读）
+
+以前桌面包反复失败，根因都不是代码 bug，而是打包方式本身有坑。下面每条规则都有自动检查兜底，**违反时会在 `npm run dist` 或 PR 的 CI 上直接失败**，而不是产出一个装好就白屏的包。
+
+| # | 踩过的坑 | 现象 | 规则 | 自动兜底 |
+|---|----------|------|------|----------|
+| 1 | `marked` 18 是纯 ESM，`server.cjs` 用 `require('marked')` 加载，只有 Node ≥ 22.12 支持 | pkg / 旧 Electron 打出来一打开就 `ERR_REQUIRE_ESM`，白屏或闪退 | **不用 pkg / nexe**；Electron 版本内置的 Node 必须 ≥ 22.12（当前 Electron 45 / Node 24），降级 Electron 前先查它的 Node 版本 | `npm run smoke` 用 **Electron 自带的 Node** 真实请求首页和日报 |
+| 2 | 系统 Node 能跑 ≠ Electron 能跑 | 本机 `node server.cjs` 正常，打包后崩 | 验证一律以 Electron 运行时为准，不以系统 Node 为准 | 同上 |
+| 3 | `better-sqlite3` 是原生模块 | 打包时针对 Electron 重编译，要 Python / VS / Xcode + 访问 GitHub，国内网络常失败 | 桌面壳**只跑日报站，不跑 CLI 分析**；`desktop/` 依赖里**禁止原生模块**；保持 `npmRebuild: false` | `npm run stage` 发现原生模块直接报错 |
+| 4 | 桌面依赖和根项目混在一起 | 根 `npm ci` 也去下 Electron；生产机 cron 被拖累 | 桌面是独立子项目 `desktop/`，有自己的 `package.json` 和 lock，**不要把 electron 加进根 `package.json`** | — |
+| 5 | `server.cjs` 新增 `require('某包')` 却忘了加到桌面依赖 | 打包成功，运行时 `Cannot find module` | 给 `server.cjs` / `web/*.cjs` 加第三方依赖时，**同步加到 `desktop/package.json`，版本与根一致** | `npm run stage` 扫描所有 require 并比对版本 |
+| 6 | `server.cjs` 默认监听 `0.0.0.0:80` | 桌面普通权限 `EACCES`，且会暴露到局域网 | 桌面壳设 `GOLDRUSH_EMBEDDED=1`，自己 `listen(0, '127.0.0.1')`；**不要删掉 `server.cjs` 末尾的 `module.exports` 和嵌入开关** | `test/server-embed.test.ts`（根 `npm test`） |
+| 7 | 用 `require.main === module` 判断是否直接运行 | pm2 下判断失败，生产站不监听 | 嵌入开关只用环境变量 `GOLDRUSH_EMBEDDED` | 同上 |
+| 8 | 在一台机器上交叉打三个平台 | Windows 上打 mac 包、Linux 上打 Windows 包需要额外工具，经常失败 | **正式包一律走 GitHub Actions**（三平台原生 runner）；本机只打本平台 | `.github/workflows/desktop.yml` |
+| 9 | 国内下载 Electron / electron-builder 二进制超时 | `npm ci` 或打包卡死、失败 | 本机打包前设置 `ELECTRON_MIRROR` / `ELECTRON_BUILDER_BINARIES_MIRROR`（见上文） | CI 在海外 runner，不受影响 |
+| 10 | GitHub Actions 依赖的 Node 运行时下线 | 某天 CI 突然全红 | Actions 跟随大版本升级（当前 checkout@v7 / setup-node@v7 / upload-artifact@v7）；CI 出现 deprecated 警告就及时升级 | CI annotations |
+| 11 | `docs/` 每天都有新日报提交 | 每天触发三平台打包，浪费且排队 | CI 不按 `docs/` 变更触发；要带最新日报的包就手动 Run workflow | — |
+
+**改动后自查顺序**：`npm test`（根）→ `cd desktop && npm run smoke` → 推 PR 看 `desktop` CI 三平台全绿再合并。CI 红了先看失败步骤：`stage` 红多为依赖不一致（规则 3、5），`smoke` 红多为运行时不兼容（规则 1、2），`electron-builder` 红多为网络或平台问题（规则 8、9）。
+
 ### 每日定时分析
 
 已在服务器设置每日自动执行分析并生成 Markdown 报告（cron，以服务器实际为准）：
