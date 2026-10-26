@@ -73,6 +73,7 @@ GoldRush（黄金投资研究 Agent）核心是 **CLI 工具**。入口 `src/ind
 - **给 `server.cjs` / `web/*.cjs` 新增第三方 `require` 时，必须同步加到 `desktop/package.json`，版本与根一致**，否则 `stage` 体检失败。
 - `marked` 18 是纯 ESM，`server.cjs` 的 `require('marked')` 依赖 Node ≥ 22.12 的 require(esm)；Electron 版本不得低于内置 Node 22.12 的版本（当前 45 / Node 24）。`npm run smoke` 用 Electron 自带的 Node 实测，系统 Node 能跑不代表 Electron 能跑。
 - 打包优先走 `.github/workflows/desktop.yml`（三平台原生 runner）；本机打包与镜像变量见 README「桌面版」。
+- **改桌面/`server.cjs`/`web/` 前先读 README「打包经验教训」表**（11 条踩坑与对应自动兜底）。
 - 契约单测：`test/server-embed.test.ts`。
 
 ### 注意
