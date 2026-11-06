@@ -24,14 +24,34 @@ npm run build
 
 ### 配置（可选）
 
+**环境变量**（或写入 `.env`，见 `.env.example`）：
+
 ```bash
 # Tavily API（联网金融数据搜索，不配也能跑，会降级为空结果）
 export TAVILY_API_KEY=your_tavily_api_key_here
 
-# 或者写到 .env 文件
-cp .env.example .env
-# 编辑 .env 填入你的 TAVILY_API_KEY
+# Webhook 告警（可选，也可写在 goldrush.config.json 的 alerts 段）
+export GOLDRUSH_WEBHOOK_URL=
+export GOLDRUSH_WEBHOOK_TYPE=generic   # generic | dingtalk | wecom
 ```
+
+**`goldrush.config.json`**（仓库根目录，可选，缺省全部走默认值）：
+
+```jsonc
+{
+  // LLM 模型（单一配置，所有 Agent 共用）
+  // null     = 不传 -m，继承 opencode CLI 默认模型（~/.config/opencode/opencode.jsonc 的 model）
+  // "p/m"    = 字符串写法 "providerID/modelID"
+  // { … }    = 对象写法 { "providerID": "…", "modelID": "…" }
+  "model": null,
+  "search": { "tavilyApiKey": "", "defaultResults": 5 },
+  "database": { "path": "./data/goldrush.db" },
+  "alerts": { "webhookUrl": "", "webhookType": "generic" }
+}
+```
+
+- 旧配置写法 `llm.models` / `models`（八个 Agent 各配一个模型）仍兼容，会收口为单一 `model`（取首个有效项）。
+- `model: null` 时实际生效的是 opencode CLI 自身默认模型，`run-manifest` 会记录生效结果。
 
 ### 运行
 
