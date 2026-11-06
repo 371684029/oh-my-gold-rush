@@ -1,0 +1,85 @@
+name: desktop
+
+# 在三个平台的原生 runner 上打桌面包，避免本机缺工具链 / 下载 Electron 被墙 / 跨平台交叉打包失败。
+# 日报（docs/）每天都会提交，故不按 docs 变更触发；需要带最新日报的安装包时手动 Run workflow 即可。
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    tags: ['desktop-v*']
+    paths:
+      - server.cjs
+      - web/**
+      - desktop/**
+      - package.json
+      - .github/workflows/desktop.yml
+  pull_request:
+    paths:
+      - server.cjs
+      - web/**
+      - desktop/**
+      - package.json
+      - .github/workflows/desktop.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: desktop-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            target: win
+          - os: macos-latest
+            target: mac
+          - os: ubuntu-latest
+            target: linux
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: desktop
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+
+      - run: npm ci
+
+      - name: Build package (stage + Electron 冒烟 + electron-builder)
+        run: npm run dist:${{ matrix.target }}
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: GoldRush-${{ matrix.target }}
+          path: |
+            desktop/dist/*.exe
+            desktop/dist/*.dmg
+            desktop/dist/*.AppImage
+          if-no-files-found: error
+          retention-days: 30
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/desktop-v')
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          path: artifacts
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
+          generate_release_notes: true
