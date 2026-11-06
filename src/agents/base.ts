@@ -1,13 +1,14 @@
 // Agent 基类 — 通过 opencode CLI（opencode run）调用 LLM
 // 使用 CLI 而非 HTTP API，因为 opencode web 的 HTTP API 会路由到 opencode-go/glm-5.2
-// 该模型周限额已耗尽；CLI 方式能正确解析 opencode/deepseek-v4-flash-free
+// 该模型周限额已耗尽；CLI 方式能正确解析 opencode 默认模型
 
 import { execSync } from 'child_process';
 import type { ModelConfig } from '../types/config.js';
 
 export interface AgentOptions {
   name: string;
-  model: ModelConfig;
+  /** null/缺省 = 不传 -m，继承 opencode CLI 默认模型（opencode.jsonc 的 model） */
+  model?: ModelConfig | null;
   systemPrompt?: string;
   /** LLM 调用超时毫秒（默认 300s），单次 prompt() 超过此值抛出 AgentTimeoutError */
   timeoutMs?: number;
@@ -23,13 +24,13 @@ export class AgentTimeoutError extends Error {
 
 export class BaseAgent {
   protected name: string;
-  protected model: ModelConfig;
+  protected model: ModelConfig | null;
   protected systemPrompt: string;
   protected timeoutMs: number;
 
   constructor(options: AgentOptions) {
     this.name = options.name;
-    this.model = options.model;
+    this.model = options.model ?? null;
     this.systemPrompt = options.systemPrompt ?? '';
     this.timeoutMs = options.timeoutMs ?? 300_000;
   }
@@ -37,11 +38,12 @@ export class BaseAgent {
    /** 调用 opencode run CLI 并返回 LLM 输出文本 */
   private callOpencodeRun(promptText: string, system?: string): string {
     const fullPrompt = system ? `${system}\n\n${promptText}` : promptText;
-    const modelArg = `${this.model.providerID}/${this.model.modelID}`;
+    // 未配置模型时不传 -m，让 opencode 使用自身默认模型（单一来源：opencode.jsonc）
+    const modelArg = this.model ? ` -m ${this.model.providerID}/${this.model.modelID}` : '';
 
     // 通过 stdin 传 prompt，避免 shell 转义和命令行长度限制
     // 使用完整路径避免 cron 环境下 PATH 缺失
-    const cmd = `/usr/local/bin/opencode run -m ${modelArg} 2>/dev/null`;
+    const cmd = `/usr/local/bin/opencode run${modelArg} 2>/dev/null`;
 
     let result: string;
     try {

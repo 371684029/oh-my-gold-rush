@@ -98,7 +98,7 @@ export interface OrchestrateOptions {
 export class OrchestratorAgent extends BaseAgent {
   constructor() {
     const config = getConfig();
-    super({ name: 'orchestrator', model: config.models.orchestrator, systemPrompt: ORCHESTRATOR_PROMPT });
+    super({ name: 'orchestrator', model: config.model, systemPrompt: ORCHESTRATOR_PROMPT });
   }
 
   /** 综合编排，输出完整报告 */

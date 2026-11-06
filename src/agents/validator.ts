@@ -76,7 +76,7 @@ export class ValidatorAgent extends BaseAgent {
     const config = getConfig();
     super({
       name: 'validator',
-      model: config.models.validator,
+      model: config.model,
       systemPrompt: VALIDATION_SYSTEM_PROMPT,
     });
     const db = getDb();

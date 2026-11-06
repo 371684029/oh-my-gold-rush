@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { loadConfig, resetConfigCache } from '../src/utils/config';
 
-describe('loadConfig — 深合并与 llm.models 别名', () => {
+describe('loadConfig — 深合并与 model 收口', () => {
   let tmpDir: string;
 
   afterEach(() => {
@@ -14,20 +14,34 @@ describe('loadConfig — 深合并与 llm.models 别名', () => {
     }
   });
 
-  it('识别 goldrush.config.json 中的 llm.models 嵌套写法', () => {
+  it('默认 model=null（继承 opencode CLI 默认模型）', () => {
+    const cfg = loadConfig(path.join(os.tmpdir(), 'nonexistent-goldrush.config.json'));
+    expect(cfg.model).toBeNull();
+  });
+
+  it('旧 llm.models 八项映射收口为单一 model（取任意一项）', () => {
     tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'goldrush-cfg-'));
     const cfgPath = path.join(tmpDir, 'goldrush.config.json');
     fs.writeFileSync(cfgPath, JSON.stringify({
       llm: {
         models: {
           rebuttal: { providerID: 'opencode-go', modelID: 'custom-model-x' },
+          technical: { providerID: 'opencode-go', modelID: 'custom-model-x' },
         },
       },
     }));
 
     const cfg = loadConfig(cfgPath);
-    expect(cfg.models.rebuttal.modelID).toBe('custom-model-x');
-    expect(cfg.models.technical.modelID).toBe('deepseek-flash');
+    expect(cfg.model).toEqual({ providerID: 'opencode-go', modelID: 'custom-model-x' });
+  });
+
+  it('新 model 字符串写法 "providerID/modelID" 可解析', () => {
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'goldrush-cfg-'));
+    const cfgPath = path.join(tmpDir, 'goldrush.config.json');
+    fs.writeFileSync(cfgPath, JSON.stringify({ model: 'xiaomi/mimo-v2.6-flash' }));
+
+    const cfg = loadConfig(cfgPath);
+    expect(cfg.model).toEqual({ providerID: 'xiaomi', modelID: 'mimo-v2.6-flash' });
   });
 
   it('database.path 可被用户配置覆盖', () => {

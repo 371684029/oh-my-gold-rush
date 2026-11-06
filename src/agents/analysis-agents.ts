@@ -149,7 +149,7 @@ const TECHNICAL_PROMPT = `你是黄金技术面分析专家，同时提供短期
 export class TechnicalAgent extends BaseAgent {
   constructor() {
     const config = getConfig();
-    super({ name: 'technical', model: config.models.technical, systemPrompt: TECHNICAL_PROMPT });
+    super({ name: 'technical', model: config.model, systemPrompt: TECHNICAL_PROMPT });
   }
 
   async analyze(data: MarketData): Promise<TechnicalAnalysis> {
@@ -304,7 +304,7 @@ const FUNDAMENTAL_PROMPT = `你是黄金基本面分析专家，从宏观经济�
 export class FundamentalAgent extends BaseAgent {
   constructor() {
     const config = getConfig();
-    super({ name: 'fundamental', model: config.models.fundamental, systemPrompt: FUNDAMENTAL_PROMPT });
+    super({ name: 'fundamental', model: config.model, systemPrompt: FUNDAMENTAL_PROMPT });
   }
 
   async analyze(data: MarketData): Promise<FundamentalAnalysis> {
@@ -385,7 +385,7 @@ function formatFlowSignalContext(signal: import('../types/institutional.js').Ins
 export class SentimentAgent extends BaseAgent {
   constructor() {
     const config = getConfig();
-    super({ name: 'sentiment', model: config.models.sentiment, systemPrompt: SENTIMENT_PROMPT, timeoutMs: 120_000 });
+    super({ name: 'sentiment', model: config.model, systemPrompt: SENTIMENT_PROMPT, timeoutMs: 120_000 });
   }
 
   async analyze(data: MarketData, flowSignal?: import('../types/institutional.js').InstitutionalSignal): Promise<SentimentAnalysis> {
@@ -457,7 +457,7 @@ const FUND_PROMPT = `你是黄金基金分析专家，从基金费率和估值�
 export class FundAgent extends BaseAgent {
   constructor() {
     const config = getConfig();
-    super({ name: 'fund', model: config.models.fund, systemPrompt: FUND_PROMPT, timeoutMs: 120_000 });
+    super({ name: 'fund', model: config.model, systemPrompt: FUND_PROMPT, timeoutMs: 120_000 });
   }
 
   async analyze(data: MarketData, fundNavContext = ''): Promise<FundAnalysis> {

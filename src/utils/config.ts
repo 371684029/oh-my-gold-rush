@@ -2,7 +2,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { DEFAULT_CONFIG, type GoldRushConfig } from '../types/config.js';
+import { DEFAULT_CONFIG, type GoldRushConfig, type ModelConfig } from '../types/config.js';
 
 const CONFIG_FILENAME = 'goldrush.config.json';
 
@@ -33,17 +33,60 @@ function deepMerge<T extends Record<string, unknown>>(base: T, override: Record<
   return result;
 }
 
-/** 兼容 goldrush.config.json 中的 llm.models 嵌套写法 */
+/** 解析单个模型配置：支持 { providerID, modelID } 或 "providerID/modelID" 字符串 */
+function parseModelConfig(value: unknown): ModelConfig | null {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) return null;
+  const obj = value as Record<string, unknown>;
+  if (typeof obj.providerID === 'string' && typeof obj.modelID === 'string' && obj.providerID && obj.modelID) {
+    return { providerID: obj.providerID, modelID: obj.modelID };
+  }
+  return null;
+}
+
+/**
+ * 兼容旧配置写法并收口到单一 model：
+ * - llm.model / llm.models（旧八项映射，取任意一项，全一致时等价）
+ * - models（旧八项映射）
+ * - model 字符串 "providerID/modelID"
+ */
 function normalizeUserConfig(raw: Record<string, unknown>): Record<string, unknown> {
   const normalized = { ...raw };
+
   const llm = raw.llm;
   if (llm && typeof llm === 'object' && !Array.isArray(llm)) {
     const llmObj = llm as Record<string, unknown>;
-    if (llmObj.models && typeof llmObj.models === 'object') {
-      normalized.models = llmObj.models;
+    if (llmObj.model !== undefined && normalized.model === undefined) {
+      normalized.model = llmObj.model;
+    }
+    if (llmObj.models && typeof llmObj.models === 'object' && normalized.model === undefined) {
+      normalized.model = llmObj.models;
     }
   }
   delete normalized.llm;
+
+  // 旧 models 八项映射 → 单一 model（未显式给 model 时）
+  if (normalized.model === undefined && normalized.models !== undefined) {
+    normalized.model = normalized.models;
+  }
+  delete normalized.models;
+
+  // model 可能是旧八项映射对象：取第一个合法项
+  if (normalized.model && typeof normalized.model === 'object' && !Array.isArray(normalized.model)) {
+    const obj = normalized.model as Record<string, unknown>;
+    if (obj.providerID === undefined) {
+      const first = Object.values(obj).find(v => parseModelConfig(v) !== null);
+      normalized.model = first ?? null;
+    }
+  }
+  // model 可能是 "providerID/modelID" 字符串
+  if (typeof normalized.model === 'string') {
+    const s = normalized.model;
+    const idx = s.indexOf('/');
+    normalized.model = idx > 0 && idx < s.length - 1
+      ? { providerID: s.slice(0, idx), modelID: s.slice(idx + 1) }
+      : null;
+  }
+
   return normalized;
 }
 

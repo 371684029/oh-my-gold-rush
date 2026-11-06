@@ -52,7 +52,7 @@ const REBUTTAL_PROMPT = `你是黄金投资分析的独立反驳者。你的唯�
 export class RebuttalAgent extends BaseAgent {
   constructor() {
     const config = getConfig();
-    super({ name: 'rebuttal', model: config.models.rebuttal, systemPrompt: REBUTTAL_PROMPT });
+    super({ name: 'rebuttal', model: config.model, systemPrompt: REBUTTAL_PROMPT });
   }
 
   /** 生成反驳分析 */

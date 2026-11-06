@@ -18,7 +18,8 @@ export interface RunManifest {
   horizon: Horizon;
   startedAt: string;
   completedAt: string;
-  models: Record<string, { providerID: string; modelID: string }>;
+  /** 实际生效模型：null = 继承 opencode CLI 默认模型 */
+  model: { providerID: string; modelID: string } | null;
   dataConfidence: number;
   validationWarnings: string[];
   scoreBreakdown: ScoreBreakdown;
@@ -53,7 +54,7 @@ export function buildRunManifest(params: {
     horizon: params.horizon,
     startedAt: params.startedAt,
     completedAt: new Date().toISOString(),
-    models: { ...cfg.models },
+    model: cfg.model ? { ...cfg.model } : null,
     dataConfidence: params.report.dataQuality?.overallConfidence ?? 0,
     validationWarnings: params.report.dataQuality?.warnings ?? [],
     scoreBreakdown: params.scoreBreakdown,

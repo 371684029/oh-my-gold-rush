@@ -1,14 +1,5 @@
 {
-  "models": {
-    "dataCollector": { "providerID": "deepseek", "modelID": "deepseek-flash" },
-    "validator": { "providerID": "deepseek", "modelID": "deepseek-flash" },
-    "technical": { "providerID": "deepseek", "modelID": "deepseek-flash" },
-    "fundamental": { "providerID": "deepseek", "modelID": "deepseek-flash" },
-    "sentiment": { "providerID": "deepseek", "modelID": "deepseek-flash" },
-    "fund": { "providerID": "deepseek", "modelID": "deepseek-flash" },
-    "rebuttal": { "providerID": "deepseek", "modelID": "deepseek-flash" },
-    "orchestrator": { "providerID": "deepseek", "modelID": "deepseek-flash" }
-  },
+  "model": null,
   "search": {
     "tavilyApiKey": "",
     "defaultResults": 5,

@@ -101,7 +101,7 @@ export class DataCollectorAgent extends BaseAgent {
     const config = getConfig();
     super({
       name: 'data-collector',
-      model: config.models.dataCollector,
+      model: config.model,
       systemPrompt: PRICE_COLLECT_PROMPT,
     });
     const db = getDb();

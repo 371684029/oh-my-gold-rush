@@ -57,16 +57,12 @@ export interface NotifyOptions {
 
 /** 全局配置 */
 export interface GoldRushConfig {
-  models: {
-    dataCollector: ModelConfig;
-    validator: ModelConfig;
-    technical: ModelConfig;
-    fundamental: ModelConfig;
-    sentiment: ModelConfig;
-    fund: ModelConfig;
-    rebuttal: ModelConfig;
-    orchestrator: ModelConfig;
-  };
+  /**
+   * LLM 模型（全局单一配置，所有 Agent 共用）。
+   * null = 不传 -m，继承 opencode CLI 自身默认模型（~/.config/opencode/opencode.jsonc 的 model）。
+   * 可写 { providerID, modelID }，或字符串 "providerID/modelID"（normalize 会解析）。
+   */
+  model: ModelConfig | null;
   search: {
     tavilyApiKey: string;
     defaultResults: number;
@@ -85,16 +81,8 @@ export interface GoldRushConfig {
 
 /** 默认配置 */
 export const DEFAULT_CONFIG: GoldRushConfig = {
-  models: {
-    dataCollector: { providerID: 'deepseek', modelID: 'deepseek-flash' },
-    validator: { providerID: 'deepseek', modelID: 'deepseek-flash' },
-    technical: { providerID: 'deepseek', modelID: 'deepseek-flash' },
-    fundamental: { providerID: 'deepseek', modelID: 'deepseek-flash' },
-    sentiment: { providerID: 'deepseek', modelID: 'deepseek-flash' },
-    fund: { providerID: 'deepseek', modelID: 'deepseek-flash' },
-    rebuttal: { providerID: 'deepseek', modelID: 'deepseek-flash' },
-    orchestrator: { providerID: 'deepseek', modelID: 'deepseek-flash' },
-  },
+  // null = 继承 opencode CLI 默认模型（opencode.jsonc 的 "model"）
+  model: null,
   search: {
     tavilyApiKey: '',
     defaultResults: 5,
