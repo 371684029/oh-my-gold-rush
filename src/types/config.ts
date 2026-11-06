@@ -27,6 +27,8 @@ export interface CalibrateOptions {
   ic: boolean;
   /** Walk-forward 样本外 MAE 卫生检查 */
   walkForward: boolean;
+  /** 情景概率 Brier 校准（包 G：预报上行概率 vs 实际上涨频率） */
+  brier: boolean;
 }
 
 /** 周期摘要命令选项 */

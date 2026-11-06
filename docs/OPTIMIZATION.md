@@ -1,7 +1,7 @@
 # GoldRush 优化路线图
 
 > 从五大维度系统评估 GoldRush 的改进空间  
-> 创建：2026-07-13 | 版本：v1.7（2026-07-27：决策质量清单 → `DECISION-QUALITY.md`）
+> 创建：2026-07-13 | 版本：v1.8（2026-11-06：纸面权益/MaxDD + 新鲜度 SLA + 情景 Brier → `OPTIMIZATION-2026-11.md`）
 
 **相关**：  
 - `docs/DATA-QUALITY.md` — 零价/门禁/锚定  
@@ -558,3 +558,4 @@ Signals → Risk & Gates → Portfolio → Explain
 | 2026-07-16 | v1.5 | 可信度一览 + 评分区间 + 三行 TL;DR Web；搜索原文存档 P0；`docs/RELIABILITY.md` |
 | 2026-07-16 | v1.6 | 金融工程/业界借鉴规划入库：`docs/ROADMAP-FINENG.md`；总览增「风险与组合」；第四轮路径 |
 | 2026-07-27 | v1.7 | 决策质量轮收口文档：`docs/DECISION-QUALITY.md`（量化重归一、口径单一来源、三期+中期命中、meta sidecar、FRED 观测日、walk-forward OOS） |
+| 2026-11-06 | v1.8 | 审计轮：`docs/OPTIMIZATION-2026-11.md`（三轴可优化项清单）；落地 ROADMAP 包 B 纸面权益+MaxDD、包 D 门禁新鲜度 SLA、包 G 情景概率 Brier；修复 tearsheet 重叠复利 bug |

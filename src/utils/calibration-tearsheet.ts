@@ -1,9 +1,22 @@
-// 校准 Tearsheet — 区间收益分布 + 简易策略权益曲线
+// 校准 Tearsheet — 区间收益分布 + 纸面权益回放
+//
+// 权益部分自 2026-11 起改用 paper-equity 引擎（日频不重叠 + MaxDD）。
+// 旧实现把重叠的 5 日前瞻收益逐报告复利，报告日更时同一段行情被记多次账，
+// 净值被系统性放大（且硬编码 55/45 违反口径单一来源），已废弃。
 
 import type { AnalysisReportRow } from '../db/reports.js';
 import type { GoldPricesRepo } from '../db/gold-prices.js';
-import { renderEquityCurveSvg } from './chart-svg.js';
+import { renderLineChartSvg } from './chart-svg.js';
 import { SCORE_BUCKETS } from './score-buckets.js';
+import { forwardReturn, validClose } from './forward-return.js';
+import {
+  buildPaperEquity,
+  extractPositionDecisions,
+  formatPaperEquityConsole,
+  formatPaperEquityMarkdown,
+  type PaperEquityBar,
+  type PaperEquityResult,
+} from './paper-equity.js';
 
 export interface BucketReturnStats {
   scoreRange: string;
@@ -15,20 +28,11 @@ export interface BucketReturnStats {
   medianReturn: number;
 }
 
-export interface EquityCurvePoint {
-  date: string;
-  score: number;
-  signal: 'invest' | 'half' | 'pause';
-  return5d: number;
-  cumulativeStrategy: number;
-  cumulativeBenchmark: number;
-}
-
 export interface CalibrationTearsheet {
   bucketStats: BucketReturnStats[];
-  equityCurve: EquityCurvePoint[];
-  strategyTotalReturn: number;
-  benchmarkTotalReturn: number;
+  /** 纸面权益回放（策略 vs 满仓 vs 半仓，日频不重叠） */
+  equity: PaperEquityResult;
+  /** 有完整 5 日前瞻收益、参与分桶统计的报告数 */
   sampleCount: number;
 }
 
@@ -39,19 +43,25 @@ function median(values: number[]): number {
   return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
 }
 
-function scoreToSignal(score: number): 'invest' | 'half' | 'pause' {
-  if (score >= 55) return 'invest';
-  if (score >= 45) return 'half';
-  return 'pause';
+/** 从最早报告日起拉出有效收盘序列（升序），供纸面权益日频回放 */
+function buildBars(reports: AnalysisReportRow[], prices: GoldPricesRepo): PaperEquityBar[] {
+  const sorted = [...reports].sort((a, b) => a.date.localeCompare(b.date));
+  if (sorted.length === 0) return [];
+  const earliest = sorted[0].date;
+  const bars: PaperEquityBar[] = [];
+  const first = prices.getByDate(earliest);
+  if (validClose(first?.londonClose)) {
+    bars.push({ date: earliest, close: first!.londonClose! });
+  }
+  for (const p of prices.getAfter(earliest, 10_000)) {
+    if (validClose(p.londonClose)) {
+      bars.push({ date: p.date, close: p.londonClose! });
+    }
+  }
+  return bars;
 }
 
-function signalWeight(signal: 'invest' | 'half' | 'pause'): number {
-  if (signal === 'invest') return 1;
-  if (signal === 'half') return 0.5;
-  return 0;
-}
-
-/** 从报告与金价构建 tearsheet（5 日持有期） */
+/** 从报告与金价构建 tearsheet（分桶 + 纸面权益） */
 export function buildCalibrationTearsheet(
   reports: AnalysisReportRow[],
   prices: GoldPricesRepo,
@@ -62,33 +72,15 @@ export function buildCalibrationTearsheet(
     bucketReturns.set(range, []);
   }
 
-  const equityCurve: EquityCurvePoint[] = [];
-  let cumStrategy = 100;
-  let cumBenchmark = 100;
-
   const sorted = [...reports].sort((a, b) => a.date.localeCompare(b.date));
+  let sampleCount = 0;
 
   for (const report of sorted) {
-    const current = prices.getByDate(report.date);
-    const future = prices.getAfter(report.date, holdDays);
-    const futurePrice = future.length >= holdDays ? future[holdDays - 1] : null;
-    if (!current?.londonClose || !futurePrice?.londonClose) continue;
-
-    const return5d = (futurePrice.londonClose - current.londonClose) / current.londonClose * 100;
-    const signal = scoreToSignal(report.overallScore);
-    const w = signalWeight(signal);
-
-    cumBenchmark *= 1 + return5d / 100;
-    cumStrategy *= 1 + (return5d * w) / 100;
-
-    equityCurve.push({
-      date: report.date,
-      score: report.overallScore,
-      signal,
-      return5d: Math.round(return5d * 100) / 100,
-      cumulativeStrategy: Math.round(cumStrategy * 100) / 100,
-      cumulativeBenchmark: Math.round(cumBenchmark * 100) / 100,
-    });
+    // 分桶统计：只认完整前瞻窗口（与校准/命中口径一致，走 forward-return 单一来源）
+    const fwd = forwardReturn(prices, report.date, holdDays, { allowPartial: false });
+    if (fwd == null) continue;
+    const return5d = fwd.returnPct;
+    sampleCount++;
 
     for (const { range, min, max } of SCORE_BUCKETS) {
       const isLast = max === 100;
@@ -115,12 +107,12 @@ export function buildCalibrationTearsheet(
     });
   }
 
+  const equity = buildPaperEquity(buildBars(reports, prices), extractPositionDecisions(reports));
+
   return {
     bucketStats,
-    equityCurve,
-    strategyTotalReturn: Math.round((cumStrategy - 100) * 100) / 100,
-    benchmarkTotalReturn: Math.round((cumBenchmark - 100) * 100) / 100,
-    sampleCount: equityCurve.length,
+    equity,
+    sampleCount,
   };
 }
 
@@ -142,17 +134,25 @@ export function formatTearsheetConsole(sheet: CalibrationTearsheet): string {
   }
 
   lines.push('');
-  lines.push(`  📈 模拟权益曲线（起点 100，${sheet.sampleCount} 个有效样本）`);
-  lines.push(`  策略（≥55 全投 / 45–54 半投 / <45 暂停）: ${sheet.strategyTotalReturn >= 0 ? '+' : ''}${sheet.strategyTotalReturn.toFixed(2)}%`);
-  lines.push(`  基准（每报告日均定投）: ${sheet.benchmarkTotalReturn >= 0 ? '+' : ''}${sheet.benchmarkTotalReturn.toFixed(2)}%`);
-
-  if (sheet.equityCurve.length >= 2) {
-    const last = sheet.equityCurve[sheet.equityCurve.length - 1];
-    const first = sheet.equityCurve[0];
-    lines.push(`  期末净值 — 策略 ${last.cumulativeStrategy.toFixed(1)} | 基准 ${last.cumulativeBenchmark.toFixed(1)}（自 ${first.date}）`);
-  }
+  lines.push(formatPaperEquityConsole(sheet.equity));
 
   return lines.join('\n');
+}
+
+/** 策略 vs 满仓 持有净值曲线 SVG（最多取最近 40 个点） */
+export function renderPaperEquitySvg(equity: PaperEquityResult, maxPoints = 40): string {
+  const slice = equity.points.length > maxPoints ? equity.points.slice(-maxPoints) : equity.points;
+  if (slice.length < 2) {
+    return renderLineChartSvg([], []);
+  }
+  return renderLineChartSvg(
+    slice.map(p => p.date),
+    [
+      { label: '策略(推荐仓位)', color: '#f59e0b', values: slice.map(p => p.strategyNav) },
+      { label: '满仓持有', color: '#60a5fa', values: slice.map(p => p.holdNav) },
+      { label: '固定50%', color: '#94a3b8', values: slice.map(p => p.halfNav) },
+    ],
+  );
 }
 
 /** Markdown 导出 */
@@ -177,35 +177,15 @@ export function formatTearsheetMarkdown(sheet: CalibrationTearsheet, periodLabel
   }
 
   lines.push('');
-  lines.push('## 模拟权益曲线');
-  lines.push('');
-  if (sheet.equityCurve.length >= 2) {
+  if (sheet.equity.points.length >= 2) {
     lines.push('<div class="equity-chart">');
     lines.push('');
-    lines.push(renderEquityCurveSvg(sheet.equityCurve));
+    lines.push(renderPaperEquitySvg(sheet.equity));
     lines.push('');
     lines.push('</div>');
     lines.push('');
   }
-  lines.push(`- **策略**（≥55 全投 / 45–54 半投 / <45 暂停）：累计 **${sheet.strategyTotalReturn >= 0 ? '+' : ''}${sheet.strategyTotalReturn.toFixed(2)}%**`);
-  lines.push(`- **基准**（每期均投）：累计 **${sheet.benchmarkTotalReturn >= 0 ? '+' : ''}${sheet.benchmarkTotalReturn.toFixed(2)}%**`);
-  lines.push('');
-  lines.push('| 日期 | 评分 | 信号 | 5日收益 | 策略净值 | 基准净值 |');
-  lines.push('|------|------|------|---------|----------|----------|');
-
-  for (const p of sheet.equityCurve.slice(-20)) {
-    const sig = p.signal === 'invest' ? '全投' : p.signal === 'half' ? '半投' : '暂停';
-    lines.push(
-      `| ${p.date} | ${p.score} | ${sig} | ${p.return5d >= 0 ? '+' : ''}${p.return5d.toFixed(2)}% `
-      + `| ${p.cumulativeStrategy.toFixed(1)} | ${p.cumulativeBenchmark.toFixed(1)} |`,
-    );
-  }
-
-  if (sheet.equityCurve.length > 20) {
-    lines.push('');
-    lines.push(`> 上表仅展示最近 20 条，共 ${sheet.equityCurve.length} 条。`);
-  }
-
+  lines.push(formatPaperEquityMarkdown(sheet.equity));
   lines.push('');
   lines.push('---');
   lines.push('');

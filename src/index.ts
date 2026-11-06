@@ -96,10 +96,11 @@ program
   .description('回测校准（验证历史分析准确率）')
   .option('--days <n>', '回顾天数', '30')
   .option('--detail', '按评分区间细分校准')
-  .option('--tearsheet', '输出区间收益分布与模拟权益曲线')
+  .option('--tearsheet', '输出区间收益分布与纸面权益回放（日频不重叠 + MaxDD）')
   .option('--md', '导出 Tearsheet 到 docs/')
   .option('--ic', '输出量化因子 Spearman IC（研究卫生，不自动改权重）')
   .option('--walk-forward', 'Walk-forward：前半训练 / 后半样本外 MAE')
+  .option('--brier', '情景概率 Brier 校准（预报上行概率 vs 实际上涨频率）')
   .action(async (opts) => {
     try {
       await calibrateCommand({
@@ -109,6 +110,7 @@ program
         md: opts.md ?? false,
         ic: opts.ic ?? false,
         walkForward: opts.walkForward ?? false,
+        brier: opts.brier ?? false,
       });
     } finally {
       closeDb();

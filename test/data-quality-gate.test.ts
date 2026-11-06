@@ -126,3 +126,85 @@ describe('evaluateDataQualityGate', () => {
     expect(g.actionable).toBe(true);
   });
 });
+
+describe('数据新鲜度 SLA（包 D）', () => {
+  const NOW = new Date('2026-11-06T12:00:00.000Z');
+  const hoursAgo = (h: number) => new Date(NOW.getTime() - h * 3_600_000).toISOString();
+
+  function mkFreshMarket(londonAgeH: number, dxyAgeH?: number): MarketData {
+    const md = mkMarket({ london: 4050, shanghai: 910, dxy: 104 });
+    md.london.price.verifiedAt = hoursAgo(londonAgeH);
+    md.shanghai.price.verifiedAt = hoursAgo(1);
+    md.etf.nav.verifiedAt = hoursAgo(1);
+    if (dxyAgeH != null) md.dollarIndex.value.verifiedAt = hoursAgo(dxyAgeH);
+    return md;
+  }
+
+  it('伦敦金 >96h 未更新 → red 硬拦', () => {
+    const g = evaluateDataQualityGate({
+      marketData: mkFreshMarket(120),
+      overallConfidence: 75,
+      anchorGoldPrice: 4050,
+      now: NOW,
+    });
+    expect(g.tier).toBe('red');
+    expect(g.actionable).toBe(false);
+    expect(g.reasons.some(r => r.includes('120 小时未更新'))).toBe(true);
+    expect(g.staleFields.some(s => s.includes('伦敦金'))).toBe(true);
+  });
+
+  it('伦敦金 48–96h（跨周末）→ 从 green 降为 yellow，仍可操作', () => {
+    const g = evaluateDataQualityGate({
+      marketData: mkFreshMarket(60),
+      overallConfidence: 75,
+      anchorGoldPrice: 4050,
+      now: NOW,
+    });
+    expect(g.tier).toBe('yellow');
+    expect(g.actionable).toBe(true);
+    expect(g.reasons.some(r => r.includes('60 小时前验证'))).toBe(true);
+  });
+
+  it('伦敦金新鲜 → green 不受影响', () => {
+    const g = evaluateDataQualityGate({
+      marketData: mkFreshMarket(1),
+      overallConfidence: 75,
+      anchorGoldPrice: 4050,
+      now: NOW,
+    });
+    expect(g.tier).toBe('green');
+    expect(g.staleFields).toHaveLength(0);
+  });
+
+  it('可选字段（美元指数）>7 天未更新 → yellow 提示', () => {
+    const g = evaluateDataQualityGate({
+      marketData: mkFreshMarket(1, 10 * 24),
+      overallConfidence: 75,
+      anchorGoldPrice: 4050,
+      now: NOW,
+    });
+    expect(g.tier).toBe('yellow');
+    expect(g.reasons.some(r => r.includes('美元指数数据已 10 天未更新'))).toBe(true);
+  });
+
+  it('verifiedAt 无法解析 → 不臆断为过期（兼容旧 fixture）', () => {
+    const g = evaluateDataQualityGate({
+      marketData: mkMarket({ london: 4050, shanghai: 910, dxy: 104 }), // verifiedAt: 't'
+      overallConfidence: 75,
+      anchorGoldPrice: 4050,
+      now: NOW,
+    });
+    expect(g.tier).toBe('green');
+    expect(g.staleFields).toHaveLength(0);
+  });
+
+  it('周日场景：周五收盘数据 36h → 不触发新鲜度提示', () => {
+    const g = evaluateDataQualityGate({
+      marketData: mkFreshMarket(36),
+      overallConfidence: 75,
+      anchorGoldPrice: 4050,
+      now: NOW,
+    });
+    expect(g.tier).toBe('green');
+  });
+});

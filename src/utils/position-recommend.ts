@@ -82,7 +82,11 @@ function clamp(n: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, n));
 }
 
-function scoreToBasePct(score: number): number {
+/**
+ * 综合分 → 基础目标仓 %（仓位推荐的核心映射，单一来源）。
+ * 纸面权益回放等历史重建场景必须复用本映射，禁止另写一套档位表。
+ */
+export function scoreToBasePct(score: number): number {
   if (score <= 25) return 25;
   if (score <= 35) return 35;
   if (score <= 45) return 45;

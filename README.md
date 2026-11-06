@@ -94,6 +94,9 @@ goldrush flow
 | `goldrush fund` | 黄金基金对比（费率/溢价/定投信号） |
 | `goldrush calibrate` | 回测校准（历史准确率统计） |
 | `goldrush calibrate --days 90` | 回顾 90 天 |
+| `goldrush calibrate --tearsheet` | 区间收益分布 + **纸面权益回放**（日频不重叠 + MaxDD，策略 vs 满仓 vs 半仓） |
+| `goldrush calibrate --brier` | **情景概率 Brier 校准**（预报上行概率 vs 实际上涨频率） |
+| `goldrush calibrate --md` | 导出 Tearsheet / IC / walk-forward / Brier 到 docs/ |
 | `goldrush snapshot` | 手动保存当日数据快照 |
 | `goldrush init-history` | Yahoo GC=F 回填 60 天 |
 | `goldrush history` | 查看历史金价/报告/基金 |
@@ -292,7 +295,7 @@ node dist/index.js outlook --md     # docs/goldrush-outlook-latest.md
 
 风险约束仓位 v2、纸面 MaxDD、Regime 命中、因子 IC、walk-forward 等 **规划与反模式** 见：
 
-→ **[docs/ROADMAP-FINENG.md](./docs/ROADMAP-FINENG.md)** · 摘要索引 [docs/OPTIMIZATION.md](./docs/OPTIMIZATION.md) v1.7 · 决策质量总清单 [docs/DECISION-QUALITY.md](./docs/DECISION-QUALITY.md)
+→ **[docs/ROADMAP-FINENG.md](./docs/ROADMAP-FINENG.md)** · 摘要索引 [docs/OPTIMIZATION.md](./docs/OPTIMIZATION.md) v1.8 · 决策质量总清单 [docs/DECISION-QUALITY.md](./docs/DECISION-QUALITY.md) · 2026-11 审计 [docs/OPTIMIZATION-2026-11.md](./docs/OPTIMIZATION-2026-11.md)
 
 `analysis --md` 额外输出两块，并写入供 Web 读取：
 
@@ -320,6 +323,28 @@ node dist/index.js calibrate --days 90 --detail
 - **排除**无效金价、报告数据红档样本
 
 校准上下文仍会注入综合编排 prompt（LLM 分区间历史涨概率）。
+
+### 纸面权益回放与情景校准（2026-11）
+
+回答两个此前没有数字的问题：
+
+**「按建议操作会怎样？」** —— `calibrate --tearsheet` 输出日频不重叠的纸面权益回放（决策日收盘 → 次日收益，无前视；仓位优先用入库的推荐仓位，旧报告按分数映射近似并标注）：
+
+```bash
+node dist/index.js calibrate --tearsheet --days 120
+# 📈 纸面权益回放（日频不重叠 · 决策日收盘 → 次日收益）
+#   策略(推荐仓位)  累计 +1.67% · MaxDD 7.4%
+#   满仓持有        累计 -0.40% · MaxDD 18%
+#   固定50%标配     累计 +0.38% · MaxDD 9.1%
+```
+
+**「情景概率报得准吗？」** —— `calibrate --brier` 对三情景中的上行概率做 Brier 校准（含气候学基准、技巧分、可靠性分桶）。2026-11 实测技巧分为负（预报概率接近噪音），因此情景概率只作叙事参考、不进仓位。完整读数与改进方向见 [docs/OPTIMIZATION-2026-11.md](./docs/OPTIMIZATION-2026-11.md)。
+
+> 纸面权益为简化模拟（不计费率滑点），单段行情不构成策略有效的统计证据；非投资业绩承诺。
+
+### 数据新鲜度门禁（2026-11）
+
+门禁在「无金价 / 锚定偏差 / 低置信度」之外新增**新鲜度 SLA**：伦敦金 `verifiedAt` >48h 未更新降黄（覆盖正常周末）、>96h 硬拦红档（连续多日采集失败或来源停更）；可选字段 >7 天提示。绿灯要求无任何新鲜度提示，旧报价不再能凭「数字合法」混进高可信报告。
 
 ---
 
@@ -501,6 +526,7 @@ npm test
 | [docs/POSITION-AND-TRACK.md](./docs/POSITION-AND-TRACK.md) | **仓位推荐 + 历史预测对错**（Web 统计面板） |
 | [docs/RELIABILITY.md](./docs/RELIABILITY.md) | **可信度一览 / 评分区间 / 搜索原文存档** |
 | [docs/ROADMAP-FINENG.md](./docs/ROADMAP-FINENG.md) | **金融工程 + 业界借鉴后续包**（仓位 v2 / MaxDD / IC…） |
+| [docs/OPTIMIZATION-2026-11.md](./docs/OPTIMIZATION-2026-11.md) | **2026-11 审计轮**（三轴可优化项清单：准确性/数据/收益风险） |
 | [docs/DATA-QUALITY.md](./docs/DATA-QUALITY.md) | **数据质量**（零价/门禁/锚定/Web 色点） |
 | [docs/FLOW-PLAN.md](./docs/FLOW-PLAN.md) | 主力动向监测设计规划 |
 | [docs/OPTIMIZATION.md](./docs/OPTIMIZATION.md) | 优化路线图（五维度 + 完成状态；链到 FINENG） |
@@ -521,5 +547,6 @@ npm test
 - 报告中的「数据置信度」、红/黄/绿门禁、双分偏差需优先阅读
 - 若出现「价格为 0 / 数据真空」：见 `docs/DATA-QUALITY.md`；检查 opencode、Tavily、出站
 - `calibrate` 建议积累 20 天以上**有效**金价；坏样本/红档会自动排除
+- 纸面权益 / 命中率 / Brier 均为研究统计，**不是业绩承诺**；样本不足 10 次不具统计意义
 - Tavily API 免费额度约 1000 次/月
 - 主力：`flow --init` 回填 CFTC；**GLD/PBOC 优先东财新闻解析**（现网可用）；失败不编造

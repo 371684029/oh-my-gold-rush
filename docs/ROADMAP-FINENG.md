@@ -236,13 +236,13 @@ target = smooth(target, prev, maxΔ=10)  # 日度仓位别跳 30%
 | 包 | 状态 | 日期 | 备注 |
 |----|------|------|------|
 | A 风险约束仓位 v2 | ✅ 已落地 | 2026-07-16 | 波动缩放+回撤+日平滑±10；Web 风险角标 |
-| B 纸面权益 / MaxDD | ⬜ 未开始 | — | |
+| B 纸面权益 / MaxDD | ✅ 已落地 | 2026-11-06 | `calibrate --tearsheet`/`--md`；日频不重叠回放 + MaxDD + 三曲线（策略/满仓/半仓）；stored 仓位优先、proxy 近似标注；详见 `OPTIMIZATION-2026-11.md` |
 | C Regime 命中 Web | 🟡 部分 | 2026-07-24 | MD「同阶段校准」行；Web 仍可加强 |
-| D 新鲜度 SLA | ⬜ 未开始 | — | |
+| D 新鲜度 SLA | ✅ 已落地 | 2026-11-06 | 门禁 `verifiedAt` 年龄：伦敦金 >48h 黄 / >96h 红；可选字段 >7 天提示；`staleFields` 输出 |
 | E 因子 IC | ✅ 已落地 | 2026-07-24 | `calibrate --ic`；Spearman；失效仅展示不自动改权 |
-| F Walk-forward | ✅ 已落地 | 2026-07-27 | 训练/测试 MAE + **测试窗 OOS 方向命中**（CI/基准）；「训练偏移→测试应用」仍未做 |
-| G 情景校准 | ⬜ 未开始 | — | |
-| H Snippet 对账 | ⬜ 未开始 | — | 存档已有 |
+| F Walk-forward | ✅ 已落地 | 2026-07-27 | 训练/测试 MAE + **测试窗 OOS 方向命中**（CI/基准）；「训练偏移→测试应用」仍未做（见 OPTIMIZATION-2026-11 A2） |
+| G 情景校准 | ✅ 已落地 | 2026-11-06 | `calibrate --brier`：Brier + 气候学基准 + 技巧分 + 可靠性分桶；实测技巧分 -0.2，下一步向基率收缩 |
+| H Snippet 对账 | ⬜ 未开始 | — | 存档已有；见 OPTIMIZATION-2026-11 D1 |
 | I 金银比等 | ⬜ 未开始 | — | P2 |
 | J 真实性仪表盘 | ⬜ 未开始 | — | P2 |
 | K 评分-金价图 | ⬜ 未开始 | — | P2 |
@@ -267,3 +267,4 @@ target = smooth(target, prev, maxΔ=10)  # 日度仓位别跳 30%
 | 2026-07-24 | 用户价值：事件→黄金传导卡 + 今日必看清单（`docs/USER-VALUE.md`） |
 | 2026-07-24 | **暂定**：传导不加量化因子 / `event_heat` 保持 0（防噪音） |
 | 2026-07-27 | 决策质量轮：量化重归一、口径单一来源、中期档+20 日命中、三期条、meta sidecar、FRED 观测日、backfill sanitize、walk-forward OOS；清单见 `DECISION-QUALITY.md` |
+| 2026-11-06 | 包 B/D/G 落地：纸面权益+MaxDD（日频不重叠，修复旧 tearsheet 重叠复利 bug）、门禁新鲜度 SLA、情景概率 Brier；审计与下一步见 `OPTIMIZATION-2026-11.md` |

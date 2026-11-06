@@ -8,9 +8,10 @@ import {
   buildCalibrationTearsheet,
   formatTearsheetConsole,
   formatTearsheetMarkdown,
+  renderPaperEquitySvg,
 } from '../utils/calibration-tearsheet.js';
-import { renderEquityCurveSvg } from '../utils/chart-svg.js';
 import { computeFactorIc, formatFactorIcConsole, formatFactorIcMarkdown } from '../utils/factor-ic.js';
+import { computeScenarioBrier, formatScenarioBrierConsole, formatScenarioBrierMarkdown } from '../utils/scenario-brier.js';
 import { summarizeWalkForward, formatWalkForwardConsole, formatWalkForwardMarkdown, computeOosHitStats } from '../utils/walk-forward.js';
 import { header, separator } from '../utils/format.js';
 import chalk from 'chalk';
@@ -66,6 +67,16 @@ export async function calibrateCommand(options: CalibrateOptions): Promise<void>
     } else {
       console.log(chalk.yellow('\n  🚶 Walk-forward：报告不足 10 条，跳过'));
     }
+  }
+
+  // 情景概率 Brier 校准（包 G）
+  let scenarioBrier = null as ReturnType<typeof computeScenarioBrier> | null;
+  if (options.brier || options.md) {
+    scenarioBrier = computeScenarioBrier(
+      reportsRepo.getRecent(Math.max(options.days, 90)),
+      pricesRepo,
+      5,
+    );
   }
 
   // 输出
@@ -191,7 +202,11 @@ export async function calibrateCommand(options: CalibrateOptions): Promise<void>
     console.log('\n' + formatWalkForwardConsole(walkForward));
   }
 
-  if (options.md && (tearsheet || factorIc || walkForward)) {
+  if (scenarioBrier && options.brier) {
+    console.log('\n' + formatScenarioBrierConsole(scenarioBrier));
+  }
+
+  if (options.md && (tearsheet || factorIc || walkForward || scenarioBrier)) {
     const fs = await import('node:fs');
     const docsDir = 'docs';
     if (!fs.existsSync(docsDir)) fs.mkdirSync(docsDir, { recursive: true });
@@ -200,16 +215,17 @@ export async function calibrateCommand(options: CalibrateOptions): Promise<void>
     if (tearsheet) parts.push(formatTearsheetMarkdown(tearsheet, periodLabel));
     if (factorIc) parts.push(formatFactorIcMarkdown(factorIc));
     if (walkForward) parts.push(formatWalkForwardMarkdown(walkForward));
+    if (scenarioBrier) parts.push(formatScenarioBrierMarkdown(scenarioBrier));
     const content = parts.join('\n');
     const dated = `${docsDir}/goldrush-calibration-${new Date().toISOString().slice(0, 10)}.md`;
     const latest = `${docsDir}/goldrush-calibration-latest.md`;
     fs.writeFileSync(dated, content, 'utf-8');
     fs.writeFileSync(latest, content, 'utf-8');
-    if (tearsheet?.equityCurve && tearsheet.equityCurve.length >= 2) {
-      const svg = renderEquityCurveSvg(tearsheet.equityCurve);
+    if (tearsheet && tearsheet.equity.points.length >= 2) {
+      const svg = renderPaperEquitySvg(tearsheet.equity);
       const svgLatest = `${docsDir}/goldrush-calibration-equity-latest.svg`;
       fs.writeFileSync(svgLatest, svg, 'utf-8');
-      console.log(`  📈 权益曲线 SVG: ${svgLatest}`);
+      console.log(`  📈 纸面权益曲线 SVG: ${svgLatest}`);
     }
     console.log(`\n  📝 校准导出已写入 ${dated}`);
   }
