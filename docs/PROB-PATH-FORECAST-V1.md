@@ -2,7 +2,16 @@
 
 > 状态：**v1 范围已锁定**（2026-11-26 产品确认；编码未开始）  
 > 创建：2026-11-26  
-> 相关：`ROADMAP-FINENG.md` · `DECISION-QUALITY.md` · `HORIZONS.md` · `forward-return.ts` · `scenario-probability.ts` · `calibration-tearsheet.ts`
+> 相关：`ROADMAP-FINENG.md` · `DECISION-QUALITY.md` · `HORIZONS.md` · `forward-return.ts` · `scenario-probability.ts` · `calibration-tearsheet.ts`  
+> **调研（大版本界定 / 三面关系 / 外部参考）**：[`PROB-PATH-FORECAST-RESEARCH.md`](./PROB-PATH-FORECAST-RESEARCH.md)
+
+### 「大版本」指什么（摘要）
+
+| 项 | 说明 |
+|----|------|
+| **不是** | npm `goldrush` 升到 `1.0.0` |
+| **是** | 功能包 **L — Prob Path Forecast v1.0**（概率路径扇形图首发） |
+| **结论来源** | **经验路径分位**；条件于 **综合评分分桶 + 相似日特征**（特征含技术/宏观/情绪/资金）；**不由 LLM 直接画线** |
 
 ---
 
