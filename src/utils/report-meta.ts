@@ -13,6 +13,7 @@ import type { DataQualityGate } from './data-quality-gate.js';
 import type { PositionRecommendation } from './position-recommend.js';
 import type { ReliabilityCard } from './reliability-card.js';
 import { resolveOperationalAdvice } from './plain-advice.js';
+import type { ProbPathMeta } from './prob-path-types.js';
 
 export const REPORT_META_SCHEMA = 1 as const;
 
@@ -69,6 +70,8 @@ export interface ReportMeta {
   long: ReportMetaHorizon | null;
   midTerm: MidTermOutlook | null;
   longTerm: LongTermOutlook | null;
+  /** 概率路径扇形（可选，v1 扩展） */
+  probPath?: ProbPathMeta | null;
 }
 
 export interface BuildReportMetaInput {
@@ -79,6 +82,7 @@ export interface BuildReportMetaInput {
   reliabilityCard?: ReliabilityCard | null;
   scoreLow?: number | null;
   scoreHigh?: number | null;
+  probPath?: ProbPathMeta | null;
 }
 
 export function buildReportMeta(input: BuildReportMetaInput): ReportMeta {
@@ -188,6 +192,7 @@ export function buildReportMeta(input: BuildReportMetaInput): ReportMeta {
       : null,
     midTerm: report.midTermOutlook ?? null,
     longTerm: report.longTermOutlook ?? null,
+    probPath: input.probPath ?? null,
   };
 }
 

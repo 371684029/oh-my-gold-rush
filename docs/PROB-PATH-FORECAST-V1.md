@@ -1,6 +1,6 @@
 # 概率路径图（Prob Path Forecast）v1 — 需求规格
 
-> 状态：**v1 范围已锁定**（2026-11-26 产品确认；编码未开始）  
+> 状态：**v1 实现中**（契约见 [`PROB-PATH-META-SCHEMA.md`](./PROB-PATH-META-SCHEMA.md)）  
 > 创建：2026-11-26  
 > 相关：`ROADMAP-FINENG.md` · `DECISION-QUALITY.md` · `HORIZONS.md` · `forward-return.ts` · `scenario-probability.ts` · `calibration-tearsheet.ts`  
 > **调研（大版本界定 / 三面关系 / 外部参考）**：[`PROB-PATH-FORECAST-RESEARCH.md`](./PROB-PATH-FORECAST-RESEARCH.md)  
@@ -182,9 +182,11 @@
 
 编码验收（实现阶段）：
 
-- `npm run lint` + `npm test`；
-- 无 LLM 亦可出图；
-- meta `schemaVersion` 与 Web 回落策略文档化。
+- `npm run lint` + `npm test`（含 `test/prob-path-forecast.test.ts`）；
+- `goldrush path` 无 LLM 可出 SVG；
+- `analysis --md` 写 `probPath` 至 sidecar + 内嵌 SVG；
+- 边界用例见 **PROB-PATH-META-SCHEMA §验收**；
+- 图例文案见 **PROB-PATH-META-SCHEMA §冷启动**。
 
 ---
 

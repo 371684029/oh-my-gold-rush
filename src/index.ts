@@ -13,6 +13,7 @@ import { digestCommand } from './commands/digest.js';
 import { reflectCommand } from './commands/reflect.js';
 import { notifyCommand } from './commands/notify.js';
 import { outlookCommand } from './commands/outlook.js';
+import { pathCommand } from './commands/path.js';
 import { flowCommand } from './commands/flow.js';
 import { dashboardCommand } from './commands/dashboard.js';
 import { closeDb } from './db/index.js';
@@ -233,6 +234,20 @@ program
   .action(async (dateA: string, dateB: string, opts) => {
     try {
       diffCommand(dateA, dateB, opts.json ?? false);
+    } finally {
+      closeDb();
+    }
+  });
+
+program
+  .command('path')
+  .description('概率路径扇形图（分桶→相似日→P10/P50/P90，纯本地 SVG）')
+  .option('--date <YYYY-MM-DD>', '决策日（默认今日或最近报告日）')
+  .option('--json', '输出 probPath JSON')
+  .action(async (opts) => {
+    try {
+      const code = pathCommand({ date: opts.date, json: opts.json ?? false });
+      if (code !== 0) process.exit(code);
     } finally {
       closeDb();
     }

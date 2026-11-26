@@ -1,7 +1,7 @@
 # 概率路径扇形图（Prob Path Fan）— 架构图
 
 > 功能包：**L — Prob Path Forecast v1.0**  
-> 配套：[`PROB-PATH-FORECAST-V1.md`](./PROB-PATH-FORECAST-V1.md) · [`PROB-PATH-FORECAST-RESEARCH.md`](./PROB-PATH-FORECAST-RESEARCH.md)  
+> 配套：[`PROB-PATH-FORECAST-V1.md`](./PROB-PATH-FORECAST-V1.md) · [`PROB-PATH-FORECAST-RESEARCH.md`](./PROB-PATH-FORECAST-RESEARCH.md) · [`PROB-PATH-META-SCHEMA.md`](./PROB-PATH-META-SCHEMA.md)  
 > 图例：实线框 = 已有模块；虚线框 = v1 拟新增；`[(DB)]` = SQLite 表
 
 ---
@@ -219,3 +219,4 @@ flowchart TB
 | 日期 | 说明 |
 |------|------|
 | 2026-11-26 | 初版：总览四层图、样本瀑布、模块映射、信息边界图 |
+| 2026-11-26 | 链入 V1 / RESEARCH / ROADMAP |

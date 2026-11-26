@@ -34,6 +34,7 @@ const {
   gateFromMeta,
   dualFromMeta,
 } = require('./web/report-meta.cjs');
+const { renderProbPathPanel } = require('./web/prob-path-panel.cjs');
 
 /** macOS 风格窗口标题栏（装饰性 traffic lights） */
 function macTitlebar(label = '') {
@@ -1534,6 +1535,7 @@ function renderArticle(mdFilename, rawMarkdown) {
 
   // 三期决策条置于文章最顶部：短/中/长一屏看完再决定要不要细读
   const horizonStripHtml = kind === 'analysis' ? renderHorizonStrip(rawMarkdown, meta) : '';
+  const probPathHtml = kind === 'analysis' ? renderProbPathPanel(meta, DOCS_DIR) : '';
 
   // Quick-read card only for analysis
   const quickReadHtml = kind === 'analysis' ? renderQuickRead({
@@ -1648,6 +1650,7 @@ function renderArticle(mdFilename, rawMarkdown) {
     <div class="article-main">
       ${flowDashboardHtml}
       ${horizonStripHtml}
+      ${probPathHtml}
       ${quickReadHtml}
       ${dashboardHtml}
       <div class="article-shell mac-window">

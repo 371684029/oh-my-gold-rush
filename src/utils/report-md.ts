@@ -37,6 +37,8 @@ import type { EventGoldTransmission } from './event-transmission.js';
 import { formatTransmissionMarkdown } from './event-transmission.js';
 import type { ReadingChecklist } from './reading-checklist.js';
 import { formatReadingChecklistMarkdown } from './reading-checklist.js';
+import type { ProbPathMeta } from './prob-path-types.js';
+import { formatProbPathMarkdown } from './prob-path-md.js';
 
 export interface ReportMarkdownExtras {
   macroRegime?: MacroRegime;
@@ -54,6 +56,8 @@ export interface ReportMarkdownExtras {
   dayDelta?: DayDelta;
   transmission?: EventGoldTransmission;
   readingChecklist?: ReadingChecklist;
+  probPath?: ProbPathMeta | null;
+  probPathSvgs?: { svg5?: string; svg20?: string };
 }
 
 function dirText(d: string | undefined): string {
@@ -137,6 +141,10 @@ export function formatReportMarkdown(
   const pos = extras?.positionRec;
   if (pos) {
     lines.push(formatPositionMarkdown(pos));
+  }
+
+  if (extras?.probPath) {
+    lines.push(formatProbPathMarkdown(extras.probPath, extras.probPathSvgs));
   }
 
   const predTrack = extras?.predictionTrack;

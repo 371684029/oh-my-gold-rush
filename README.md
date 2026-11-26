@@ -125,6 +125,7 @@ goldrush flow
 | `goldrush reflect --days 14 --md` | 周末预测错因反思（打脸分桶+下周清单） |
 | `goldrush notify --test` | Webhook 连通性测试 |
 | `goldrush outlook` | **1/3/5 年长期档**（配置向·慢变量；`outlook --md` 写 docs） |
+| `goldrush path` | **概率路径扇形**（5/20 日 P10/P50/P90 SVG，纯本地；`analysis --md` 同步） |
 
 ---
 

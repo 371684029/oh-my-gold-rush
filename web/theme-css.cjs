@@ -145,6 +145,15 @@ button:focus-visible, .sort-btn:focus-visible, .collapse-btn:focus-visible {
     background 0.2s var(--ease), border-color 0.2s var(--ease);
 }
 
+.prob-path-panel { margin: 0 0 14px; padding: 16px 18px; border-radius: var(--radius-md); background: var(--glass); border: 0.5px solid var(--hairline); }
+.prob-path-head { margin-bottom: 10px; }
+.prob-path-title { font-size: 1rem; font-weight: 600; margin: 0 0 6px; }
+.prob-path-sub, .prob-path-summary, .prob-path-struct { font-size: 0.82rem; color: var(--text-2); margin: 4px 0; }
+.prob-path-chart svg { display: block; max-width: 100%; height: auto; margin: 8px 0; }
+.prob-path-tab { margin-bottom: 8px; }
+.prob-path-gate { color: var(--red-text); font-size: 0.8rem; margin-top: 8px; }
+.prob-path-note { font-size: 0.75rem; color: var(--text-3); margin-top: 6px; }
+
 .pos-panel, .pred-stats-panel, .rel-panel, .dd-panel, .read-panel, .tr-panel {
   margin: 0 0 14px;
   padding: 18px 20px;

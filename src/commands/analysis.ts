@@ -10,6 +10,7 @@ import chalk from 'chalk';
 import { header, separator, directionMark, scoreBar, changeColor, riskLevel, valuationMark, sessionMark } from '../utils/format.js';
 import { formatReportMarkdown } from '../utils/report-md.js';
 import { buildReportMeta, saveReportMeta } from '../utils/report-meta.js';
+import { attachProbPath } from '../utils/prob-path-attach.js';
 import { computeTailRiskIndex } from '../utils/tail-risk.js';
 import { getConfig } from '../utils/config.js';
 import { buildScoreBreakdown, extendBreakdownWithCalibration, formatScoreBreakdownConsole, formatScoreBreakdownOneLine } from '../utils/score-breakdown.js';
@@ -649,10 +650,20 @@ export async function analysisCommand(options: {
     const docsDir = 'docs';
     if (!fs.existsSync(docsDir)) fs.mkdirSync(docsDir, { recursive: true });
     const filename = `${docsDir}/goldrush-analysis-${new Date().toISOString().slice(0, 10)}.md`;
+    const asOf = report.timestamp.slice(0, 10);
+    const attached = attachProbPath({
+      db: getDb(),
+      asOf,
+      score: report.overall.score,
+      docsDir,
+      dataQualityGate,
+    });
     const mdContent = formatReportMarkdown(report, options.horizon, {
       ...reportExtras,
       dataQualityGate,
       dualVerdict,
+      probPath: attached?.meta ?? null,
+      probPathSvgs: attached ? { svg5: attached.svg5, svg20: attached.svg20 } : undefined,
     });
     fs.writeFileSync(filename, mdContent, 'utf-8');
     const meta = buildReportMeta({
@@ -661,10 +672,14 @@ export async function analysisCommand(options: {
       dataQualityGate,
       positionRec,
       reliabilityCard,
+      probPath: attached?.meta ?? null,
     });
     const metaPath = saveReportMeta(filename, meta);
     console.log(`\n📝 报告已保存为 Markdown: ${filename}`);
     console.log(`   结构化 sidecar: ${metaPath}`);
+    if (attached?.meta) {
+      console.log(`   概率路径: n=${attached.meta.sampleSize} (${attached.meta.degraded})`);
+    }
   }
 
   // 清理
@@ -913,9 +928,20 @@ async function runSmartAnalysis(
     const docsDir = 'docs';
     if (!fs.existsSync(docsDir)) fs.mkdirSync(docsDir, { recursive: true });
     const filename = `${docsDir}/goldrush-analysis-${today}.md`;
+    const attached = attachProbPath({
+      db,
+      asOf: today,
+      score: report.overall.score,
+      docsDir,
+      dataQualityGate,
+    });
     fs.writeFileSync(
       filename,
-      formatReportMarkdown(report, options.horizon, reportExtras),
+      formatReportMarkdown(report, options.horizon, {
+        ...reportExtras,
+        probPath: attached?.meta ?? null,
+        probPathSvgs: attached ? { svg5: attached.svg5, svg20: attached.svg20 } : undefined,
+      }),
       'utf-8',
     );
     const meta = buildReportMeta({
@@ -924,10 +950,14 @@ async function runSmartAnalysis(
       dataQualityGate,
       positionRec,
       reliabilityCard,
+      probPath: attached?.meta ?? null,
     });
     const metaPath = saveReportMeta(filename, meta);
     console.log(`\n📝 报告已保存为 Markdown: ${filename}`);
     console.log(`   结构化 sidecar: ${metaPath}`);
+    if (attached?.meta) {
+      console.log(`   概率路径: n=${attached.meta.sampleSize} (${attached.meta.degraded})`);
+    }
   }
 
   return 0;
