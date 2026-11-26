@@ -3,7 +3,8 @@
 > 状态：**v1 范围已锁定**（2026-11-26 产品确认；编码未开始）  
 > 创建：2026-11-26  
 > 相关：`ROADMAP-FINENG.md` · `DECISION-QUALITY.md` · `HORIZONS.md` · `forward-return.ts` · `scenario-probability.ts` · `calibration-tearsheet.ts`  
-> **调研（大版本界定 / 三面关系 / 外部参考）**：[`PROB-PATH-FORECAST-RESEARCH.md`](./PROB-PATH-FORECAST-RESEARCH.md)
+> **调研（大版本界定 / 三面关系 / 外部参考）**：[`PROB-PATH-FORECAST-RESEARCH.md`](./PROB-PATH-FORECAST-RESEARCH.md)  
+> **架构图（Mermaid）**：[`PROB-PATH-FORECAST-ARCHITECTURE.md`](./PROB-PATH-FORECAST-ARCHITECTURE.md)
 
 ### 「大版本」指什么（摘要）
 
@@ -60,12 +61,14 @@
 
 ### 2.3 架构落点
 
-```
-Signals   → 构造历史样本路径、算分位带（prob-path-forecast.ts）
-Gates     → 样本不足 / 红档 / 金价陈旧 → 降级展示规则
-Portfolio → 本功能 **不直接改仓位**（可选：读 P90 跌幅做 Explain 风险提示句，v1 可不做）
-Explain   → SVG/ Web 面板、meta sidecar、CLI `path` 命令
-```
+详见 **[`PROB-PATH-FORECAST-ARCHITECTURE.md`](./PROB-PATH-FORECAST-ARCHITECTURE.md)** §1 总览图；各层职责摘要：
+
+| 层 | Prob Path v1 职责 |
+|----|-------------------|
+| **Signals** | `prob-path-forecast.ts`：分桶→相似日→cumPct→分位 |
+| **Gates** | 样本 n、数据红档/陈旧 → 降级出图 |
+| **Portfolio** | **不改动** 仓位公式 |
+| **Explain** | SVG、`path` CLI、meta、Web 面板 |
 
 ---
 

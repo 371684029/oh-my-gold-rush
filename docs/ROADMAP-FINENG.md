@@ -195,7 +195,7 @@ target = smooth(target, prev, maxΔ=10)  # 日度仓位别跳 30%
 | I | 金银比、上海溢价、GVZ | 边际弱于 A–D |
 | J | 完整数据真实性仪表盘页 | 独立路由可选 |
 | K | 评分 vs 金价时序图 | 对错统计的补充可视化 |
-| **L** | **概率路径扇形图（Prob Path Fan）** | 见 **`docs/PROB-PATH-FORECAST-V1.md`**（需求对齐中） |
+| **L** | **概率路径扇形图（Prob Path Fan）** | 需求 **`PROB-PATH-FORECAST-V1.md`** · 调研 **`PROB-PATH-FORECAST-RESEARCH.md`** · 架构 **`PROB-PATH-FORECAST-ARCHITECTURE.md`** |
 
 ---
 
