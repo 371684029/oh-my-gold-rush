@@ -35,6 +35,15 @@ const {
   dualFromMeta,
 } = require('./web/report-meta.cjs');
 const { renderProbPathPanel } = require('./web/prob-path-panel.cjs');
+const { renderAppTabs } = require('./web/nav-tabs.cjs');
+const { loadDailyForecastDataset, loadMonthlyForecastDataset } = require('./web/forecast-data.cjs');
+const { buildDailyGoldForecast, buildDailyForecastArchive } = require('./web/forecast-engine.cjs');
+const { renderForecastPage } = require('./web/forecast-page.cjs');
+const {
+  syncMarketData,
+  readSyncMeta,
+  startBackgroundSyncScheduler,
+} = require('./web/market-sync.cjs');
 
 /** macOS 风格窗口标题栏（装饰性 traffic lights） */
 function macTitlebar(label = '') {
@@ -47,7 +56,7 @@ function macTitlebar(label = '') {
   </div>`;
 }
 
-const PORT = parseInt(process.env.PORT || '80', 10);
+const PORT = parseInt(process.env.PORT || '3000', 10);
 const HOST = process.env.HOST || '0.0.0.0';
 const DOCS_DIR = path.resolve(__dirname, 'docs');
 const DOCS_ROOT = DOCS_DIR + path.sep;
@@ -1410,6 +1419,7 @@ function renderIndex(fileInfos) {
 </head>
 <body>
   <div class="container">
+    ${renderAppTabs('reports')}
     <header class="home-hero">
       <div class="brand-mark" aria-hidden="true">🥇</div>
       <h1>GoldRush</h1>
@@ -1535,7 +1545,7 @@ function renderArticle(mdFilename, rawMarkdown) {
 
   // 三期决策条置于文章最顶部：短/中/长一屏看完再决定要不要细读
   const horizonStripHtml = kind === 'analysis' ? renderHorizonStrip(rawMarkdown, meta) : '';
-  const probPathHtml = kind === 'analysis' ? renderProbPathPanel(meta, DOCS_DIR) : '';
+  const probPathHtml = kind === 'analysis' ? renderProbPathPanel(meta, DOCS_DIR, dateLabel) : '';
 
   // Quick-read card only for analysis
   const quickReadHtml = kind === 'analysis' ? renderQuickRead({
@@ -1640,7 +1650,10 @@ function renderArticle(mdFilename, rawMarkdown) {
       <span class="sep">/</span>
       <span class="report-date">${esc(dateLabel)}${kind === 'flow' ? ' 主力流向' : kind === 'digest' ? ' 周期摘要' : kind === 'reflect' ? ' 错因反思' : ' 分析报告'}</span>
     </div>
-    <a class="topbar-back" href="/">← 返回列表</a>
+    <div class="topbar-actions">
+      ${kind === 'analysis' ? `<a class="topbar-forecast-btn" href="/forecast?date=${encodeURIComponent(dateLabel)}">📈 走势预测</a>` : `<a class="topbar-forecast-btn" href="/forecast">📈 走势预测</a>`}
+      <a class="topbar-back" href="/">← 返回列表</a>
+    </div>
   </nav>
 
   <div class="article-layout">
@@ -1742,6 +1755,110 @@ const server = http.createServer((req, res) => {
     return res.end('Forbidden');
   }
 
+  const isIsoDate = (s) => typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s);
+
+  // 走势预测 Tab 页（独立页面，支持每日一图、5年日线 + 25年月线与一键刷新）
+  if (url.pathname === '/forecast') {
+    try {
+      const records = loadDailyForecastDataset(DOCS_DIR);
+      const monthlyRecords = loadMonthlyForecastDataset(DOCS_DIR);
+      const rawDate = url.searchParams.get('date');
+      const reqDate = rawDate && isIsoDate(rawDate) ? rawDate : undefined;
+      const forecast = buildDailyGoldForecast(records, reqDate, monthlyRecords);
+      const allDates = records.map(r => r.date);
+      const archive = buildDailyForecastArchive(records, 18);
+      const syncMeta = readSyncMeta(DOCS_DIR);
+      const html = renderForecastPage({ forecast, allDates, archive, syncMeta, baseCss: homeCss });
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      return res.end(html);
+    } catch (err) {
+      res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
+      return res.end('Forecast render error: ' + (err?.message || err));
+    }
+  }
+
+  // 走势预测同步状态接口
+  if (url.pathname === '/api/forecast/status') {
+    try {
+      const records = loadDailyForecastDataset(DOCS_DIR);
+      const monthlyRecords = loadMonthlyForecastDataset(DOCS_DIR);
+      const syncMeta = readSyncMeta(DOCS_DIR);
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+      return res.end(JSON.stringify({
+        ok: true,
+        tradingDays: records.length,
+        earliestDate: records[0]?.date || null,
+        latestDate: records[records.length - 1]?.date || null,
+        monthlyBars: monthlyRecords.length,
+        monthlyRange: monthlyRecords.length
+          ? { from: monthlyRecords[0].ym, to: monthlyRecords[monthlyRecords.length - 1].ym }
+          : null,
+        meta: syncMeta,
+      }));
+    } catch (err) {
+      res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+      return res.end(JSON.stringify({ ok: false, error: err?.message || String(err) }));
+    }
+  }
+
+  // 手动一键刷新最新行情与 5 年日线 + 25 年月线快照（带并发锁与 30s 冷却保护）
+  if (url.pathname === '/api/forecast/refresh') {
+    if (req.method !== 'POST') {
+      res.writeHead(405, { 'Content-Type': 'application/json; charset=utf-8', Allow: 'POST' });
+      return res.end(JSON.stringify({ ok: false, message: 'Method Not Allowed, use POST' }));
+    }
+    const originHeader = req.headers.origin;
+    if (originHeader && req.headers.host) {
+      try {
+        if (new URL(originHeader).host !== req.headers.host) {
+          res.writeHead(403, { 'Content-Type': 'application/json; charset=utf-8' });
+          return res.end(JSON.stringify({ ok: false, message: 'Forbidden cross-origin refresh' }));
+        }
+      } catch {
+        res.writeHead(403, { 'Content-Type': 'application/json; charset=utf-8' });
+        return res.end(JSON.stringify({ ok: false, message: 'Invalid origin header' }));
+      }
+    }
+    syncMarketData({ docsDir: DOCS_DIR, mode: 'incremental' })
+      .then((syncRes) => {
+        const records = loadDailyForecastDataset(DOCS_DIR);
+        const monthlyRecords = loadMonthlyForecastDataset(DOCS_DIR);
+        const forecast = buildDailyGoldForecast(records, undefined, monthlyRecords);
+        const allDates = records.map(r => r.date);
+        const archive = buildDailyForecastArchive(records, 18);
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ ...syncRes, forecast, allDates, archive }));
+      })
+      .catch((err) => {
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ ok: false, message: err?.message || String(err) }));
+      });
+    return;
+  }
+
+  // 走势预测 JSON 接口（供前端切换历史日期无刷新加载）
+  if (url.pathname === '/api/forecast') {
+    try {
+      const rawDate = url.searchParams.get('date');
+      if (rawDate && !isIsoDate(rawDate)) {
+        res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
+        return res.end(JSON.stringify({ error: 'Invalid date format, expected YYYY-MM-DD' }));
+      }
+      const records = loadDailyForecastDataset(DOCS_DIR);
+      const monthlyRecords = loadMonthlyForecastDataset(DOCS_DIR);
+      const forecast = buildDailyGoldForecast(records, rawDate || undefined, monthlyRecords);
+      if (!forecast) {
+        res.writeHead(404, { 'Content-Type': 'application/json; charset=utf-8' });
+        return res.end(JSON.stringify({ error: 'No forecast available' }));
+      }
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+      return res.end(JSON.stringify(forecast));
+    } catch (err) {
+      res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+      return res.end(JSON.stringify({ error: err?.message || String(err) }));
+    }
+  }
+
   // 目录请求 → 文件列表
   if (url.pathname === '/' || url.pathname === '/index.html') {
     fs.readdir(DOCS_DIR, (err, allFiles) => {
@@ -1805,4 +1922,5 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, HOST, () => {
   console.log(`🥇 GoldRush Docs Server running on http://${HOST}:${PORT}`);
+  startBackgroundSyncScheduler(DOCS_DIR);
 });

@@ -6,7 +6,7 @@ import chalk from 'chalk';
 import { getDb } from '../db/index.js';
 import { ReportsRepo } from '../db/reports.js';
 import { buildProbPathMeta, formatProbPathConsole } from '../utils/prob-path-forecast.js';
-import { renderProbPathFanSvg, writeProbPathSvgs } from '../utils/prob-path-chart.js';
+import { writeProbPathSvgs } from '../utils/prob-path-chart.js';
 import { todayDate } from '../utils/time.js';
 import type { ProbPathMeta } from '../utils/prob-path-types.js';
 
@@ -14,6 +14,24 @@ export interface PathCommandOptions {
   date?: string;
   json?: boolean;
   docsDir?: string;
+}
+
+function readGateFromReportJson(reportJson: string | null | undefined): {
+  actionable?: boolean;
+  tier?: string;
+} {
+  if (!reportJson) return {};
+  try {
+    const parsed = JSON.parse(reportJson) as {
+      dataQualityGate?: { actionable?: boolean; tier?: string };
+    };
+    return {
+      actionable: parsed?.dataQualityGate?.actionable,
+      tier: parsed?.dataQualityGate?.tier,
+    };
+  } catch {
+    return {};
+  }
 }
 
 export function runProbPathBundle(options: PathCommandOptions = {}): ProbPathMeta | null {
@@ -29,11 +47,13 @@ export function runProbPathBundle(options: PathCommandOptions = {}): ProbPathMet
   }
 
   const score = row.overallScore;
+  const gate = readGateFromReportJson(row.reportJson);
   const meta = buildProbPathMeta({
     db,
     asOf,
     score,
-    gateActionable: true,
+    gateActionable: gate.actionable,
+    gateTier: gate.tier,
   });
 
   if (!meta) {
@@ -61,7 +81,7 @@ export function pathCommand(options: PathCommandOptions = {}): number {
     return 0;
   }
 
-  console.log(chalk.cyan('\n📈 概率路径扇形（Prob Path Fan）'));
+  console.log(chalk.cyan('\n📈 概率路径扇形（Prob Path Fan v2.0）'));
   console.log(formatProbPathConsole(meta));
   if (meta.svgRel) {
     console.log(chalk.gray(`  SVG: docs/${meta.svgRel.path5d}`));

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 2,
+  "lastSyncedAt": "2026-11-26T09:47:13.321Z",
+  "lastMode": "full",
+  "dateRange": {
+    "from": "2021-11-26",
+    "to": "2026-11-26"
+  },
+  "tradingDays": 1259,
+  "monthlyBars": 315,
+  "monthlyDateRange": {
+    "from": "2000-09",
+    "to": "2026-11"
+  },
+  "sources": {
+    "yahooGold": "ok",
+    "yahooMacro": "ok",
+    "fred": "ok",
+    "liveGold": "ok",
+    "liveSina": "ok",
+    "cftc": "ok",
+    "monthly25y": "ok"
+  },
+  "liveQuotes": {
+    "xauUsd": 3573.7,
+    "hfGcUsd": 3600.22,
+    "anchorDiffPct": 0.74,
+    "shanghaiCny": 766.5,
+    "usdCny": 6.6601,
+    "etf518880": 7.27,
+    "updatedAt": "2026-11-26T09:46:48Z"
+  },
+  "obsDates": {
+    "gold": "2026-11-26",
+    "tips": "2026-11-24",
+    "us10y": "2026-11-24",
+    "cpi": "2026-10-01",
+    "dxy": "2026-11-26",
+    "cftc": "2026-11-17"
+  }
+}

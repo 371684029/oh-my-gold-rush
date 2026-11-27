@@ -1,21 +1,46 @@
-# Prob Path v1.1 — 校准与样本外评估（规划）
+# Prob Path 校准与样本外评估规格（v2.1 评估闭环）
 
-> v1 **刻意不做** 对外覆盖率承诺；本文定义 **内部** 验收路线。
+> 目标：用严格的 **Purged Walk-Forward 样本外检验** 回答核心问题——「条件概率路径扇形到底有没有比纯波动率随机游走更准？」  
+> 若条件分布跑不赢无条件 FHS 基准，系统必须自动提高收缩权重并诚实标注，绝不靠样本内曲线自嗨。
 
-## 指标
+---
 
-| 指标 | 定义 | 工具入口（拟） |
-|------|------|----------------|
-| **Empirical coverage** | 实现路径是否落在 P10–P90 | `calibrate --path-coverage` |
-| **CRPS** | 分位路径 vs 实现 | 同命令 |
-| **Walk-forward** | 训练窗估条件 / 测试窗不重叠 | 复用 `walk-forward.ts` |
-| **对照基准** | 无条件 P50 vs 条件 P50 | `probPath.baseline` 已有字段 |
+## 1. 评估前提：防前视泄漏与去重叠卫生
 
-## 图例（v1.1 新增）
+| 规则 | 硬性要求 |
+|------|----------|
+| **严格终点截断** | 对测试日 $T$ 构造样本池时，所有历史样本日 $d$ 必须满足 **路径终点交易日 $\text{endDate}(d, H) \le T$**（不能只判 $d < T$），彻底杜绝回测偷看未来金价。 |
+| **Purged 测试窗** | 5 日视野测试窗步长 $\ge 5$ 个交易日（或显式报告 Newey-West 调整后的独立样本数 $N_{\text{eff}}$）；20 日视野步长 $\ge 20$ 个交易日，防止重叠窗口虚增显著性。 |
+| **短 / 中分轨独立评估** | 5 日图与 20 日图分别统计覆盖率、Pinball Loss 与 CRPS，禁止混算。 |
 
-当 walk-forward 测试窗覆盖率偏离 80% 超过 15pp 时，扇形标注 **「校准偏离，仅供研究」**。
+---
 
-## 参考
+## 2. 核心指标与对照基准
 
-- [`PROB-PATH-META-SCHEMA.md`](./PROB-PATH-META-SCHEMA.md)
-- [`PROB-PATH-FORECAST-RESEARCH.md`](./PROB-PATH-FORECAST-RESEARCH.md) §3.4
+所有指标均同时计算 **条件 FHS 扇形（Conditional）** 与 **无条件 FHS 基准（Unconditional FHS，即全历史客观样本经 $\sigma_0/\sigma_d$ 波动率缩放后的随机游走分布）**：
+
+| 指标 | 定义 | 合格 / 预警标准 | 工具入口（拟） |
+|------|------|----------------|----------------|
+| **Empirical Coverage（80% / 50%）** | 实际路径终点落在 `P10–P90`（名义 80%）与 `P25–P75`（名义 50%）的比例 | 80% 带落在 65%–95% 内；偏离 >15pp 触发校准警告 | `calibrate --path-eval` |
+| **Pinball Loss（分位数损失）** | 对 $\tau \in \{0.10, 0.25, 0.50, 0.75, 0.90\}$ 分别计算 $\rho_\tau(y - \hat{q}_\tau)$ | 逐分位对比无条件 FHS；检验尾部（P10/P90）与中枢（P50）是否均有增益 | 同命令 |
+| **CRPS & Skill Score** | 连续分级概率评分 $\text{CRPS}$ 及其技巧分 $1 - \frac{\text{CRPS}_{\text{cond}}}{\text{CRPS}_{\text{uncond}}}$ | Skill Score > 0 表示条件化带来净信息增益；$\le 0$ 触发自动收缩 | 同命令 |
+| **MaxDD 尾部校准** | 实际 $H$ 日路径内最大回撤突破预测 `maxDdP90` 的频率（名义 10%） | 实测击穿率 > 20% 说明下行尾部低估，需放大下行保守系数 | 同命令 |
+| **Diebold–Mariano 检验** | 条件 vs 无条件 FHS 的 CRPS 差值显著性（含样本量提示） | 样本不足 30 个非重叠周期时标注「统计功效不足，仅供观察」 | 同命令 |
+
+---
+
+## 3. 自动化降级与图例联动规则
+
+| 实测触发条件 | 系统行为 | 图例展示文案 |
+|--------------|----------|--------------|
+| Walk-forward 80% 覆盖率偏离 > 15pp | 扇形保留展示，禁止作为加仓依据 | **「校准偏离（实测覆盖 X%），仅供研究」** |
+| 条件 CRPS Skill Score $\le 0$（跑输无条件 FHS） | 提高经验贝叶斯收缩权重（向无条件 FHS 靠拢），记录进周报 `reflect` | **「条件增益不显著，已自动向波动率基准收缩」** |
+| 非重叠测试样本 < 15 | 仅记录，不自动调参 | **「OOS 评估样本积累中（n=X）」** |
+
+---
+
+## 4. 参考
+
+- [`PROB-PATH-FORECAST-V1.md`](./PROB-PATH-FORECAST-V1.md) — v2.0 金融学内核规格
+- [`PROB-PATH-META-SCHEMA.md`](./PROB-PATH-META-SCHEMA.md) — `probPath` v2 数据契约
+- [`PROB-PATH-FORECAST-RESEARCH.md`](./PROB-PATH-FORECAST-RESEARCH.md) §3.4 — 学术评估方法论

@@ -14,7 +14,7 @@ export interface AttachProbPathInput {
   dataQualityGate?: DataQualityGate | null;
 }
 
-/** 构建概率路径、写 SVG、返回可写入 meta / MD 的对象 */
+/** 构建概率路径、写按日期归档 + latest SVG、返回可写入 meta / MD 的对象 */
 export function attachProbPath(input: AttachProbPathInput): {
   meta: ProbPathMeta;
   svg5: string;
@@ -33,15 +33,11 @@ export function attachProbPath(input: AttachProbPathInput): {
   const svgRel = writeProbPathSvgs(meta, (name, svg) => {
     fs.writeFileSync(path.join(input.docsDir, name), svg, 'utf-8');
   });
+  // meta.svgRel 指向按日期归档的文件，避免历史日报被次日 -latest 覆盖
   meta.svgRel = svgRel;
 
   const svg5 = renderProbPathFanSvg(meta, '5');
   const svg20 = renderProbPathFanSvg(meta, '20');
-
-  const dated5 = `goldrush-prob-path-5d-${input.asOf}.svg`;
-  const dated20 = `goldrush-prob-path-20d-${input.asOf}.svg`;
-  fs.writeFileSync(path.join(input.docsDir, dated5), svg5, 'utf-8');
-  fs.writeFileSync(path.join(input.docsDir, dated20), svg20, 'utf-8');
 
   return { meta, svg5, svg20 };
 }

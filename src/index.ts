@@ -16,6 +16,7 @@ import { outlookCommand } from './commands/outlook.js';
 import { pathCommand } from './commands/path.js';
 import { flowCommand } from './commands/flow.js';
 import { dashboardCommand } from './commands/dashboard.js';
+import { syncMarketCommand } from './commands/sync-market.js';
 import { closeDb } from './db/index.js';
 import { loadConfig } from './utils/config.js';
 
@@ -270,6 +271,23 @@ program
         etfOnly: opts.etf ?? false,
         init: opts.init ?? false,
       });
+    } finally {
+      closeDb();
+    }
+  });
+
+program
+  .command('sync-market')
+  .description('同步近 5 年黄金/宏观/CFTC 实盘日线（双写 SQLite + Git 快照）')
+  .option('--full', '强制全量拉取近 5 年历史日线')
+  .option('--json', 'JSON 格式输出')
+  .action(async (opts) => {
+    try {
+      const code = await syncMarketCommand({
+        full: opts.full ?? false,
+        json: opts.json ?? false,
+      });
+      if (code !== 0) process.exit(code);
     } finally {
       closeDb();
     }

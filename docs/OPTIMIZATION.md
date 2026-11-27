@@ -1,7 +1,7 @@
 # GoldRush 优化路线图
 
 > 从五大维度系统评估 GoldRush 的改进空间  
-> 创建：2026-07-13 | 版本：v1.8（2026-11-06：纸面权益/MaxDD + 新鲜度 SLA + 情景 Brier → `OPTIMIZATION-2026-11.md`）
+> 创建：2026-07-13 | 当前版本：v2.3（下个版本规划：**v2.4** → `docs/PLAN-V2.4-FINENG-AUDIT.md`）
 
 **相关**：  
 - `docs/DATA-QUALITY.md` — 零价/门禁/锚定  
@@ -12,6 +12,7 @@
 - `docs/RELIABILITY.md` — 可信度一览 / 评分区间 / 搜索存档  
 - **`docs/DECISION-QUALITY.md`** — **2026-07 决策质量待办总清单（改分/命中/Web 先读）**  
 - **`docs/ROADMAP-FINENG.md`** — **金融工程 + 业界/开源借鉴 + 后续包优先级**  
+- **`docs/PLAN-V2.4-FINENG-AUDIT.md`** — **v2.4 全项目金融工程审计与算法重构规划**  
 - `IMPROVEMENTS.md` 第六～十三轮
 
 ---
@@ -559,3 +560,5 @@ Signals → Risk & Gates → Portfolio → Explain
 | 2026-07-16 | v1.6 | 金融工程/业界借鉴规划入库：`docs/ROADMAP-FINENG.md`；总览增「风险与组合」；第四轮路径 |
 | 2026-07-27 | v1.7 | 决策质量轮收口文档：`docs/DECISION-QUALITY.md`（量化重归一、口径单一来源、三期+中期命中、meta sidecar、FRED 观测日、walk-forward OOS） |
 | 2026-11-06 | v1.8 | 审计轮：`docs/OPTIMIZATION-2026-11.md`（三轴可优化项清单）；落地 ROADMAP 包 B 纸面权益+MaxDD、包 D 门禁新鲜度 SLA、包 G 情景概率 Brier；修复 tearsheet 重叠复利 bug |
+| 2026-11-26 | v2.0–v2.3 | 概率路径扇形图 `/forecast` 独立 Tab 上线；5 年日线 + 26 年月度真实数据本地落库与 Git 持久化；1/2/5 年长期宏观预测与可查证据链 |
+| 2026-11-26 | **v2.4（规划）** | 金融工程严谨化与八维全景重构规划入库 **`docs/PLAN-V2.4-FINENG-AUDIT.md`**（18 项 P0/P1/P2 修复 + 三基五专八维正交体系全面打通日报分析与走势预测；同步对齐 `package.json` 至 `2.4.0`） |

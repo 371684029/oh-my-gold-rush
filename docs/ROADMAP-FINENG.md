@@ -195,7 +195,7 @@ target = smooth(target, prev, maxΔ=10)  # 日度仓位别跳 30%
 | I | 金银比、上海溢价、GVZ | 边际弱于 A–D |
 | J | 完整数据真实性仪表盘页 | 独立路由可选 |
 | K | 评分 vs 金价时序图 | 对错统计的补充可视化 |
-| **L** | **概率路径扇形图（Prob Path Fan）** | 需求 **`PROB-PATH-FORECAST-V1.md`** · 调研 **`PROB-PATH-FORECAST-RESEARCH.md`** · 架构 **`PROB-PATH-FORECAST-ARCHITECTURE.md`** |
+| **O** | **概率路径扇形图（Prob Path Fan v2.0，下个大版本主线）** | 需求 **`PROB-PATH-FORECAST-V1.md`** · 调研 **`PROB-PATH-FORECAST-RESEARCH.md`** · 架构 **`PROB-PATH-FORECAST-ARCHITECTURE.md`** · 契约 **`PROB-PATH-META-SCHEMA.md`** · 评估 **`PROB-PATH-V1.1-EVAL.md`**（FHS 波动率归一化 + 5/20 日分轨条件化 + 防泄漏与收缩） |
 
 ---
 
@@ -250,10 +250,13 @@ target = smooth(target, prev, maxΔ=10)  # 日度仓位别跳 30%
 | L 三期尺度 + 中期命中 | ✅ 已落地 | 2026-07-27 | 见 `HORIZONS.md` / `DECISION-QUALITY.md` |
 | M 日报 meta sidecar | ✅ 已落地 | 2026-07-27 | Web 优先机器契约，MD 正则为回落 |
 | N 量化覆盖度重归一 + 口径单一来源 | ✅ 已落地 | 2026-07-27 | `quant-score` + `decision-thresholds` + `forward-return` |
+| O 概率路径扇形图（Prob Path Fan v2.0–v2.3） | ✅ 已落地 | 2026-11-26 | `/forecast` 独立 Tab、5 年日线+26 年月度双源持久化、1Y/2Y/5Y 长期宏观预测与可查证据链已上线 |
+| **P v2.4 金融工程严谨化 + 八维全景重构** | ⬜ 规划中 | 2026-11-26 | 18 项金融数学/统计/风控修复 + 八维正交体系（基本/消息/技术 + 资金/政策/情绪/筹码/量化）打通分析与走势预测，详见 **`docs/PLAN-V2.4-FINENG-AUDIT.md`** |
 
 状态图例：⬜ 未开始 · 🟡 进行中 · ✅ 已落地 · ⏸ 搁置
 
-**决策质量轮次总清单（待办对照）**：**[docs/DECISION-QUALITY.md](./DECISION-QUALITY.md)**。
+**决策质量轮次总清单（待办对照）**：**[docs/DECISION-QUALITY.md](./DECISION-QUALITY.md)**。  
+**下个版本规划（v2.4 金融工程与八维重构）**：**[docs/PLAN-V2.4-FINENG-AUDIT.md](./PLAN-V2.4-FINENG-AUDIT.md)**。
 
 ---
 
@@ -269,3 +272,5 @@ target = smooth(target, prev, maxΔ=10)  # 日度仓位别跳 30%
 | 2026-07-24 | **暂定**：传导不加量化因子 / `event_heat` 保持 0（防噪音） |
 | 2026-07-27 | 决策质量轮：量化重归一、口径单一来源、中期档+20 日命中、三期条、meta sidecar、FRED 观测日、backfill sanitize、walk-forward OOS；清单见 `DECISION-QUALITY.md` |
 | 2026-11-06 | 包 B/D/G 落地：纸面权益+MaxDD（日频不重叠，修复旧 tearsheet 重叠复利 bug）、门禁新鲜度 SLA、情景概率 Brier；审计与下一步见 `OPTIMIZATION-2026-11.md` |
+| 2026-11-26 | 修正包号冲突（概率路径由 L 改为 **包 O**）；落地 v2.1–v2.3（`/forecast` 每日走势预测、5 年日线与 26 年月度 Git 持久化、1/2/5 年长期预测与证据链） |
+| 2026-11-26 | 新增 **包 P（v2.4 金融工程严谨化 + 八维全景重构）**：18 项缺陷审计 + 「三基五专」八维正交分析与走势预测架构（4 阶段路线），入库 `docs/PLAN-V2.4-FINENG-AUDIT.md` |

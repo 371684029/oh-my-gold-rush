@@ -1,8 +1,8 @@
 # 概率路径扇形图 — 调研与判断依据（Research）
 
-> 状态：调研定稿（与 [`PROB-PATH-FORECAST-V1.md`](./PROB-PATH-FORECAST-V1.md) 配套）  
+> 状态：调研定稿（v2.0 金融学升级修订，与 [`PROB-PATH-FORECAST-V1.md`](./PROB-PATH-FORECAST-V1.md) 配套）  
 > 日期：2026-11-26  
-> 回答：**「大版本」指什么？结论是否来自基本面/技术面/情绪面？判断依据是什么？业界参考是什么？**  
+> 回答：**「大版本」指什么？为何要从原始分桶升级到 FHS + 分轨条件化？金融学与统计学依据是什么？业界参考是什么？**  
 > **架构图（Mermaid）**：[`PROB-PATH-FORECAST-ARCHITECTURE.md`](./PROB-PATH-FORECAST-ARCHITECTURE.md)
 
 ---
@@ -12,184 +12,114 @@
 | 名称 | 当前值 | 含义 |
 |------|--------|------|
 | **npm 包 `goldrush`** | `0.1.0`（`package.json`） | 整个 CLI/Web 仓库的 semver；**本次不升级为 1.0.0** |
-| **日报 `meta` 契约** | `schemaVersion: 1` | 机器可读 sidecar；实现概率路径时拟 **增字段** `probPath`（可仍用 v1 或 bump 为 2，**仅表示 meta 结构**，不是产品「大版本号」） |
-| **本次所说的「大版本」** | **功能包 L — Prob Path Forecast v1.0** | `ROADMAP-FINENG.md` 中新增的规划包；用户口语里的「新建大版本」= **这一整块能力的首发版本** |
-| **后续子版本** | v1.1 / v2 | 见 `PROB-PATH-FORECAST-V1.md` §6（相似日增强、Brier、walk-forward OOS 等） |
-
-**结论（写清楚）**：
-
-- 用户要的「大版本」**不是**把整个 GoldRush 打成 `1.0.0`，而是 **产品能力大版本：概率路径扇形图（Prob Path Fan）v1.0**。
-- 它与现有 **analysis / 双打分 / 三期展望 / 仓位** 并行，落在 **Signals + Explain**，**不替换** 日报主流程。
-- 编码落地后的可见版本号建议：文档与 meta 内 `probPath.schemaVersion: 1`（路径图数据契约），与 CLI 子命令 `goldrush path` 一并发布。
+| **日报 `meta` 契约** | `schemaVersion: 1`（顶层） | 机器可读 sidecar；内部 `probPath.schemaVersion` 由 v1 骨架升级为 **`2`** |
+| **本次所说的「大版本」** | **包 O — Prob Path Forecast v2.0** | `ROADMAP-FINENG.md` 中的概率路径主线（修正原与三期尺度重复的包号 `L`） |
+| **后续闭环版本** | **v2.1** | Purged Walk-Forward 样本外评估（覆盖率 / Pinball Loss / CRPS 对标无条件 FHS 基准） |
 
 ---
 
-## 2. 核心结论：是不是「基本面 + 技术面 + 情绪面」算出来的？
+## 2. 核心判断依据：v2.0 如何与「基本面 / 技术面 / 情绪面 / 波动率」衔接？
 
-### 2.1 直接回答（三层）
+### 2.1 为什么放弃「单靠 LLM 综合分桶同时预测 5 日与 20 日」？
 
-| 层级 | 是否用于画扇形图的**数值** | 说明 |
-|------|---------------------------|------|
-| **LLM 四维**（技术 / 基本面 / 情绪 + 资金） | **不直接** | 扇形线 **不由** LLM 再预测一遍未来点位；LLM 仍负责日报叙述与三情景文案 |
-| **综合结论（overall.score）+ 量化分** | **间接** | v1 样本条件 **第一步**：按 **综合评分分桶** 选历史日；分桶里的分数本身已是四维 + 反驳 + 校准后的结果 |
-| **结构化特征 `scenario_features`** | **间接（第二步扩样）** | 分桶样本不足时，用 **相似日**；特征向量**显式编码**技术/宏观/情绪/主力信息 |
+仓库实证（`docs/goldrush-stats-latest.json`、`docs/OPTIMIZATION-2026-11.md`）给出了清晰证据：
 
-因此：
+- **LLM `overall.score`** 近 90 日 5 日方向命中仅 **45.5%（5/11）**，与「永远看涨」基准（45%）几乎无差异；LLM 情景概率 Brier 技巧分为 **-0.2**（差于气候学）。
+- 真正展示出显著或较强信息量的信号是 **量化分（66.7%）** 与 **中期慢变量分 `mid_term_score`（20 日命中 86.7% vs 基准 12%）**。
+- 此外，`HORIZONS.md` 已明确短期（5 日）与中期（1～3 个月）的驱动机制不同——拿日线短期分去画 20 日路径在金融学上属于**时间尺度错配**。
 
-- **对用户可说的话**：路径分布是 **「在与你今天综合判断相近的历史日子里，金价后来实际怎么走」** 的统计，**综合判断里已经吸收了基本面、技术面、情绪面（经 LLM 四维与量化因子）**，但扇形图 **不是** 把四个 Agent 的输出再做一次加权公式。
-- **对研发可审计的话**：扇形 = **经验条件分布（empirical conditional distribution）**，条件变量 = **分桶分数 +（可选）特征相似度**，因变量 = **历史真实价格路径的累计涨跌 %**。
+因此 v2.0 确立 **三层分工**：
 
-### 2.2 与 GoldRush 现有分析体系的对照
+| 层级 | 在 v2.0 扇形图中的角色 | 原因 |
+|------|------------------------|------|
+| **LLM 四维与三情景** | **不直接驱动扇形数值**，保留作文字解读与结构化风险提示 | 不可复现且历史 Brier 弱于气候学 |
+| **5 日轨条件（短期）** | `quantScore` + 当前波动率 $\sigma_0$ + Z-score 标准化特征相似日 | 对齐短期节奏与波动率聚类 |
+| **20 日轨条件（中期）** | `mid_term_score` + 宏观 `macroRegime` + 多年度客观慢变量池 | 对齐黄金定价慢变量（TIPS/DXY/结构/持仓） |
 
-完整 **四层总览、样本瀑布、模块映射、三面边界** 见 **[`PROB-PATH-FORECAST-ARCHITECTURE.md`](./PROB-PATH-FORECAST-ARCHITECTURE.md)**（Mermaid，可在 GitHub / 支持 Mermaid 的预览器中渲染）。
+### 2.2 黄金定价因子在相似距离中的权重倾斜（修正余弦偏置）
 
-### 2.3 特征向量 →「三面」映射（相似日扩样时用）
+v1 使用 `scenario-similarity.ts` 的等权余弦相似度存在数学缺陷：`vixLevel / 40 ∈ [0,1]` 与 `geoNum ∈ [0.3,1]` **恒为正值**，当其它维度接近 0 时，任意两个平庸交易日的余弦相似度都会虚高，导致无关样本被放进样本池。
 
-`scenario_features`（`src/db/scenario-features.ts`、`featureToVector`）字段与投研口径对应关系：
+v2.0 改用 **标准化（Z-score）加权欧氏距离 + 同宏观 Regime 优先**：
 
-| 特征字段 | 投资维度归类 | 作用 |
-|----------|--------------|------|
-| `goldDeviation`, `momentumDirection`, `consecutiveDays` | **技术面** | 均线偏离、动量方向 |
-| `dollarDirection/Magnitude`, `tipsDirection/Magnitude`, `fedStance` | **基本面 / 宏观** | 美元、实际利率、政策立场 |
-| `vixLevel`, `geopoliticalRisk` | **情绪 / 风险** | 恐慌与地缘 |
-| `cftcPercentile`, `etfFlow5d`, `flowScore` | **资金面 / 情绪结构** | 持仓拥挤、ETF、主力综合 |
-
-量化因子中与三面重叠的部分（**进入 overall 语境、但不直接进入分位数公式**）见 `quant-score.ts`：`trend/rsi/macd/bollinger`→技术；`tips/dxy/us10y/regime`→宏观；`flow`→资金情绪。
-
-### 2.4 明确不算进扇形的东西（v1）
-
-| 输入 | 为何 v1 不用作路径公式 |
-|------|------------------------|
-| LLM 情景里的 `goldPrice` 字符串 | 不可复现、非结构化 |
-| 长期 outlook 1/3/5 年 | 配置向，不做点位路径（`LONG-TERM-OUTLOOK.md`） |
-| `event_heat` / 事件传导权重 | 刻意 0%，仅 Explain（`USER-VALUE.md`） |
-| 未回填的 `scenario_features` | 无真实 5/20 日路径的样本剔除 |
+| 维度 | 特征来源 | 黄金定价经济学地位 | 权重倾向 |
+|------|----------|--------------------|----------|
+| **实际利率（TIPS）** | `tips_yield` 水平与 60 日趋势 | 黄金机会成本第一定价锚 | **最高** |
+| **美元（DXY）** | `dollar_index` 相对均线偏离 | 计价货币核心逆风/顺风 | **高** |
+| **波动率 & 趋势结构** | 20 日实现波动率 $\sigma$、MA20/MA50 偏离、近一年分位 | 决定风险带宽与均值回归压力 | **高** |
+| **资金面 / 拥挤度** | CFTC 净多头分位、GLD / 央行综合 `flowScore` | 识别极端拥挤与官方买盘支撑 | **中高** |
+| **情绪 / 地缘** | VIX、地缘风险等级 | 脉冲式影响大但持续性弱、易均值回归 | **辅助（不主导）** |
 
 ---
 
-## 3. 判断依据与方法论（为何称「相对科学」）
+## 3. 金融学与统计学方法论（为何 v2.0 更严谨）
 
-### 3.1 方法论家族
+### 3.1 方法论组合
 
-本功能采用的是央行与商品量化文献中 **Density Forecast / Fan Chart** 的一条 **务实分支**：
+| 方法 | v2.0 具体落地 | 金融学 / 学术来源 |
+|------|---------------|-------------------|
+| **滤波历史模拟（FHS, Filtered Historical Simulation）** | 样本路径先除以样本日波动率 $\sigma_d$，再乘今日波动率 $\sigma_0$，最后取分位数 | Barone-Adesi, Giannopoulos & Vosper (1999) *VaR without correlations for portfolios of derivative securities*；机构市场风险标准方法，同时捕捉**波动率聚类（GARCH）**与**厚尾偏度** |
+| **央行式密度扇形图（Fan Chart）** | 双层渐变带（P25–P75 核心带 + P10–P90 外沿带 + P50 中位线） | 英格兰银行货币政策报告；[BoE IEO 2024 评述](https://www.bankofengland.co.uk/-/media/boe/files/independent-evaluation-office/2024/forecasting-for-monetary-policy-making-and-communication-at-the-bank-of-england-a-review.pdf) |
+| **历史相似态（Historical Analog k-NN）** | Z-score 加权距离 + 同宏观 Regime 优先 + 多年度客观特征池 | [Session-Conditioned Gold Regime Forecasting](https://img1.wsimg.com/blobby/go/f1a5b452-1d8c-4015-8c61-1cbbf2930284/Session_Conditioned_Gold_Regime_Forecasting_Pu.pdf) |
+| **重叠样本卫生（Effective Sample Size）** | 严格 `pathEndDate <= asOf` 防前视泄漏 + 连续重叠日降权 + 报告 Kish $N_{\text{eff}}$ | 金融计量经典重叠前瞻窗口自相关问题（Hansen & Hodrick 1980; Newey-West 1987） |
+| **经验贝叶斯收缩（Empirical Bayes Shrinkage）** | $Q^{\text{final}} = (1-\lambda) Q^{\text{cond}} + \lambda Q^{\text{uncond\_fhs}}$，$\lambda = K/(N_{\text{eff}}+K)$ | James-Stein / 贝叶斯收缩思想：小样本时压制方差，自动向稳健的无条件 FHS 基准靠拢 |
+| **路径级风险指标（Path-Dependent Risk）** | 从缩放路径直接计算期内最大回撤（MaxDD P50/P90）与结构位首达概率 | 贴合定投/波段用户的真实痛点（「中途最大浮亏」比单看终点更有风控意义） |
 
-| 方法 | 本项目的用法 | 学术/实务来源 |
-|------|--------------|---------------|
-| **经验分位扇形（Fan Chart）** | P10/P50/P90 随 horizon 展开 | 英格兰银行货币政策报告；[BoE IEO 2024 评述](https://www.bankofengland.co.uk/-/media/boe/files/independent-evaluation-office/2024/forecasting-for-monetary-policy-making-and-communication-at-the-bank-of-england-a-review.pdf)；[Malta CB QR 2014 Box 4](https://www.centralbankmalta.org/site/Reports-Articles/Pre-2015/QR-2014-2-Box-4.pdf) |
-| **历史预测误差校准带宽** | v1 简化为 **直接经验路径分位**；v1.1 可对标 **分 horizon 的 forecast error σ**（BoE 用历史误差向量平滑） | [NBS 斯洛伐克 fan chart 方法论 PDF](https://www.nbs.sk/_img/documents/biatec/bia05_05/19_21.pdf) |
-| **历史相似态（Historical Analog / k-NN）** | 分桶不足 → `scenario-similarity` 余弦近邻 | [Session-Conditioned Gold Regime Forecasting](https://img1.wsimg.com/blobby/go/f1a5b452-1d8c-4015-8c61-1cbbf2930284/Session_Conditioned_Gold_Regime_Forecasting_Pu.pdf) §10 |
-| **分桶条件收益（非参数）** | 先按 `SCORE_BUCKETS` 筛样本 | 与 `calibration-tearsheet`、`calibration.ts` 同源；类似 Alphalens **分位组合前瞻收益** 思路 |
-| **分位数回归 / 提升法（黄金）** | **v1 不实现**；列为 v2+ 或对照基准 | [Energy Policy 2015 黄金分位回归](https://www.sciencedirect.com/science/article/abs/pii/S0301420715000653)；[Economics & Finance 2016 quantile boosting](https://ideas.repec.org/a/eee/ecofin/v35y2016icp38-55.html) |
+### 3.2 为什么 FHS 是黄金趋势扇形的「性价比之王」？
 
-**BoE 核心思想（提炼）**：扇形表达的是 **对未来结果的概率分布**，不是点预测；带宽可来自 **历史误差** 或 **随机模拟**；可含 **偏度（skew）** 表示上下行风险不对称。GoldRush v1 用 **历史真实路径分位** 代替央行「对宏观变量的预测误差」，因我们预测对象是 **金价收益** 而非 CPI。
+对比三类常见金融预测模型：
 
-**与 BoE 的差异（须对用户透明）**：
-
-| BoE | GoldRush Prob Path v1 |
-|-----|------------------------|
-| 结构化宏观计量模型 + 专家判断调扇形 | **无结构化宏观 SDE**；条件于 **本仓库历史 analysis + 金价** |
-| 官方对外承诺「90% 区间约覆盖 90% 实现」 | v1 **不承诺覆盖率**；v1.1 用 **walk-forward + 覆盖率诊断** 逼近 |
-| 季度 horizon | **5 / 20 个交易日**（定投决策尺度） |
-
-### 3.2 本仓库内的「单一会计」依据
-
-| 规则 | 模块 | 作用 |
-|------|------|------|
-| 前瞻收益起点 = 报告日收盘，h 个 **有效交易日** | `forward-return.ts` | 与命中率、校准、IC **同一套账** |
-| 方向与持平 | `decision-thresholds.ts` | 扇形 **不另设** 58/42 |
-| 样本量与 Wilson | `prediction-track` 惯例 | 图例要求 n≥30 正常，n<10 不画未来扇形 |
-| 数据红档 | `data-quality-gate.ts` | 图可灰显，文案禁止强烈操作建议 |
+1. **纯原始历史分位（v1 方案）**：把高波和低波混为一谈，违反金融时间序列最稳健的经验事实（波动率聚类），高波期必然频繁击穿下沿。
+2. **参数化正态/GBM 模拟**：假设收益服从正态分布，严重低估黄金的肥尾暴涨暴跌与不对称偏度。
+3. **FHS（v2.0 采用）**：**零复杂黑盒参数**，只需 20 日实现波动率 $\sigma$ 缩放，既能实时反映当前市场恐慌/平静程度，又 100% 保留黄金历史真实路径的厚尾、跳空与偏度。
 
 ### 3.3 什么算「科学」、什么不算
 
-| 算相对科学（v1 采用） | 不算科学承诺 |
-|----------------------|--------------|
-| 可复现：同样 DB + 同样日 → 同样分位线 | 「顶底必达」 |
-| 假设：**马尔可夫近似** — 同类状态后验路径可类比（相似日/同分桶） | 黄金收益 i.i.d. 或恒定波动 |
-| 用 **样本外历史路径** 作分布，而非 LLM 编造 | 以扇形命中率为对外 KPI |
-| 后续可用 **CRPS / 覆盖率 / Brier** 评校准（v1.1，ROADMAP 包 G） | 未经 walk-forward 调参后自称 OOS |
+| 科学且可验证（v2.0 坚持） | 伪科学（明确拒绝） |
+|---------------------------|-------------------|
+| 可复现：相同 DB + 相同 `asOf` → 完全一致的曲线与数值 | 「顶底必达」「下周精准到 $XXXX」 |
+| 严格因果：任何样本路径终点 `<= asOf`，零前视泄漏 | 用未来金价或重叠样本伪造高胜率 |
+| 严苛基准：用 **Pinball Loss / CRPS** 对比「无条件 FHS 随机游走」 | 只展示样本内漂亮曲线，不对比朴素基准 |
+| 诚实降级：样本不足或跑输基准时自动收缩并明确提示 | 小样本硬画尖锐方向结论 |
 
-### 3.4 评估指标（实现后应用，写入 v1.1）
+### 3.4 样本外评估指标（v2.1 落地，详见 `PROB-PATH-V1.1-EVAL.md`）
 
-| 指标 | 含义 | 参考实现方向 |
-|------|------|--------------|
-| **Empirical coverage** | 实现路径是否落在 P10–P90 之间（80% 名义带） | BoE fan chart 校准；[conformal-finance](https://pypi.org/project/conformal-finance/) 诊断模块 |
-| **CRPS** | 分位路径对用户意图的综合评分 | MiQ-MCP 实践（[GitHub](https://github.com/sanjanbaitalik/MiQ-MCP)） |
-| **Walk-forward** | 训练窗估条件 vs 测试窗实现 | 已有 `walk-forward.ts` |
-| **Diebold–Mariano** | 分位路径 vs 朴素基准（永远涨 / 随机游走） | 黄金分位回归文献常用 |
-
----
-
-## 4. 网上可参考的开源 / 学术项目（精选）
-
-### 4.1 与「概率扇形 / 分位路径」直接相关
-
-| 项目 | 链接 | 可借鉴点 | 与 GoldRush v1 关系 |
-|------|------|----------|---------------------|
-| **Bank of England Fan Charts** | [IEO 2024 PDF](https://www.bankofengland.co.uk/-/media/boe/files/independent-evaluation-office/2024/forecasting-for-monetary-policy-making-and-communication-at-the-bank-of-england-a-review.pdf) | 扇形语义、模式/均值/偏度、历史误差定宽 | **产品叙事与图例**范本 |
-| **Neural-SDE (highlevel fan chart)** | [kdownie/Neural-Sde](https://github.com/kdownie/Neural-Sde) | `forecast()` → quantiles + `plot()` 扇形；强调 **分布非点预测** | **v2 可选**：GBM/OU 参数路径作对照带（需标注非平稳） |
-| **EnCQR** | [FilippoMB/Ensemble-Conformalized-Quantile-Regression](https://github.com/filippomb/ensemble-conformalized-quantile-regression) · [arXiv:2202.08756](https://arxiv.org/abs/2202.08756) | 任意时序模型 + **保覆盖** 区间 | **v1.1+**：在分桶残差上做 conformal 扩宽 |
-| **conformal-finance** | [PyPI](https://pypi.org/project/conformal-finance/) | 金融时序 conformal、regime 条件覆盖 | 覆盖诊断工具链参考 |
-| **MiQ-MCP** | [sanjanbaitalik/MiQ-MCP](https://github.com/sanjanbaitalik/MiQ-MCP) | 分位回归 + Mondrian conformal + purged CV | 评估卫生流程模板 |
-| **Session-Conditioned Gold Regime** | [PDF](https://img1.wsimg.com/blobby/go/f1a5b452-1d8c-4015-8c61-1cbbf2930284/Session_Conditioned_Gold_Regime_Forecasting_Pu.pdf) | **黄金**状态向量 + k-NN + 加权后续收益 | 与 **相似日扩样** 几乎同构 |
-| **Quantile NN for gold (academic)** | [ondrejtobek/quantile-neural-networks](https://github.com/ondrejtobek/quantile-neural-networks) | 全球股指分位预测方法论 | **不做 v1**；数据与过拟合成本高 |
-
-### 4.2 与「条件分桶 + 前瞻收益」相关的量化基建
-
-| 项目 | 链接 | 可借鉴点 |
+| 指标 | 含义 | 对标基准 |
 |------|------|----------|
-| **Alphalens** | [quantopian/alphalens](https://github.com/quantopian/alphalens) | 因子分位 → **前瞻收益分布**、IC；与 `calibrate` 分桶哲学一致 |
-| **Zipline + Alpha research** | [ai-alpha](https://github.com/yukit-k/ai-alpha) 等 | Pipeline 因子 → forward returns |
-| **Gold quantile boosting** | [RePEc 2016](https://ideas.repec.org/a/eee/ecofin/v35y2016icp38-55.html) | 黄金收益 **分位** 预测、不对称损失 | 学术对照，非首版依赖 |
-
-### 4.3 不建议照搬的反例
-
-| 方向 | 原因 |
-|------|------|
-| 深度学习端到端金价 LSTM 单线预测 | 与「分布 + 可审计」目标冲突；样本短 |
-| 以 RMSE 炫技的点预测库 | [conformal-finance](https://pypi.org/project/conformal-finance/) 自述：金融点预测 RMSE 常误导 |
-| FT 批评的 BoE **主观拉宽扇形** 而不贴误差数据 | 我们 v1 **禁止 LLM 调扇形宽度**；仅样本量与门禁降级 |
+| **Empirical Coverage（80% / 50%）** | 实际终点落入 P10–P90 / P25–P75 的比例 | 名义 80% / 50%（偏离 >15pp 报警） |
+| **Pinball Loss（分位数损失）** | 逐分位（10/25/50/75/90）非对称损失 | **无条件 FHS 随机游走扇形** |
+| **CRPS Skill Score** | $1 - \text{CRPS}_{\text{cond}} / \text{CRPS}_{\text{uncond}}$ | $> 0$ 才说明条件化有净信息增益 |
+| **MaxDD 尾部击穿率** | 实际路径最大回撤跌破 `maxDdP90` 的比例 | 名义 10% |
+| **Diebold–Mariano** | CRPS 差值的统计显著性检验 | 非重叠 Purged 测试窗 |
 
 ---
 
-## 5. GoldRush v1 相对业界方案的选型表
+## 4. 开源 / 学术参考（精选）
 
-| 方案 | 科学成熟度 | 实现成本 | 可解释性 | v1 决策 |
-|------|-----------|----------|----------|---------|
-| 央行式 fan（误差 σ） | 高（宏观） | 中（需误差序列） | 高 | **部分采纳**（图例与分位语义）；误差 σ 放 v1.1 |
-| 历史 analog k-NN | 中高（黄金文献） | 低（已有 `scenario_features`） | 高 | **采纳**（扩样瀑布） |
-| 评分分桶经验路径 | 中（依赖样本量） | 低 | 高 | **采纳**（主条件） |
-| Quantile boosting / QR | 中高（学术） | 高 | 中 | **不采纳 v1** |
-| Neural SDE Monte Carlo | 中（假设稳态） | 中 | 中 | **可选 v2 对照** |
-| Conformal 保覆盖 | 高（有限样本理论） | 中 | 高 | **v1.1 评估层** |
-
----
-
-## 6. 用户可见的「判断依据」说明（图例 / 文档模板）
-
-建议固定出现在图下与 MD（实现时照抄）：
-
-1. **条件**：综合评分区间 **{bucket}**；样本 **n={n}**（含相似日扩样时注明）。  
-2. **路径**：每条样本为历史上某日 **analysis 后** 的真实伦敦金 **累计涨跌 %**。  
-3. **分位**：P10/P50/P90 为 **非参数经验分位数**，**非** LLM 或模型点预测。  
-4. **与四面关系**：当日四面与量化分 **决定你是否落入该历史集合**；扇形 **展示该集合的事后路径分布**。  
-5. **局限**：黄金结构突变时历史可失效；**5/20 日** 不覆盖长期配置；红档下仅供参考。  
-6. **参考**：制图思想对标 **央行 density forecast / fan chart**；算法对标 **历史相似态 + 分桶校准**（见本文 §3–4）。
+| 项目 / 文献 | 可借鉴点 | 与 GoldRush v2.0 关系 |
+|-------------|----------|-----------------------|
+| **Barone-Adesi et al. (1999) FHS** | 波动率标准化历史模拟 | **v2.0 核心算法支柱** |
+| **Bank of England Fan Charts** ([IEO 2024](https://www.bankofengland.co.uk/-/media/boe/files/independent-evaluation-office/2024/forecasting-for-monetary-policy-making-and-communication-at-the-bank-of-england-a-review.pdf)) | 双层扇形语义、透明图例、校准审计 | **产品表达与视觉范本** |
+| **EnCQR / conformal-finance** ([arXiv:2202.08756](https://arxiv.org/abs/2202.08756)) | 有限样本保覆盖校准诊断 | **v2.1 OOS 覆盖率审计参考** |
+| **MiQ-MCP** ([GitHub](https://github.com/sanjanbaitalik/MiQ-MCP)) | Purged CV + CRPS 卫生评估流程 | **v2.1 评估框架参考** |
+| **Session-Conditioned Gold Regime** | 黄金状态向量 k-NN 加权路径分布 | **v2.0 相似态加权分位参考** |
 
 ---
 
-## 7. 与需求文档的衔接
+## 5. 用户可见的「判断依据」说明（图例模板）
 
-| 文档 | 内容 |
-|------|------|
-| [`PROB-PATH-FORECAST-V1.md`](./PROB-PATH-FORECAST-V1.md) | 已锁定：Fan + 5/20 日 + 分桶→相似日 |
-| **本文** | 大版本定义、三面关系、方法论、外部参考、评估路线 |
-| [`ROADMAP-FINENG.md`](./ROADMAP-FINENG.md) | 包 **L** 登记；包 **G**（Brier）对接 v1.1 |
+建议固定呈现在 Web 面板与 MD 报告中：
+
+1. **分轨条件**：5 日看量化/波动相似态，20 日看中期慢变量与宏观阶段；有效独立样本 $N_{\text{eff}}=\{N_{\text{eff}}\}$（收缩权重 $\{\lambda\}\%$）。
+2. **波动适配**：历史路径已按当时与今日的 20 日波动率做 FHS 归一化缩放（当前波动 $\sigma_0=\{vol\}\%/日$）。
+3. **分位与风险**：深带为 P25–P75 核心区间，浅带为 P10–P90 外沿区间，同步给出期内最大回撤分位与结构位历史触达频率；**非 LLM 编造点位**。
+4. **局限声明**：宏观范式突变时历史类比可能失效；红档或校准偏离时仅供研究，仓位仍以短期操作建议为准。
 
 ---
 
-## 8. 变更记录
+## 6. 变更记录
 
 | 日期 | 说明 |
 |------|------|
 | 2026-11-26 | 初稿：大版本界定、三面映射、方法论、外部项目调研、评估指标 |
+| 2026-11-26 | **v2.0 修订**：补充自家统计实证（为何 5/20 分轨）、引入 FHS（Barone-Adesi）波动率归一化理论、指出余弦相似度恒正偏置并改为 Z-score 加权距离、补充 $N_{\text{eff}}$ 重叠卫生、经验贝叶斯收缩与 Pinball Loss / CRPS 基准检验 |

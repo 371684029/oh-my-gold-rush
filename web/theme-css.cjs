@@ -153,6 +153,71 @@ button:focus-visible, .sort-btn:focus-visible, .collapse-btn:focus-visible {
 .prob-path-tab { margin-bottom: 8px; }
 .prob-path-gate { color: var(--red-text); font-size: 0.8rem; margin-top: 8px; }
 .prob-path-note { font-size: 0.75rem; color: var(--text-3); margin-top: 6px; }
+.prob-path-cta {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 8px;
+  font-size: 0.8rem; font-weight: 600; color: var(--accent);
+  background: var(--accent-soft); padding: 5px 11px; border-radius: 8px;
+}
+.prob-path-cta:hover { text-decoration: none; background: rgba(0, 122, 255, 0.2); }
+
+/* —— 顶部主功能 Tab 切换条（分析报告 | 走势预测） —— */
+.app-tabs {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 18px;
+}
+.app-tabs-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 13px;
+  background: var(--glass);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border: 0.5px solid var(--hairline-light);
+  box-shadow: var(--shadow-card);
+}
+.app-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 18px;
+  border-radius: 9.5px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-2);
+  text-decoration: none;
+  transition: all 0.16s var(--ease);
+}
+.app-tab:hover {
+  color: var(--text);
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.45);
+}
+.app-tab.active {
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--text);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.topbar-forecast-btn {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 6px 12px;
+  border-radius: 980px;
+  white-space: nowrap;
+}
+.topbar-forecast-btn:hover {
+  text-decoration: none;
+  background: rgba(0, 122, 255, 0.2);
+}
 
 .pos-panel, .pred-stats-panel, .rel-panel, .dd-panel, .read-panel, .tr-panel {
   margin: 0 0 14px;
