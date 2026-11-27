@@ -36,8 +36,14 @@ export interface ProbPathQuantilePoint {
 }
 
 export interface ProbPathRiskSummary {
+  /** 严格峰谷最大回撤 P50（<= 0，%） */
   maxDdP50: number;
+  /** 严格峰谷最大回撤 P90 尾部（<= 0，%） */
   maxDdP90: number;
+  /** 相对起点买入价最大浮亏 P50（<= 0，%） */
+  maxUnderwaterP50?: number;
+  /** 相对起点买入价最大浮亏 P90（<= 0，%） */
+  maxUnderwaterP90?: number;
   upEndProb: number;
 }
 

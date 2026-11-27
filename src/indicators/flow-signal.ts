@@ -132,42 +132,46 @@ export function computeCftcSignal(flows: CftcNetRecord[]): CftcSignal {
     };
   }
 
-  // 取最近 260 周（≈5年）的数据做百分位
-  const lookback = flows.slice(-260);
-  const allNcNet = lookback.map(f => f.ncNet);
-  const latest = lookback[lookback.length - 1];
-  const pct = percentile(latest.ncNet, allNcNet);
+  // F09: 优先按总未平仓合约（OI）归一化为 Net / OI 占比，消除跨周期市场扩容失真
+  const lookback = flows.slice(-156); // 3 年滚动窗口（156 周）
+  const useOi = lookback.filter(f => f.openInterest > 0).length >= Math.min(lookback.length, 5);
+  const ratioSeries = lookback.map(f => (useOi && f.openInterest > 0 ? f.ncNet / f.openInterest : f.ncNet));
+  const latest = lookback[lookback.length - 1]!;
+  const latestRatio = ratioSeries[ratioSeries.length - 1]!;
+  const pct = percentile(latestRatio, ratioSeries);
 
-  // 近 4 周方向分：正向变化越多得分越高
+  // 资金面边际动能：近 4 周 Δ(Net/OI) 顺势得分
+  const baseIdx = Math.max(0, ratioSeries.length - 5);
+  const delta4w = latestRatio - ratioSeries[baseIdx]!;
   const last4Changes = flows.slice(-4).map(f => f.ncChange);
   const positiveCount = last4Changes.filter(c => c > 0).length;
-  const dirScore = directionScore(positiveCount - 2, 0); // -2..2 → 30..70
+  const momentumScale = useOi ? 0.05 : Math.max(10_000, Math.abs(latest.ncNet) * 0.15);
+  const momentumScore = Math.round(50 + 28 * Math.tanh(delta4w / momentumScale));
 
-  // 极端信号：高位净多开始减少（过度拥挤多头平仓）或低位净多开始增加（空头回补）
-  const latestChange = latest.ncChange;
-  let extremeSignal = 50;
-  if (pct > 90 && latestChange < 0) extremeSignal = 25;
-  else if (pct < 10 && latestChange > 0) extremeSignal = 75;
+  // 筹码面极端拥挤反转警示（存量高分位 >85% / 低分位 <15%）
+  let crowdingScore = 50;
+  if (pct >= 85) crowdingScore = 30;
+  else if (pct <= 15) crowdingScore = 70;
+  else crowdingScore = Math.round(50 - ((pct - 50) / 50) * 10);
 
-  // 综合评分
-  const score = Math.round(0.4 * pct + 0.3 * dirScore + 0.2 * extremeSignal + 0.1 * 50);
+  // 综合评分（边际动能 65% + 极端拥挤约束 35%，消除旧版把高拥挤直接算 90 分的失真）
+  const score = Math.max(10, Math.min(90, Math.round(0.65 * momentumScore + 0.35 * crowdingScore)));
 
-  // 极端标记
-  const extreme = pct > 90 || pct < 10;
+  const extreme = pct >= 85 || pct <= 15;
   let extremeLabel = '';
-  if (pct > 90) extremeLabel = '净多头处于历史高位';
-  else if (pct < 10) extremeLabel = '净多头处于历史低位';
+  if (pct >= 85) extremeLabel = '净多头/OI处于历史拥挤高位';
+  else if (pct <= 15) extremeLabel = '净多头/OI处于历史出清低位';
 
-  // 近 4 周趋势
   let trend4w: string;
   if (positiveCount === 4) trend4w = '连续增加';
   else if (positiveCount === 0) trend4w = '连续减少';
   else trend4w = '震荡';
 
-  // 方向
   const direction: Direction = score >= 60 ? 'bullish' : score <= 40 ? 'bearish' : 'neutral';
-
-  const summary = `非商业净多 ${latest.ncNet.toLocaleString()} 手 (百分位 ${Math.round(pct)}%, 近4周${trend4w})`;
+  const ratioLabel = useOi && latest.openInterest > 0
+    ? `占比 ${(latestRatio * 100).toFixed(1)}%`
+    : `${latest.ncNet.toLocaleString()} 手`;
+  const summary = `非商业净多 ${ratioLabel} (3年分位 ${Math.round(pct)}%, 近4周${trend4w})`;
 
   return {
     score,
@@ -228,12 +232,18 @@ export function computeEtfFlowSignal(flows: GldRecord[], londonClose: number | n
   const latestTons = flows[flows.length - 1].tons;
   const pct = percentile(latestTons, allTons);
 
-  // 方向分
-  const dir5d = change5d > 0 ? 75 : change5d < 0 ? 25 : 50;
-  const dir20d = change20d > 0 ? 70 : change20d < 0 ? 30 : 50;
+  // F09: 用连续平滑 tanh 替代 0 轴 50 分阶跃悬崖（+0.01 吨与 -0.01 吨平滑过渡）
+  const absChanges = flows.slice(-20).map(f => Math.abs(f.change)).filter(v => v > 0);
+  const avgDailyAbs = absChanges.length > 0
+    ? absChanges.reduce((s, v) => s + v, 0) / absChanges.length
+    : 2.5;
+  const scale5d = Math.max(4, avgDailyAbs * 2.5);
+  const scale20d = Math.max(10, avgDailyAbs * 6);
+  const dir5d = 50 + 28 * Math.tanh(change5d / scale5d);
+  const dir20d = 50 + 24 * Math.tanh(change20d / scale20d);
 
-  // 综合评分
-  const score = Math.round(0.4 * dir5d + 0.3 * dir20d + 0.2 * pct + 0.1 * 50);
+  // 综合评分（去除 10% 常数 50 稀释）
+  const score = Math.max(10, Math.min(90, Math.round(0.45 * dir5d + 0.35 * dir20d + 0.20 * pct)));
 
   const direction: Direction = score >= 60 ? 'bullish' : score <= 40 ? 'bearish' : 'neutral';
 
@@ -392,10 +402,16 @@ export function computeInstitutionalSignal(londonClose: number | null): Institut
   const centralBank = computeCentralBankSignal(pbocFlows);
   const divergences = detectDivergences(cftc, etfFlow, londonClose, priceHistory);
 
-  // 综合评分：CFTC 40% + ETF 30% + 央行 15% + 预留 15%（中性 50）
-  const overallScore = Math.round(
-    0.40 * cftc.score + 0.30 * etfFlow.score + 0.15 * centralBank.score + 0.05 * 50 + 0.10 * 50,
-  );
+  // F09: 移除未实现的 15% 死权重占位，按实际有数据的子模块覆盖度重归一
+  const activeParts: Array<{ score: number; weight: number }> = [];
+  if (cftcFlows.length >= 5) activeParts.push({ score: cftc.score, weight: 0.40 });
+  if (gldFlows.length > 0) activeParts.push({ score: etfFlow.score, weight: 0.35 });
+  if (pbocFlows.length > 0) activeParts.push({ score: centralBank.score, weight: 0.25 });
+
+  const totalW = activeParts.reduce((s, p) => s + p.weight, 0);
+  const overallScore = totalW > 0
+    ? Math.round(activeParts.reduce((s, p) => s + p.score * (p.weight / totalW), 0))
+    : 50;
   const overallDirection: Direction =
     overallScore >= 60 ? 'bullish' : overallScore <= 40 ? 'bearish' : 'neutral';
 

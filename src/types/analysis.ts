@@ -2,6 +2,7 @@
 
 import type { QuantFactorDetail } from '../indicators/quant-score.js';
 import type { MidTermOutlook } from '../utils/mid-term-outlook.js';
+import type { EightDimensionProfile } from '../utils/eight-dimensions.js';
 
 /** 分析方向 */
 export type Direction = 'bullish' | 'bearish' | 'neutral';
@@ -91,7 +92,7 @@ export interface RebuttalAnalysis {
   rebuttalStrength: RebuttalStrength;
   bearPoints: BearPoint[];
   bullVulnerabilities: BullVulnerability[];
-  netEffect: 'unchanged' | 'downgraded' | 'significant_downgrade';
+  netEffect: 'unchanged' | 'downgraded' | 'significant_downgrade' | 'upgraded';
   adjustedScore?: number;
   tailRisks: TailRisk[];
 }
@@ -220,6 +221,8 @@ export interface GoldAnalysisReport {
   causalChains?: import('../utils/gold-causal-rules.js').CausalChainMatch[];
   /** 情景概率来源 */
   scenarioProbSource?: 'llm' | 'historical' | 'insufficient';
+  /** v2.4 八维全景分析（「三基 + 五专」正交体系） */
+  dimensions?: EightDimensionProfile;
 }
 
 /** 长期展望 — 单期限 */

@@ -147,27 +147,63 @@ describe('覆盖度提示', () => {
   });
 });
 
-describe('行情方向单调性', () => {
-  // 趋势类因子看多上涨，估值/布林等反转因子看空上涨，两者相抵后绝对分不会走极端；
-  // 这里只锁定「涨 > 平 > 跌」的单调关系，避免把某一侧因子的权重写死进测试。
-  const up = computeQuantScore({ closes: Array.from({ length: 60 }, (_, i) => 3000 + i * 20) });
-  const flat = computeQuantScore({ closes: flatCloses() });
-  const down = computeQuantScore({ closes: Array.from({ length: 60 }, (_, i) => 3000 - i * 20) });
+describe('行情方向单调性与 F08 RSI 极端过热修正', () => {
+  // F08: 健康温和趋势（有正常回调、RSI 在 55-68 区间）保持「涨 > 平 > 跌」单调关系；
+  // 极端直线逼空（RSI=100）则会触发过热警示，不再盲目给极高看多打分。
+  function buildHealthyUptrend(): number[] {
+    const out: number[] = [];
+    for (let i = 0; i < 60; i++) {
+      if (i < 20) {
+        // 先经历回调，使后续上涨位于合理中位估值区（非 100% 极端泡沫）
+        out.push(3600 - i * 38);
+      } else {
+        // 后 40 日健康震荡走高（交替 +24 / -14，RSI 约 62，MA20 明显多头）
+        const step = i - 20;
+        const base = 2850 + step * 8;
+        out.push(base + (step % 2 === 1 ? 10 : -10));
+      }
+    }
+    return out;
+  }
 
-  it('上涨分数高于横盘', () => {
+  function buildHealthyDowntrend(): number[] {
+    const out: number[] = [];
+    for (let i = 0; i < 60; i++) {
+      if (i < 20) {
+        out.push(2400 + i * 38);
+      } else {
+        const step = i - 20;
+        const base = 3150 - step * 8;
+        out.push(base + (step % 2 === 1 ? -10 : 10));
+      }
+    }
+    return out;
+  }
+
+  const up = computeQuantScore({ closes: buildHealthyUptrend() });
+  const flat = computeQuantScore({ closes: flatCloses() });
+  const down = computeQuantScore({ closes: buildHealthyDowntrend() });
+
+  it('健康上涨趋势分数高于横盘', () => {
     expect(up.score).toBeGreaterThan(flat.score);
   });
 
-  it('横盘分数高于下跌', () => {
+  it('横盘分数高于健康下跌趋势', () => {
     expect(flat.score).toBeGreaterThan(down.score);
   });
 
   it('横盘接近中性 50', () => {
     expect(Math.abs(flat.score - 50)).toBeLessThanOrEqual(3);
   });
+
+  it('F08: 极端直线暴涨（RSI≈100）触发过热扣分，RSI 因子分低于健康温和上涨', () => {
+    const parabolic = computeQuantScore({ closes: Array.from({ length: 60 }, (_, i) => 3000 + i * 20) });
+    expect(parabolic.factors.rsi.rawValue).toBeGreaterThan(80);
+    expect(parabolic.factors.rsi.normalizedScore).toBeLessThan(up.factors.rsi.normalizedScore);
+  });
 });
 
-describe('波动率因子方向符合避险逻辑', () => {
+describe('F07 波动率因子仅作风险尺度（不给方向分）', () => {
   function atrSeries(dailyMovePct: number): number[] {
     const out = [3000];
     for (let i = 1; i < 40; i++) {
@@ -177,10 +213,12 @@ describe('波动率因子方向符合避险逻辑', () => {
     return out;
   }
 
-  it('高波动给出偏多（避险需求），低波动给出偏空', () => {
+  it('DEFAULT_WEIGHTS.volatility 为 0，且高低波动均输出中性方向分 50 而保留真实 ATR rawValue', () => {
+    expect(DEFAULT_WEIGHTS.volatility).toBe(0);
     const calm = computeQuantScore({ closes: atrSeries(0.1) });
     const turbulent = computeQuantScore({ closes: atrSeries(1.5) });
-    expect(calm.factors.volatility.normalizedScore).toBeLessThan(50);
-    expect(turbulent.factors.volatility.normalizedScore).toBeGreaterThan(50);
+    expect(calm.factors.volatility.normalizedScore).toBe(50);
+    expect(turbulent.factors.volatility.normalizedScore).toBe(50);
+    expect(turbulent.factors.volatility.rawValue).toBeGreaterThan(calm.factors.volatility.rawValue);
   });
 });

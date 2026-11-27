@@ -399,6 +399,28 @@ ${baseCss}
   border-color: rgba(255, 159, 10, 0.35);
   color: var(--yellow-text);
 }
+.fc-info-banner {
+  background: rgba(15, 23, 42, 0.045);
+  border: 0.5px solid rgba(15, 23, 42, 0.12);
+  color: var(--text-2);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.fc-info-banner.anchor {
+  background: rgba(184, 134, 11, 0.08);
+  border-color: rgba(184, 134, 11, 0.24);
+  color: #6b4b00;
+}
+.fc-info-banner strong { color: var(--text); }
+.fc-info-banner.anchor strong { color: #5c3f00; }
 
 /* 交互式预测图表容器 */
 .fc-chart-stage {
@@ -580,6 +602,125 @@ ${baseCss}
   color: var(--text-2);
   border-top: 0.5px solid var(--hairline);
   padding-top: 8px;
+}
+
+/* 八维全景矩阵（三基 + 五专） */
+.fc-8d-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.fc-8d-code {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 5px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.fc-8d-code.base {
+  background: rgba(30, 64, 175, 0.10);
+  color: #1e3a8a;
+}
+.fc-8d-code.spec {
+  background: rgba(184, 134, 11, 0.14);
+  color: #7a5200;
+}
+.fc-8d-warn {
+  font-size: 11.5px;
+  color: #9a3412;
+  background: rgba(234, 88, 12, 0.09);
+  border-radius: 7px;
+  padding: 5px 8px;
+  line-height: 1.45;
+}
+.fc-veracity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2.5px 8px;
+  border-radius: 6px;
+  margin-top: 5px;
+  line-height: 1.35;
+}
+.fc-veracity-badge.confirmed {
+  background: rgba(26, 127, 55, 0.12);
+  color: #166534;
+}
+.fc-veracity-badge.bait_suspected {
+  background: rgba(220, 38, 38, 0.12);
+  color: #991b1b;
+}
+.fc-veracity-badge.noise_filtered {
+  background: rgba(217, 119, 6, 0.14);
+  color: #92400e;
+}
+.fc-veracity-badge.quiet {
+  background: rgba(15, 23, 42, 0.06);
+  color: var(--text-2);
+}
+.fc-8d-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-3);
+  font-family: var(--mono);
+}
+.fc-8d-card-zero {
+  opacity: 0.78;
+}
+.fc-aux-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+}
+.fc-aux-toggle {
+  border: 0.5px solid var(--hairline);
+  background: var(--glass-strong);
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s var(--ease), border-color 0.15s var(--ease);
+}
+.fc-aux-toggle:hover {
+  background: rgba(0, 122, 255, 0.08);
+  border-color: rgba(0, 122, 255, 0.3);
+  color: var(--accent);
+}
+.fc-aux-grid {
+  margin-top: 12px;
+}
+.fc-aux-grid[hidden] {
+  display: none;
+}
+.fc-dim-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1.5px 5px;
+  border-radius: 4px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.fc-dim-tag.base {
+  background: rgba(30, 64, 175, 0.10);
+  color: #1e3a8a;
+}
+.fc-dim-tag.spec {
+  background: rgba(184, 134, 11, 0.14);
+  color: #7a5200;
 }
 
 /* 关键位与历史相似日双栏 */
@@ -930,6 +1071,7 @@ ${baseCss}
 @media (max-width: 900px) {
   .fc-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .fc-pillars-grid { grid-template-columns: 1fr; }
+  .fc-8d-grid { grid-template-columns: 1fr; }
   .fc-detail-grid { grid-template-columns: 1fr; }
   .fc-scenarios-grid { grid-template-columns: 1fr; }
   .fc-triggers-grid { grid-template-columns: 1fr; }
@@ -958,7 +1100,7 @@ ${baseCss}
     <header class="fc-header">
       <div class="fc-title-group">
         <h1>📈 黄金走势预测图</h1>
-        <p id="fc-subtitle">依据基本面 · 信息面 · 技术面与 FHS 波动率归一化，每日生成一张可审计的走势预测图</p>
+        <p id="fc-subtitle">依据三基（基本面 · 消息面 · 技术面）+ 五专（资金 · 政策 · 情绪 · 筹码 · 量化）与去均值对数 FHS，每日生成可审计的走势预测图</p>
       </div>
       <div class="fc-date-nav">
         <button type="button" class="fc-date-btn" id="btn-prev-date" onclick="stepDate(-1)" aria-label="上一交易日">◀ 上一日</button>
@@ -1013,7 +1155,9 @@ ${baseCss}
       </div>
 
       <div id="fc-gate-slot"></div>
+      <div id="fc-basis-slot"></div>
       <div class="fc-kpi-grid" id="fc-kpi-grid"></div>
+      <div id="fc-lt-anchor-slot"></div>
 
       <div class="fc-chart-stage" id="fc-chart-stage">
         <svg class="fc-chart-svg" id="fc-chart-svg" viewBox="0 0 1040 400" role="img" aria-label="黄金历史与未来走势预测图"></svg>
@@ -1033,10 +1177,16 @@ ${baseCss}
     </section>
 
     <div class="fc-sec-head">
-      <h2>🧭 预测依据：基本面 · 信息面 · 技术面</h2>
+      <h2>🧭 八维全景预测依据：三基 + 五专</h2>
       <span id="fc-track-caption"></span>
     </div>
-    <section class="fc-pillars-grid" id="fc-pillars-grid" aria-label="三面预测依据"></section>
+    <div id="fc-8d-degraded-slot"></div>
+    <section class="fc-8d-grid" id="fc-pillars-grid" aria-label="当前视野主导四维依据"></section>
+    <div class="fc-aux-bar" id="fc-aux-bar" style="display:none">
+      <button type="button" class="fc-aux-toggle" id="btn-toggle-aux-8d" aria-expanded="false" aria-controls="fc-aux-8d-grid" onclick="toggleAux8D()">展开其余 4 项辅助维度 ▾</button>
+      <span id="fc-aux-caption" style="font-size:12px;color:var(--text-2)"></span>
+    </div>
+    <section class="fc-8d-grid fc-aux-grid" id="fc-aux-8d-grid" aria-label="其余辅助维度依据" hidden></section>
 
     <div class="fc-sec-head">
       <h2>🔬 结论溯源与可查证据链</h2>
@@ -1112,9 +1262,10 @@ ${baseCss}
     let currentSyncMeta = ${safeJsonForScript(syncMeta || null)};
     let latestAvailableDate = ${safeJsonForScript(allDates[allDates.length - 1] || forecast.asOf)};
     let currentUnit = 'usd';      // 'usd' | 'cny' | 'pct'
-    let currentHorizon = '5';     // '5' | '20' | '60'
+    let currentHorizon = '5';     // '5' | '20' | '60' | '1y' | '2y' | '5y'
     let showMa20 = true;
     let showReplay = false;
+    let showAux8D = false;
     let hoverPoints = [];
 
     function fmtVal(usd, cny, pct, compact) {
@@ -1177,6 +1328,20 @@ ${baseCss}
       showReplay = !showReplay;
       document.getElementById('btn-toggle-replay').classList.toggle('active', showReplay);
       renderChart();
+    }
+
+    function toggleAux8D() {
+      showAux8D = !showAux8D;
+      const btn = document.getElementById('btn-toggle-aux-8d');
+      const grid = document.getElementById('fc-aux-8d-grid');
+      if (btn) {
+        btn.setAttribute('aria-expanded', showAux8D ? 'true' : 'false');
+        btn.textContent = showAux8D ? '收起其余 4 项辅助维度 ▴' : '展开其余 4 项辅助维度 ▾';
+      }
+      if (grid) {
+        if (showAux8D) grid.removeAttribute('hidden');
+        else grid.setAttribute('hidden', '');
+      }
     }
 
     function stepDate(delta) {
@@ -1381,7 +1546,7 @@ ${baseCss}
       }
       replayBtn.classList.toggle('active', showReplay && hasReplay);
 
-      // 门禁提示
+      // 门禁提示 + 人民币联合汇率口径说明（F12）
       const gateSlot = document.getElementById('fc-gate-slot');
       if (currentData.gateHint) {
         const cls = currentData.gate?.tier === 'yellow' ? 'yellow' : '';
@@ -1389,9 +1554,18 @@ ${baseCss}
       } else {
         gateSlot.innerHTML = '';
       }
-
-      // KPI 条（长期模式自动展示 CAGR 年化、25年无条件基线与跑赢通胀概率）
       const s = hData.summary;
+      const basisSlot = document.getElementById('fc-basis-slot');
+      if (basisSlot) {
+        const basisNote = s.cnyBasisNote || currentData.spot?.cnyBasisNote;
+        if (currentUnit === 'cny' && basisNote) {
+          basisSlot.innerHTML = '<div class="fc-info-banner"><span>💱 <strong>人民币口径说明：</strong>' + escHtml(basisNote) + '</span><span>当前汇率 ' + escHtml(currentData.spot.usdCnyRate) + '</span></div>';
+        } else {
+          basisSlot.innerHTML = '';
+        }
+      }
+
+      // KPI 条（严格峰谷 MaxDD + 相对起点浮亏 MaxUnderwater + 长期独立周期数与 1971+ 先验锚）
       const spotStr = currentUnit === 'usd'
         ? '$' + currentData.spot.usd.toFixed(1)
         : currentUnit === 'cny'
@@ -1410,16 +1584,20 @@ ${baseCss}
       const extLo = fmtVal(s.endUsd.p10, s.endCny.p10, s.endP10Pct, true);
       const extHi = fmtVal(s.endUsd.p90, s.endCny.p90, s.endP90Pct, true);
 
+      const ddMainVal = (currentUnit === 'cny' && s.cnyMaxDdP90 != null) ? s.cnyMaxDdP90 : s.maxDdP90;
+      const ddMedVal = (currentUnit === 'cny' && s.cnyMaxDdP50 != null) ? s.cnyMaxDdP50 : s.maxDdP50;
+      const ddLabel = currentUnit === 'cny' ? '最大峰谷回撤 (CNY)' : '最大峰谷回撤 (MaxDD)';
+      const uwPart = s.maxUnderwaterP90 != null ? (' · 相对起点浮亏 ' + fmtPct(s.maxUnderwaterP90)) : '';
+
       const kpi2Title = isLT ? (hData.shortLabel + '主预测 (P50)') : (hData.horizon + '日主预测 (P50)');
       const kpi2Sub = isLT && s.cagr
         ? ('累计 ' + fmtPct(s.endP50Pct) + ' · 年化 ' + fmtPct(s.cagr.p50) + ' (基线 ' + fmtPct(s.cagr.baselineP50) + ')')
-        : ('预期中位 ' + fmtPct(s.endP50Pct) + ' · 综合分 ' + hData.compositeScore);
-      const kpi4Sub = isLT
-        ? ('中位回撤 ' + fmtPct(s.maxDdP50) + ' · 月波 ' + hData.sampleStats.currentVolPct + '%/月')
-        : ('中位回撤 ' + fmtPct(s.maxDdP50) + ' · 日波 ' + hData.sampleStats.currentVolPct + '%/日');
+        : ('预期中位 ' + fmtPct(s.endP50Pct) + ' · 八维综合分 ' + (currentData.eightDimensionsByHorizon?.[currentHorizon]?.compositeScore ?? hData.compositeScore));
+      const kpi4Sub = '中位峰谷 ' + fmtPct(ddMedVal) + uwPart;
       const kpi5Title = isLT ? (hData.shortLabel + '实证收涨概率') : '期末收涨概率';
+      const indCyc = hData.sampleStats.independentCycles;
       const kpi5Sub = isLT && s.beatCpiProb != null
-        ? ('跑赢美国 CPI ' + s.beatCpiProb + '% · ' + hData.sampleStats.rawSampleSize + ' 历史窗口')
+        ? ('跑赢美国 CPI ' + s.beatCpiProb + '% · 等效 ' + (indCyc ?? hData.sampleStats.effectiveSampleSize) + ' 个独立周期')
         : ('收缩向无条件基准 ' + Math.round(hData.sampleStats.shrinkageWeight * 100) + '%');
 
       document.getElementById('fc-kpi-grid').innerHTML =
@@ -1439,42 +1617,145 @@ ${baseCss}
           '<div class="fc-kpi-sub">极端带(P10–P90): ' + extLo + ' ～ ' + extHi + '</div>' +
         '</div>' +
         '<div class="fc-kpi">' +
-          '<div class="fc-kpi-label"><span>最大回撤风险</span><span>P90不利</span></div>' +
-          '<div class="fc-kpi-val tone-bear">' + fmtPct(s.maxDdP90) + '</div>' +
+          '<div class="fc-kpi-label"><span>' + escHtml(ddLabel) + '</span><span>P90峰谷</span></div>' +
+          '<div class="fc-kpi-val tone-bear">' + fmtPct(ddMainVal) + '</div>' +
           '<div class="fc-kpi-sub">' + escHtml(kpi4Sub) + '</div>' +
         '</div>' +
         '<div class="fc-kpi">' +
-          '<div class="fc-kpi-label"><span>' + escHtml(kpi5Title) + '</span><span>N_eff ' + hData.sampleStats.effectiveSampleSize + '</span></div>' +
+          '<div class="fc-kpi-label"><span>' + escHtml(kpi5Title) + '</span><span>' + (isLT && indCyc != null ? ('独立周期 ' + indCyc) : ('N_eff ' + hData.sampleStats.effectiveSampleSize)) + '</span></div>' +
           '<div class="fc-kpi-val ' + (s.upEndProb >= 55 ? 'tone-bull' : s.upEndProb <= 45 ? 'tone-bear' : '') + '">' + s.upEndProb + '%</div>' +
           '<div class="fc-kpi-sub">' + escHtml(kpi5Sub) + '</div>' +
         '</div>';
 
-      // 三面依据卡片
-      document.getElementById('fc-track-caption').textContent =
-        hData.label + ' 权重分配：' + hData.trackName;
-      const pList = [pillars.fundamental, pillars.information, pillars.technical];
-      document.getElementById('fc-pillars-grid').innerHTML = pList.map(p => {
-        const barColor = p.code === 'bullish' ? '#1a7f37' : p.code === 'bearish' ? '#c62828' : '#b8860b';
-        const scoreCls = p.code === 'bullish' ? 'tone-bull' : p.code === 'bearish' ? 'tone-bear' : 'tone-gold';
-        const mRows = (p.metrics || []).map(m =>
+      // 长期模式专属：1971+ 55 年实际购买力先验锚与等效独立周期提示条（F13）
+      const ltAnchorSlot = document.getElementById('fc-lt-anchor-slot');
+      if (ltAnchorSlot) {
+        if (isLT && s.realReturnAnchor) {
+          const anchor = s.realReturnAnchor;
+          ltAnchorSlot.innerHTML =
+            '<div class="fc-info-banner anchor">' +
+              '<span>🏛️ <strong>55年实际购买力先验锚 (1971–2026)：</strong>' + escHtml(anchor.note || ('长期实际年化约 +' + anchor.realCagrPct + '%，名义先验约 +' + anchor.nominalAnchorCagrPct + '%/年')) + '</span>' +
+              '<span><strong>等效独立周期：</strong>' + escHtml(indCyc ?? '—') + ' 轮（原始 ' + escHtml(hData.sampleStats.rawSampleSize) + ' 重叠月窗）</span>' +
+            '</div>';
+        } else {
+          ltAnchorSlot.innerHTML = '';
+        }
+      }
+
+      // 八维全景依据区（三基 + 五专：默认展示当前视野权重 Top 4 主导维度，其余 4 项可一键展开）
+      const eightD = currentData.eightDimensionsByHorizon?.[currentHorizon] || null;
+      const degSlot = document.getElementById('fc-8d-degraded-slot');
+      const auxBar = document.getElementById('fc-aux-bar');
+      const auxGrid = document.getElementById('fc-aux-8d-grid');
+      const auxCap = document.getElementById('fc-aux-caption');
+
+      const render8DCard = (d) => {
+        const hasScore = d.score != null && Number.isFinite(d.score);
+        const dirCode = d.codeDir || 'neutral';
+        const barColor = !hasScore ? '#94a3b8' : dirCode === 'bullish' ? '#1a7f37' : dirCode === 'bearish' ? '#c62828' : '#b8860b';
+        const scoreCls = !hasScore ? '' : dirCode === 'bullish' ? 'tone-bull' : dirCode === 'bearish' ? 'tone-bear' : 'tone-gold';
+        const catCls = d.category === 'base' ? 'base' : 'spec';
+        const catLabel = d.category === 'base' ? '基础面' : '专业面';
+        const weightLabel = d.weightPct === 0
+          ? '权重 0% · 当前视野隔离'
+          : (d.effectiveWeightPct != null && d.effectiveWeightPct !== d.weightPct
+            ? ('权重 ' + d.weightPct + '% (有效 ' + d.effectiveWeightPct + '%)')
+            : ('权重 ' + d.weightPct + '%'));
+        const mRows = (d.metrics || []).map(m =>
           '<div class="fc-pm-row"><span class="fc-pm-k">' + escHtml(m.k) + '</span><span class="fc-pm-v ' +
           (m.tone === 'bull' ? 'tone-bull' : m.tone === 'bear' ? 'tone-bear' : '') + '">' + escHtml(m.v) + '</span></div>'
         ).join('');
-        return '<article class="fc-pillar-card glass-strong">' +
+        const warnHtml = d.warning ? '<div class="fc-8d-warn">⚠️ ' + escHtml(d.warning) + '</div>' : '';
+        const veracityHtml = d.veracityBadge
+          ? '<div><span class="fc-veracity-badge ' + escHtml(d.veracityStatus || 'quiet') + '">' + escHtml(d.veracityBadge) + '</span></div>'
+          : '';
+        return '<article class="fc-pillar-card glass-strong ' + (d.weightPct === 0 ? 'fc-8d-card-zero' : '') + '">' +
           '<div class="fc-pillar-top">' +
-            '<div><div class="fc-pillar-title">' + escHtml(p.title) + '</div><div class="fc-pillar-sub">' + escHtml(p.subtitle) + '</div></div>' +
+            '<div>' +
+              '<div class="fc-pillar-title"><span class="fc-8d-code ' + catCls + '">' + escHtml(d.code) + '</span>' + escHtml(d.title) + '</div>' +
+              '<div class="fc-pillar-sub">' + escHtml(catLabel) + ' · ' + escHtml(d.subtitle) + '</div>' +
+              veracityHtml +
+            '</div>' +
             '<div class="fc-pillar-score-box">' +
-              '<div class="fc-pillar-score ' + scoreCls + '">' + p.score + '<span style="font-size:12px;font-weight:500">/100</span></div>' +
-              '<div class="fc-pillar-weight">' + escHtml(p.label) + ' · 权重 ' + p.weightPct + '%</div>' +
+              '<div class="fc-pillar-score ' + scoreCls + '">' + (hasScore ? (d.score + '<span style="font-size:12px;font-weight:500">/100</span>') : '缺数') + '</div>' +
+              '<div class="fc-pillar-weight">' + escHtml(d.label) + ' · ' + escHtml(weightLabel) + '</div>' +
             '</div>' +
           '</div>' +
-          '<div class="fc-pillar-bar"><div class="fc-pillar-bar-fill" style="width:' + p.score + '%;background:' + barColor + '"></div></div>' +
+          '<div class="fc-pillar-bar"><div class="fc-pillar-bar-fill" style="width:' + (hasScore ? d.score : 0) + '%;background:' + barColor + '"></div></div>' +
           '<div class="fc-pillar-metrics">' + mRows + '</div>' +
-          '<p class="fc-pillar-summary">' + escHtml(p.summary) + '</p>' +
+          warnHtml +
+          '<p class="fc-pillar-summary">' + escHtml(d.summary) + '</p>' +
+          '<div class="fc-8d-foot"><span>有效覆盖 ' + Math.round((d.coverage || 0) * 100) + '%</span><span>' + escHtml(d.dataFreshness || '') + '</span></div>' +
         '</article>';
-      }).join('');
+      };
 
-      // 结论溯源与可查证据链（因子审计表 + 长期三情景 + 推翻条件）
+      if (eightD && Array.isArray(eightD.dominant)) {
+        document.getElementById('fc-track-caption').textContent =
+          hData.label + ' 八维动态权重 · 综合 ' + eightD.compositeScore + '/100（覆盖 ' + Math.round((eightD.coverage || 0) * 100) + '%）';
+        if (degSlot) {
+          degSlot.innerHTML = eightD.degradedWarning
+            ? '<div class="fc-gate-banner yellow">⚠️ ' + escHtml(eightD.degradedWarning) + '</div>'
+            : '';
+        }
+        document.getElementById('fc-pillars-grid').className = 'fc-8d-grid';
+        document.getElementById('fc-pillars-grid').innerHTML = eightD.dominant.map(render8DCard).join('');
+        if (auxBar && auxGrid) {
+          const auxList = eightD.auxiliary || [];
+          if (auxList.length > 0) {
+            auxBar.style.display = 'flex';
+            const zeroCount = auxList.filter(a => a.weightPct === 0).length;
+            if (auxCap) {
+              auxCap.textContent = zeroCount > 0
+                ? ('含 ' + zeroCount + ' 项当前视野严格 0% 隔离维度（防短线噪音污染中长期）')
+                : '按当前视野权重降序排列，所有指标零跨维重复计分';
+            }
+            auxGrid.innerHTML = auxList.map(render8DCard).join('');
+            const auxBtn = document.getElementById('btn-toggle-aux-8d');
+            if (auxBtn) {
+              auxBtn.setAttribute('aria-expanded', showAux8D ? 'true' : 'false');
+              auxBtn.textContent = showAux8D
+                ? ('收起其余 ' + auxList.length + ' 项辅助维度 ▴')
+                : ('展开其余 ' + auxList.length + ' 项辅助维度 ▾');
+            }
+            if (showAux8D) auxGrid.removeAttribute('hidden');
+            else auxGrid.setAttribute('hidden', '');
+          } else {
+            auxBar.style.display = 'none';
+            auxGrid.innerHTML = '';
+            auxGrid.setAttribute('hidden', '');
+          }
+        }
+      } else if (pillars) {
+        document.getElementById('fc-track-caption').textContent =
+          hData.label + ' 权重分配：' + hData.trackName;
+        if (degSlot) degSlot.innerHTML = '';
+        if (auxBar) auxBar.style.display = 'none';
+        if (auxGrid) auxGrid.setAttribute('hidden', '');
+        const pList = [pillars.fundamental, pillars.information, pillars.technical];
+        document.getElementById('fc-pillars-grid').className = 'fc-pillars-grid';
+        document.getElementById('fc-pillars-grid').innerHTML = pList.map(p => {
+          const barColor = p.code === 'bullish' ? '#1a7f37' : p.code === 'bearish' ? '#c62828' : '#b8860b';
+          const scoreCls = p.code === 'bullish' ? 'tone-bull' : p.code === 'bearish' ? 'tone-bear' : 'tone-gold';
+          const mRows = (p.metrics || []).map(m =>
+            '<div class="fc-pm-row"><span class="fc-pm-k">' + escHtml(m.k) + '</span><span class="fc-pm-v ' +
+            (m.tone === 'bull' ? 'tone-bull' : m.tone === 'bear' ? 'tone-bear' : '') + '">' + escHtml(m.v) + '</span></div>'
+          ).join('');
+          return '<article class="fc-pillar-card glass-strong">' +
+            '<div class="fc-pillar-top">' +
+              '<div><div class="fc-pillar-title">' + escHtml(p.title) + '</div><div class="fc-pillar-sub">' + escHtml(p.subtitle) + '</div></div>' +
+              '<div class="fc-pillar-score-box">' +
+                '<div class="fc-pillar-score ' + scoreCls + '">' + p.score + '<span style="font-size:12px;font-weight:500">/100</span></div>' +
+                '<div class="fc-pillar-weight">' + escHtml(p.label) + ' · 权重 ' + p.weightPct + '%</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="fc-pillar-bar"><div class="fc-pillar-bar-fill" style="width:' + p.score + '%;background:' + barColor + '"></div></div>' +
+            '<div class="fc-pillar-metrics">' + mRows + '</div>' +
+            '<p class="fc-pillar-summary">' + escHtml(p.summary) + '</p>' +
+          '</article>';
+        }).join('');
+      }
+
+      // 结论溯源与可查证据链（因子审计表含八维归属徽章 + 长期三情景 + 推翻条件）
       const ev = hData.evidence || null;
       const auditSub = document.getElementById('fc-audit-sub');
       if (auditSub) {
@@ -1484,16 +1765,19 @@ ${baseCss}
       }
       const auditTbody = document.getElementById('fc-audit-tbody');
       if (auditTbody && ev?.factorAudit?.length) {
-        auditTbody.innerHTML = ev.factorAudit.map(row =>
-          '<tr>' +
-            '<td><div class="fc-audit-factor">' + escHtml(row.factor) + '</div><div class="fc-audit-mech">' + escHtml(row.mechanism) + '</div></td>' +
+        auditTbody.innerHTML = ev.factorAudit.map(row => {
+          const dimTag = row.dimensionCode
+            ? '<span class="fc-dim-tag ' + (String(row.dimensionCode).startsWith('B') ? 'base' : 'spec') + '">' + escHtml(row.dimensionCode + ' ' + (row.dimensionTitle || '')) + '</span>'
+            : '';
+          return '<tr>' +
+            '<td><div class="fc-audit-factor">' + dimTag + escHtml(row.factor) + '</div><div class="fc-audit-mech">' + escHtml(row.mechanism) + '</div></td>' +
             '<td class="fc-audit-val">' + escHtml(row.currentValue) + '</td>' +
             '<td class="fc-audit-src">' + escHtml(row.sourceDate) + '</td>' +
             '<td class="fc-audit-pct">' + escHtml(row.percentile25y) + '</td>' +
             '<td><span class="fc-imp-badge ' + escHtml(row.impact) + '">' + escHtml(row.impactLabel) + '</span></td>' +
             '<td class="fc-audit-emp">' + escHtml(row.empiricalStat) + '</td>' +
-          '</tr>'
-        ).join('');
+          '</tr>';
+        }).join('');
       }
 
       const scWrap = document.getElementById('fc-scenarios-wrap');

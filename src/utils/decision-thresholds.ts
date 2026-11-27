@@ -84,6 +84,36 @@ export function wilsonInterval(hits: number, total: number, z = 1.96): [number, 
 }
 
 /**
+ * F16: 重叠滚动窗口（如逐日评估 T=5 / T=20 日前瞻收益）的 Bartlett / Newey-West 近似有效样本数。
+ * 连续日线共享 T-1 天收益，直接用名义 N 算 Wilson CI 会低估标准误约 sqrt(T) 倍。
+ */
+export function effectiveSampleSizeOverlap(total: number, horizonDays = 5): number {
+  if (total <= 0) return 0;
+  const h = Math.max(1, horizonDays);
+  if (h <= 1) return total;
+  // Bartlett 核一阶近似：1 + 2 * sum_{k=1}^{h-1} (1 - k/h) * ((h - k) / h) ≈ 1 + (h - 1) * 2 / 3
+  const overlapFactor = 1 + ((h - 1) * 2) / 3;
+  return Math.max(1, Math.round((total / overlapFactor) * 10) / 10);
+}
+
+/**
+ * F16: 重叠收益窗口的 HAC 修正 Wilson 95% 置信区间。
+ * 用等效独立样本数 N_eff 替换名义 N，防止重叠样本制造「虚假统计显著」。
+ */
+export function wilsonIntervalHac(
+  hits: number,
+  total: number,
+  horizonDays = 5,
+  z = 1.96,
+): [number, number] {
+  if (total <= 0) return [0, 1];
+  const nEff = effectiveSampleSizeOverlap(total, horizonDays);
+  const p = hits / total;
+  const effHits = p * nEff;
+  return wilsonInterval(effHits, nEff, z);
+}
+
+/**
  * 命中率是否显著优于给定基准（默认 50% 抛硬币）。
  * 判据：Wilson 下界高于基准，即在 95% 置信度下不能用运气解释。
  */

@@ -374,6 +374,76 @@ function buildObjectiveMarketPillars(rows, idx, syncMeta, isLatest) {
     ? Math.round(flowParts.reduce((a, b) => a + b.s * b.w, 0) / flowWeightSum)
     : 50;
 
+  // 4b) v2.4 八维扩展严格因果派生量（零前视、无数据不编造）
+  let cftcDelta4wNet = null;
+  if (cur.cftcNet != null && idx >= 20) {
+    let prevNet = null;
+    for (let k = idx - 20; k >= Math.max(0, idx - 30); k--) {
+      if (rows[k].cftcNet != null) { prevNet = rows[k].cftcNet; break; }
+    }
+    if (prevNet != null) cftcDelta4wNet = Math.round(cur.cftcNet - prevNet);
+  }
+  const cftcNetToOiPct = (cur.cftcNet != null && cur.cftcOi > 0)
+    ? round((cur.cftcNet / cur.cftcOi) * 100, 2)
+    : null;
+
+  let comexVolRatio = null;
+  if (cur.comexVol > 0) {
+    let vSum = 0;
+    let vCnt = 0;
+    for (let k = Math.max(0, idx - 19); k <= idx; k++) {
+      if (rows[k].comexVol > 0) { vSum += rows[k].comexVol; vCnt++; }
+    }
+    if (vCnt >= 5 && vSum > 0) {
+      comexVolRatio = round(cur.comexVol / (vSum / vCnt), 2);
+    }
+  }
+
+  let consecDirDays = 0;
+  if (idx >= 1) {
+    const firstDiff = rows[idx].londonClose - rows[idx - 1].londonClose;
+    const sign = firstDiff > 0 ? 1 : firstDiff < 0 ? -1 : 0;
+    if (sign !== 0) {
+      consecDirDays = sign;
+      for (let k = idx - 1; k >= Math.max(1, idx - 12); k--) {
+        const d = rows[k].londonClose - rows[k - 1].londonClose;
+        if ((sign > 0 && d > 0) || (sign < 0 && d < 0)) consecDirDays += sign;
+        else break;
+      }
+    }
+  }
+
+  let vwap60Usd = null;
+  let vwap60Source = 'twap60';
+  {
+    const winStart = Math.max(0, idx - 59);
+    let pvComex = 0; let vComex = 0;
+    let pvGld = 0; let vGld = 0;
+    let pSum = 0; let pCnt = 0;
+    for (let k = winStart; k <= idx; k++) {
+      const p = rows[k].londonClose;
+      if (p > 0) {
+        pSum += p; pCnt++;
+        if (rows[k].comexVol > 0) { pvComex += p * rows[k].comexVol; vComex += rows[k].comexVol; }
+        if (rows[k].gldVol > 0) { pvGld += p * rows[k].gldVol; vGld += rows[k].gldVol; }
+      }
+    }
+    if (vComex > 0 && pCnt >= 20) {
+      vwap60Usd = round(pvComex / vComex, 2);
+      vwap60Source = 'comex_vol';
+    } else if (vGld > 0 && pCnt >= 20) {
+      vwap60Usd = round(pvGld / vGld, 2);
+      vwap60Source = 'gld_vol';
+    } else if (pCnt >= 10) {
+      vwap60Usd = round(pSum / pCnt, 2);
+      vwap60Source = 'twap60';
+    }
+  }
+
+  const yieldCurve2s10sBp = (cur.us10y != null && cur.us2y != null)
+    ? Math.round((cur.us10y - cur.us2y) * 100)
+    : null;
+
   // 4) 动态门禁（依据锚定偏差与宏观数据时效，不硬拦正常交易日）
   const macroLagDays = cur.macroObsDate ? daysBetween(cur.macroObsDate, cur.date) : null;
   const anchorDiff = isLatest ? (syncMeta?.liveQuotes?.anchorDiffPct ?? null) : null;
@@ -400,6 +470,13 @@ function buildObjectiveMarketPillars(rows, idx, syncMeta, isLatest) {
     tipsChange60dBp,
     gld5dRet,
     gld20dRet,
+    cftcDelta4wNet,
+    cftcNetToOiPct,
+    comexVolRatio,
+    consecDirDays,
+    vwap60Usd,
+    vwap60Source,
+    yieldCurve2s10sBp,
     macroTag,
     macroLabel,
     gate,
@@ -550,6 +627,10 @@ function loadDailyForecastDataset(docsDir) {
       const cnyPerGram = shanghaiClose != null ? shanghaiClose : convertedCny;
       const cnySource = shanghaiClose != null ? 'shanghai' : 'converted';
 
+      const sgePremiumCny = row.sgePremiumCny != null
+        ? round(row.sgePremiumCny, 2)
+        : (shanghaiClose != null ? round(shanghaiClose - convertedCny, 2) : null);
+
       return {
         date: row.date,
         filename: ai ? ai.filename : null,
@@ -559,16 +640,32 @@ function loadDailyForecastDataset(docsDir) {
         macroObsDate: row.macroObsDate || null,
         cftcObsDate: row.cftcObsDate || null,
         londonClose,
+        londonHigh: row.londonHigh ?? null,
+        londonLow: row.londonLow ?? null,
         shanghaiClose,
+        sgePremiumCny,
         cnyPerGram,
         cnySource,
         usdCnyRate,
         gldClose: row.gldClose ?? null,
         gldVol: row.gldVol ?? null,
+        comexVol: row.comexVol ?? null,
+        comexVolRatio: obj.comexVolRatio,
         gld5dRet: obj.gld5dRet,
         gld20dRet: obj.gld20dRet,
         cftcNet: row.cftcNet ?? null,
+        cftcOi: row.cftcOi ?? null,
+        cftcDelta4wNet: obj.cftcDelta4wNet,
+        cftcNetToOiPct: obj.cftcNetToOiPct,
         cftcPercentile: row.cftcPct ?? ai?.cftcPercentile ?? null,
+        gvz: row.gvz ?? null,
+        vix: row.vix ?? null,
+        fedFunds: row.fedFunds ?? null,
+        us2y: row.us2y ?? null,
+        yieldCurve2s10sBp: obj.yieldCurve2s10sBp,
+        consecDirDays: obj.consecDirDays,
+        vwap60Usd: obj.vwap60Usd,
+        vwap60Source: obj.vwap60Source,
         overallScore: ai ? ai.overallScore : null,
         quantScore: ai?.quantScore ?? obj.quantScore,
         midTermScore: ai?.midTermScore ?? obj.midTermScore,

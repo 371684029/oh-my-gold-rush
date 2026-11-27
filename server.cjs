@@ -1501,6 +1501,36 @@ function renderIndex(fileInfos) {
 </html>`;
 }
 
+/** 八维全景速览条（仅当 .meta.json 含 v2.4 dimensions 时渲染，旧报告自动静默隐藏） */
+function renderEightDimensionsStrip(dimensions) {
+  if (!dimensions || typeof dimensions !== 'object') return '';
+  const order = ['fundamental', 'news', 'technical', 'capitalFlow', 'policy', 'sentiment', 'positioning', 'quantitative'];
+  const cells = [];
+  for (const key of order) {
+    const d = dimensions[key];
+    if (!d) continue;
+    const catCls = d.category === 'base' ? 'base' : 'spec';
+    const dirCls = d.direction === 'bullish' ? 'bullish' : d.direction === 'bearish' ? 'bearish' : 'neutral';
+    const scoreText = d.score != null && Number.isFinite(d.score) ? `${d.score}` : '—';
+    const covText = d.coverage != null ? `覆盖 ${Math.round(d.coverage * 100)}%` : '';
+    cells.push(`<div class="dim8-item">
+      <div class="dim8-top">
+        <span><span class="dim8-code ${catCls}">${esc(d.code)}</span>${esc(d.title)}</span>
+        <span class="dim8-score ${dirCls}">${esc(scoreText)}</span>
+      </div>
+      <div class="dim8-meta" title="${esc(d.summary || '')}">${esc(covText)}${d.summary ? ` · ${esc(d.summary)}` : ''}</div>
+    </div>`);
+  }
+  if (!cells.length) return '';
+  return `<section class="dim8-strip" aria-label="八维全景评分">
+    <div class="dim8-head">
+      <div class="dim8-title">🧭 八维全景评分（三基 + 五专）</div>
+      <div class="dim8-sub">正交零重复计分 · 缺数自动重归一</div>
+    </div>
+    <div class="dim8-grid">${cells.join('')}</div>
+  </section>`;
+}
+
 // ===== Markdown 文章页模板（加入评分卡片） =====
 
 function renderArticle(mdFilename, rawMarkdown) {
@@ -1543,8 +1573,9 @@ function renderArticle(mdFilename, rawMarkdown) {
   const advice = adviceFromMeta(meta)
     || resolveAdvice(scoreInfo, qualityGate, dualScore, positionRec);
 
-  // 三期决策条置于文章最顶部：短/中/长一屏看完再决定要不要细读
+  // 三期决策条 + 八维全景条置于文章顶部
   const horizonStripHtml = kind === 'analysis' ? renderHorizonStrip(rawMarkdown, meta) : '';
+  const dim8StripHtml = kind === 'analysis' ? renderEightDimensionsStrip(meta?.dimensions) : '';
   const probPathHtml = kind === 'analysis' ? renderProbPathPanel(meta, DOCS_DIR, dateLabel) : '';
 
   // Quick-read card only for analysis
@@ -1663,6 +1694,7 @@ function renderArticle(mdFilename, rawMarkdown) {
     <div class="article-main">
       ${flowDashboardHtml}
       ${horizonStripHtml}
+      ${dim8StripHtml}
       ${probPathHtml}
       ${quickReadHtml}
       ${dashboardHtml}

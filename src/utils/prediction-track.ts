@@ -16,6 +16,8 @@ import {
   isHit,
   classifyReturn,
   wilsonInterval,
+  wilsonIntervalHac,
+  effectiveSampleSizeOverlap,
   beatsBaseline,
   formatHitRate,
   HIT_RULE_TEXT,
@@ -62,6 +64,12 @@ export interface HitStat {
   ciLow: number | null;
   /** Wilson 95% 置信区间上界（0-100） */
   ciHigh: number | null;
+  /** F16: 重叠窗口 HAC 修正 95% 置信区间下界（0-100） */
+  ciLowHac?: number | null;
+  /** F16: 重叠窗口 HAC 修正 95% 置信区间上界（0-100） */
+  ciHighHac?: number | null;
+  /** F16: 重叠窗口等效独立样本数 */
+  effectiveN?: number;
   /** 样本量是否达到可解读门槛 */
   significant: boolean;
   /** 是否在 95% 置信度下跑赢「永远看涨」基准 */
@@ -81,6 +89,12 @@ export interface PredictionTrackStats {
   midTerm: HitStat;
   /** 中期标签用的交易日数（默认 20） */
   midTermHorizonDays: number;
+  /** F16: 每隔 T 个交易日抽样的非重叠独立命中统计 */
+  nonOverlapping?: {
+    stepDays: number;
+    llm: HitStat;
+    quant: HitStat;
+  };
   /**
    * 「永远看涨」的朴素基准命中率（0-100）。
    * 黄金长期偏多头，不跟基准比就无法判断模型是有信息量还是只是蹭了趋势。
@@ -101,17 +115,38 @@ export interface PredictionTrackStats {
   summary: string;
 }
 
-function toHitStat(hits: number, total: number, baseline: number | null): HitStat {
+function toHitStat(
+  hits: number,
+  total: number,
+  baseline: number | null,
+  horizonDays = 5,
+): HitStat {
   if (total <= 0) {
-    return { hits, total, hitRate: null, ciLow: null, ciHigh: null, significant: false, beatsBaseline: false };
+    return {
+      hits,
+      total,
+      hitRate: null,
+      ciLow: null,
+      ciHigh: null,
+      ciLowHac: null,
+      ciHighHac: null,
+      effectiveN: 0,
+      significant: false,
+      beatsBaseline: false,
+    };
   }
   const [lo, hi] = wilsonInterval(hits, total);
+  const [loHac, hiHac] = wilsonIntervalHac(hits, total, horizonDays);
+  const effN = effectiveSampleSizeOverlap(total, horizonDays);
   return {
     hits,
     total,
     hitRate: Math.round((hits / total) * 1000) / 10,
     ciLow: Math.round(lo * 1000) / 10,
     ciHigh: Math.round(hi * 1000) / 10,
+    ciLowHac: Math.round(loHac * 1000) / 10,
+    ciHighHac: Math.round(hiHac * 1000) / 10,
+    effectiveN: effN,
     significant: total >= MIN_HITRATE_SAMPLE,
     beatsBaseline: beatsBaseline(hits, total, baseline ?? 0.5),
   };
@@ -266,8 +301,36 @@ export function buildPredictionTrackStats(
   }
   const baselineRate = baselineN > 0 ? baselineUp / baselineN : null;
 
-  const llmStat = toHitStat(dual.llmHits, dual.llmTotal, baselineRate);
-  const quantStat = toHitStat(dual.quantHits, dual.quantTotal, baselineRate);
+  const llmStat = toHitStat(dual.llmHits, dual.llmTotal, baselineRate, T);
+  const quantStat = toHitStat(dual.quantHits, dual.quantTotal, baselineRate, T);
+
+  // F16: 按步长 T 抽样非重叠独立样本（消除逐日 T 天重叠窗口的自相关）
+  const sortedAsc = [...eligible].sort((a, b) => a.date.localeCompare(b.date));
+  let noLlmHits = 0; let noLlmTotal = 0;
+  let noQuantHits = 0; let noQuantTotal = 0;
+  const step = Math.max(1, T);
+  for (let i = 0; i < sortedAsc.length; i += step) {
+    const r = sortedAsc[i];
+    const ret = forwardReturnPct(prices, r.date, T, { allowPartial: false });
+    if (ret == null) continue;
+    const lHit = isHit(predictDirectionFromScore(r.overallScore), ret);
+    if (lHit != null) {
+      noLlmTotal++;
+      if (lHit) noLlmHits++;
+    }
+    if (r.quantScore != null) {
+      const qHit = isHit(predictDirectionFromScore(r.quantScore), ret);
+      if (qHit != null) {
+        noQuantTotal++;
+        if (qHit) noQuantHits++;
+      }
+    }
+  }
+  const nonOverlapping = {
+    stepDays: step,
+    llm: toHitStat(noLlmHits, noLlmTotal, baselineRate, 1),
+    quant: toHitStat(noQuantHits, noQuantTotal, baselineRate, 1),
+  };
 
   // 中期：mid_term_score → 20 个交易日方向，与短期 5 日分轨
   const MID_T = 20;
@@ -290,7 +353,7 @@ export function buildPredictionTrackStats(
     if (hit) midHits++;
   }
   const midBaseline = midBaselineN > 0 ? midBaselineUp / midBaselineN : baselineRate;
-  const midStat = toHitStat(midHits, midTotal, midBaseline);
+  const midStat = toHitStat(midHits, midTotal, midBaseline, MID_T);
 
   const parts: string[] = [];
   parts.push(`LLM 方向命中 ${formatHitRate(dual.llmHits, dual.llmTotal, baselineRate ?? undefined)}`);
@@ -321,6 +384,7 @@ export function buildPredictionTrackStats(
     quant: quantStat,
     midTerm: midStat,
     midTermHorizonDays: MID_T,
+    nonOverlapping,
     baselineUpRate: baselineRate != null ? Math.round(baselineRate * 1000) / 10 : null,
     baselineN,
     highScoreUpRate: highN >= 1 ? Math.round((highUp / highN) * 1000) / 10 : null,

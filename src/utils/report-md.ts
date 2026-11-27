@@ -290,6 +290,33 @@ export function formatReportMarkdown(
   lines.push(`| 基金面 | - | - | 估值水位：${na(fund?.valuation?.level)} |`);
   lines.push('');
 
+  // 八维全景评分（v2.4 三基 + 五专正交体系）
+  if (report.dimensions) {
+    const dimOrder = [
+      'fundamental',
+      'news',
+      'technical',
+      'capitalFlow',
+      'policy',
+      'sentiment',
+      'positioning',
+      'quantitative',
+    ] as const;
+    lines.push('## 🧭 八维全景评分（三基 + 五专）');
+    lines.push('');
+    lines.push('| 编码 | 维度 | 分组 | 评分 | 方向 | 覆盖度 | 核心摘要 |');
+    lines.push('|------|------|------|------|------|--------|----------|');
+    for (const key of dimOrder) {
+      const item = report.dimensions[key];
+      if (!item) continue;
+      const catLabel = item.category === 'base' ? '基础面' : '专业面';
+      const scoreText = item.score != null ? `${item.score}/100` : '缺数';
+      const covText = `${Math.round(item.coverage * 100)}%`;
+      lines.push(`| ${item.code} | ${item.title} | ${catLabel} | ${scoreText} | ${dirText(item.direction)} | ${covText} | ${na(item.summary)} |`);
+    }
+    lines.push('');
+  }
+
   // 强制反驳
   if (rebuttal) {
     lines.push('## 🔴 强制反驳');

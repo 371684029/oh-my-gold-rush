@@ -135,21 +135,19 @@ export function computePriceRiskMetrics(closes: number[]): {
   let vol20AnnPct: number | null = null;
   if (last20.length >= 10) {
     const mean = last20.reduce((a, b) => a + b, 0) / last20.length;
-    const varSum = last20.reduce((a, b) => a + (b - mean) ** 2, 0) / last20.length;
+    // F10: 无偏样本方差（n - 1），避免小窗口系统性低估年化波动
+    const varSum = last20.reduce((a, b) => a + (b - mean) ** 2, 0) / Math.max(1, last20.length - 1);
     const dailyStd = Math.sqrt(varSum);
-    vol20AnnPct = Math.round(dailyStd * Math.sqrt(252) * 1000) / 10; // 1 位小数
+    vol20AnnPct = Math.round(dailyStd * Math.sqrt(252) * 1000) / 10;
   }
 
-  // 60 日回撤
+  // F10: 当前相对近 60 日高点的在途回撤（Current Drawdown from 60D High）
+  // 创出新高时回撤立即归零，避免「早已修复创新高却仍触发历史回撤刹车」的 Bug
   const win = c.slice(-60);
-  let peak = win[0];
-  let maxDd = 0;
-  for (const px of win) {
-    if (px > peak) peak = px;
-    const dd = peak > 0 ? (peak - px) / peak : 0;
-    if (dd > maxDd) maxDd = dd;
-  }
-  const drawdown60Pct = Math.round(maxDd * 1000) / 10;
+  const high60 = Math.max(...win);
+  const cur = win[win.length - 1]!;
+  const currentDd = high60 > 0 ? Math.max(0, (high60 - cur) / high60) : 0;
+  const drawdown60Pct = Math.round(currentDd * 1000) / 10;
 
   return { vol20AnnPct, drawdown60Pct };
 }
@@ -263,11 +261,10 @@ export function recommendPosition(input: PositionRecommendInput): PositionRecomm
 
   target = clamp(target, 15, 90);
 
-  // 7) 波动 + 回撤风险缩放（v2）
+  // 7) 波动 + 在途回撤风险缩放（v2.4 F10: 仅收缩波段卫星层，绝不顺周期削减核心定投层）
   const metrics = computePriceRiskMetrics(input.closes ?? []);
   const volScalar = volToScalar(metrics.vol20AnnPct);
   const ddScalar = drawdownToScalar(metrics.drawdown60Pct);
-  const riskScalar = volScalar * ddScalar;
 
   if (metrics.vol20AnnPct != null) {
     if (volScalar < 0.8) {
@@ -283,13 +280,22 @@ export function recommendPosition(input: PositionRecommendInput): PositionRecomm
   }
   if (metrics.drawdown60Pct != null && ddScalar < 1) {
     badges.push('近窗回撤');
-    constraints.push(`近60日自高点回撤约 ${metrics.drawdown60Pct}%：仓位×${ddScalar}`);
+    constraints.push(`当前距60日高点回撤约 ${metrics.drawdown60Pct}%：仅收紧波段卫星层（×${ddScalar}），核心定投层保留`);
   }
 
-  if (riskScalar < 0.999) {
+  // 核心定投层地板（门禁正常时保护核心定投不被顺周期砍仓；波动率仍按全局缩放控制总风险）
+  const baseCoreFloor = input.dataActionable === false ? 15 : Math.min(target, 45);
+  if (volScalar < 0.999) {
     const before = target;
-    target = target * riskScalar;
-    reasons.push(`风险缩放 ${before.toFixed(0)}% → ${target.toFixed(0)}%（波动×回撤）`);
+    target = target * volScalar;
+    reasons.push(`波动率风险缩放 ${before.toFixed(0)}% → ${target.toFixed(0)}%（×${volScalar}）`);
+  }
+  if (ddScalar < 0.999 && target > baseCoreFloor) {
+    // 仅对超出核心定投地板的波段卫星部分应用回撤刹车
+    const before = target;
+    const satellitePart = target - baseCoreFloor;
+    target = baseCoreFloor + satellitePart * ddScalar;
+    reasons.push(`在途回撤仅收缩波段层 ${before.toFixed(0)}% → ${target.toFixed(0)}%（核心定投层 ${baseCoreFloor}% 受保护）`);
   }
 
   target = Math.round(clamp(target, 15, 90));

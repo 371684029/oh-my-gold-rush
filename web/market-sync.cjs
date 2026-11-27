@@ -7,7 +7,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const Database = require('better-sqlite3');
 
-const USER_AGENT = 'GoldRush/2.3 (gold research engine)';
+const USER_AGENT = 'GoldRush/2.4 (gold research engine)';
 const SNAPSHOT_DIR_REL = 'market-data';
 const JSONL_FILENAME = 'gold-daily-5y.jsonl';
 const MONTHLY_JSONL_FILENAME = 'gold-monthly-25y.jsonl';
@@ -36,8 +36,31 @@ function isValidPos(v) {
   return typeof v === 'number' && Number.isFinite(v) && v > 0;
 }
 
-function isValidSignedNonZero(v) {
-  return typeof v === 'number' && Number.isFinite(v) && v !== 0;
+/** F06: 有符号利率校验（允许 TIPS/利率精确等于 0.00%，区别于正价格校验） */
+function isValidFiniteRate(v, min = -5, max = 15) {
+  return typeof v === 'number' && Number.isFinite(v) && v >= min && v <= max;
+}
+
+/** F15: 期现基差比例复权辅助函数 — 消除 GC=F 期货连续合约与伦敦现货 XAU/USD 拼接处的展期升水跳空 */
+function reconcileSpotFuturesBasis(rows, spotPrice, futuresPrice) {
+  if (!Array.isArray(rows) || rows.length === 0) return rows;
+  if (!isValidPos(spotPrice) || !isValidPos(futuresPrice)) return rows;
+  const ratio = spotPrice / futuresPrice;
+  // 合理期现基差范围 ±4%，超出视为数据异常不做缩放
+  if (!Number.isFinite(ratio) || ratio < 0.96 || ratio > 1.04 || Math.abs(ratio - 1) < 0.0005) {
+    return rows;
+  }
+  return rows.map(r => {
+    if (!r || !isValidPos(r.londonClose)) return r;
+    if (r.source === 'gold_api_live' || r.source === 'report_md' || r.basisAdjusted) return r;
+    return {
+      ...r,
+      londonClose: round(r.londonClose * ratio, 2),
+      ...(isValidPos(r.londonHigh) ? { londonHigh: round(r.londonHigh * ratio, 2) } : {}),
+      ...(isValidPos(r.londonLow) ? { londonLow: round(r.londonLow * ratio, 2) } : {}),
+      basisAdjusted: true,
+    };
+  });
 }
 
 function todayShanghaiDate() {
@@ -147,8 +170,14 @@ async function fetchFredSeries(seriesId, sinceDate) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
     const val = parseFloat(rawVal);
     if (!Number.isFinite(val)) continue;
-    if (seriesId !== 'DFII10' && val <= 0) continue;
-    if (seriesId === 'DFII10' && val === 0) continue;
+    // F06: DFII10（10Y TIPS 实际利率）可正可负且可精确等于 0.00%，仅拒绝越界异常值
+    if (seriesId === 'DFII10') {
+      if (!isValidFiniteRate(val, -5, 15)) continue;
+    } else if (seriesId === 'FEDFUNDS' || seriesId === 'DGS2' || seriesId === 'DGS10') {
+      if (!isValidFiniteRate(val, 0, 25)) continue;
+    } else if (val <= 0) {
+      continue;
+    }
     if (!sinceDate || date >= sinceDate) {
       map.set(date, round(val, 4));
       latestDate = date;
@@ -396,11 +425,19 @@ function writeMarketSnapshot(docsDir, rows, meta) {
     ...(isValidPos(r.usdCny) ? { usdCny: round(r.usdCny, 4) } : {}),
     ...(isValidPos(r.dxy) ? { dxy: round(r.dxy, 2) } : {}),
     ...(isValidPos(r.us10y) ? { us10y: round(r.us10y, 3) } : {}),
-    ...(isValidSignedNonZero(r.tips) ? { tips: round(r.tips, 3) } : {}),
+    ...(isValidFiniteRate(r.tips) ? { tips: round(r.tips, 3) } : {}),
+    ...(isValidFiniteRate(r.fedFunds, 0, 25) ? { fedFunds: round(r.fedFunds, 3) } : {}),
+    ...(isValidFiniteRate(r.us2y, 0, 25) ? { us2y: round(r.us2y, 3) } : {}),
+    ...(isValidPos(r.gvz) ? { gvz: round(r.gvz, 2) } : {}),
+    ...(isValidPos(r.vix) ? { vix: round(r.vix, 2) } : {}),
+    ...(isValidPos(r.comexVol) ? { comexVol: Math.round(r.comexVol) } : {}),
     ...(isValidPos(r.gldClose) ? { gldClose: round(r.gldClose, 2) } : {}),
     ...(isValidPos(r.gldVol) ? { gldVol: Math.round(r.gldVol) } : {}),
     ...(Number.isFinite(r.cftcNet) ? { cftcNet: Math.round(r.cftcNet) } : {}),
+    ...(isValidPos(r.cftcOi) ? { cftcOi: Math.round(r.cftcOi) } : {}),
     ...(Number.isFinite(r.cftcPct) ? { cftcPct: round(r.cftcPct, 1) } : {}),
+    ...(typeof r.sgePremiumCny === 'number' && Number.isFinite(r.sgePremiumCny) ? { sgePremiumCny: round(r.sgePremiumCny, 2) } : {}),
+    ...(r.basisAdjusted ? { basisAdjusted: true } : {}),
     ...(r.macroObsDate ? { macroObsDate: r.macroObsDate } : {}),
     ...(r.cftcObsDate ? { cftcObsDate: r.cftcObsDate } : {}),
     ...(r.source ? { source: r.source } : {}),
@@ -450,7 +487,9 @@ function writeMonthlySnapshot(docsDir, rows) {
     ...(isValidPos(r.londonLow) ? { londonLow: round(r.londonLow, 2) } : {}),
     ...(isValidPos(r.dxy) ? { dxy: round(r.dxy, 2) } : {}),
     ...(isValidPos(r.us10y) ? { us10y: round(r.us10y, 3) } : {}),
-    ...(isValidSignedNonZero(r.tips) ? { tips: round(r.tips, 3) } : {}),
+    ...(isValidFiniteRate(r.tips) ? { tips: round(r.tips, 3) } : {}),
+    ...(isValidFiniteRate(r.fedFunds, 0, 25) ? { fedFunds: round(r.fedFunds, 3) } : {}),
+    ...(isValidFiniteRate(r.us2y, 0, 25) ? { us2y: round(r.us2y, 3) } : {}),
     ...(isValidPos(r.cpi) ? { cpi: round(r.cpi, 3) } : {}),
     ...(typeof r.cpiYoY === 'number' && Number.isFinite(r.cpiYoY) ? { cpiYoY: round(r.cpiYoY, 2) } : {}),
     ...(isValidPos(r.usdCny) ? { usdCny: round(r.usdCny, 4) } : {}),
@@ -567,7 +606,9 @@ async function syncMonthlyHistory({ docsDir, mode = 'auto', dailyRows = [], live
         prev.londonClose = r.londonClose;
         if (isValidPos(r.dxy)) prev.dxy = r.dxy;
         if (isValidPos(r.us10y)) prev.us10y = r.us10y;
-        if (isValidSignedNonZero(r.tips)) prev.tips = r.tips;
+        if (isValidFiniteRate(r.tips)) prev.tips = r.tips;
+        if (isValidFiniteRate(r.fedFunds, 0, 25)) prev.fedFunds = r.fedFunds;
+        if (isValidFiniteRate(r.us2y, 0, 25)) prev.us2y = r.us2y;
         if (isValidPos(r.usdCny)) prev.usdCny = r.usdCny;
         if (r.macroObsDate) prev.tipsObsDate = r.macroObsDate;
         if (r.source) prev.source = r.source;
@@ -585,7 +626,9 @@ async function syncMonthlyHistory({ docsDir, mode = 'auto', dailyRows = [], live
       londonLow: dBar.londonLow,
       ...(isValidPos(dBar.dxy) ? { dxy: dBar.dxy } : {}),
       ...(isValidPos(dBar.us10y) ? { us10y: dBar.us10y } : {}),
-      ...(isValidSignedNonZero(dBar.tips) ? { tips: dBar.tips } : {}),
+      ...(isValidFiniteRate(dBar.tips) ? { tips: dBar.tips } : {}),
+      ...(isValidFiniteRate(dBar.fedFunds, 0, 25) ? { fedFunds: dBar.fedFunds } : {}),
+      ...(isValidFiniteRate(dBar.us2y, 0, 25) ? { us2y: dBar.us2y } : {}),
       ...(isValidPos(dBar.usdCny) ? { usdCny: dBar.usdCny } : {}),
       ...(dBar.tipsObsDate ? { tipsObsDate: dBar.tipsObsDate } : {}),
       source: dBar.source,
@@ -617,7 +660,7 @@ async function syncMonthlyHistory({ docsDir, mode = 'auto', dailyRows = [], live
     const cnyRec = fredCnyM.byYm.get(ym) || latestMonthlyOnOrBefore(cnyEntries, ym)?.[1];
     const dxyVal = dxyMonthly.get(ym) || latestMonthlyOnOrBefore(dxyEntries, ym)?.[1];
 
-    if (tRec && isValidSignedNonZero(tRec.val)) {
+    if (tRec && isValidFiniteRate(tRec.val)) {
       r.tips = round(tRec.val, 3);
       r.tipsObsDate = tRec.obsDate;
     }
@@ -758,7 +801,7 @@ function persistRowsToSqlite(rows, cftcWeekly, dbPath) {
           isValidPos(r.gldClose) ? round(r.gldClose, 2) : null,
           isValidPos(r.dxy) ? round(r.dxy, 2) : null,
           isValidPos(r.us10y) ? round(r.us10y, 3) : null,
-          isValidSignedNonZero(r.tips) ? round(r.tips, 3) : null,
+          isValidFiniteRate(r.tips) ? round(r.tips, 3) : null,
         );
       }
       for (const c of (cftcWeekly || [])) {
@@ -860,16 +903,20 @@ async function syncMarketData(opts = {}) {
       const sinceDate = yearsAgoDate(5);
       const today = todayShanghaiDate();
 
-      // 并发拉取所有白名单外部源
+      // 并发拉取所有白名单外部源（v2.4 新增 ^GVZ / ^VIX / FEDFUNDS / DGS2 支撑八维体系）
       const [
         goldMap,
         dxyMap,
         tnxMap,
         gldMap,
         cnyMap,
+        gvzMap,
+        vixMap,
         fredTips,
         fred10y,
         fredDxy,
+        fredFedFunds,
+        fred2y,
         liveSpot,
         sinaGc,
         sinaAu9999,
@@ -882,9 +929,13 @@ async function syncMarketData(opts = {}) {
         fetchYahooDaily('^TNX', yahooRange),
         fetchYahooDaily('GLD', yahooRange),
         fetchYahooDaily('CNY=X', yahooRange),
+        fetchYahooDaily('^GVZ', yahooRange),
+        fetchYahooDaily('^VIX', yahooRange),
         fetchFredSeries('DFII10', mode === 'full' ? sinceDate : yearsAgoDate(1)),
         fetchFredSeries('DGS10', mode === 'full' ? sinceDate : yearsAgoDate(1)),
         fetchFredSeries('DTWEXBGS', mode === 'full' ? sinceDate : yearsAgoDate(1)),
+        fetchFredSeries('FEDFUNDS', mode === 'full' ? sinceDate : yearsAgoDate(1)),
+        fetchFredSeries('DGS2', mode === 'full' ? sinceDate : yearsAgoDate(1)),
         fetchGoldApiSpot(),
         fetchSinaLive('hf_GC'),
         fetchSinaLive('gds_AU9999'),
@@ -899,7 +950,7 @@ async function syncMarketData(opts = {}) {
         byDate.set(r.date, { ...r });
       }
 
-      // 将 Yahoo 5y/3mo 主金价写入
+      // 将 Yahoo 5y/3mo 主金价 + COMEX 成交量写入
       for (const [d, bar] of goldMap.entries()) {
         if (d < sinceDate) continue;
         const prev = byDate.get(d) || { date: d };
@@ -909,6 +960,7 @@ async function syncMarketData(opts = {}) {
           londonClose: bar.close,
           londonHigh: bar.high ?? prev.londonHigh,
           londonLow: bar.low ?? prev.londonLow,
+          ...(isValidPos(bar.volume) ? { comexVol: bar.volume } : {}),
           source: prev.source || 'yahoo_gc',
         });
       }
@@ -924,31 +976,45 @@ async function syncMarketData(opts = {}) {
         const prevToday = byDate.get(today) || { date: today };
         const mergedHigh = isValidPos(prevToday.londonHigh) ? Math.max(prevToday.londonHigh, liveGoldPrice) : liveGoldPrice;
         const mergedLow = isValidPos(prevToday.londonLow) ? Math.min(prevToday.londonLow, liveGoldPrice) : liveGoldPrice;
+        const usdCnyToday = isValidPos(sinaUsdcny?.price) ? sinaUsdcny.price : prevToday.usdCny;
+        const shToday = isValidPos(sinaAu9999?.price) ? sinaAu9999.price : prevToday.shanghaiClose;
+        const impliedCny = isValidPos(usdCnyToday) ? (liveGoldPrice * usdCnyToday) / 31.1034768 : null;
+        const sgePremiumCny = (isValidPos(shToday) && isValidPos(impliedCny)) ? round(shToday - impliedCny, 2) : prevToday.sgePremiumCny;
         byDate.set(today, {
           ...prevToday,
           date: today,
           londonClose: liveGoldPrice,
           londonHigh: round(mergedHigh, 2),
           londonLow: round(mergedLow, 2),
-          shanghaiClose: isValidPos(sinaAu9999?.price) ? sinaAu9999.price : prevToday.shanghaiClose,
-          usdCny: isValidPos(sinaUsdcny?.price) ? sinaUsdcny.price : prevToday.usdCny,
+          shanghaiClose: shToday,
+          usdCny: usdCnyToday,
+          ...(typeof sgePremiumCny === 'number' && Number.isFinite(sgePremiumCny) ? { sgePremiumCny } : {}),
           source: liveSpot ? 'gold_api_live' : 'sina_gc_live',
         });
       }
 
-      // 预先排序辅助序列，严格因果对齐每个交易日的 DXY / 10Y / TIPS / GLD / CNY / CFTC
+      // 预先排序辅助序列，严格因果对齐每个交易日的 DXY / 10Y / TIPS / GVZ / VIX / FEDFUNDS / 2Y / GLD / CNY / CFTC
       const dxyEntries = [...dxyMap.entries()].sort((a, b) => a[0].localeCompare(b[0]));
       const tnxEntries = [...tnxMap.entries()].sort((a, b) => a[0].localeCompare(b[0]));
       const gldEntries = [...gldMap.entries()].sort((a, b) => a[0].localeCompare(b[0]));
       const cnyEntries = [...cnyMap.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+      const gvzEntries = [...gvzMap.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+      const vixEntries = [...vixMap.entries()].sort((a, b) => a[0].localeCompare(b[0]));
       const tipsEntries = [...fredTips.map.entries()].sort((a, b) => a[0].localeCompare(b[0]));
       const f10yEntries = [...fred10y.map.entries()].sort((a, b) => a[0].localeCompare(b[0]));
       const fdxyEntries = [...fredDxy.map.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+      const fedEntries = [...fredFedFunds.map.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+      const f2yEntries = [...fred2y.map.entries()].sort((a, b) => a[0].localeCompare(b[0]));
       const cftcEntries = (cftcWeekly || []).map(c => [c.date, c]);
 
-      const mergedRows = [...byDate.values()]
+      let mergedRows = [...byDate.values()]
         .filter(r => r.date >= sinceDate && isValidPos(r.londonClose))
         .sort((a, b) => a.date.localeCompare(b.date));
+
+      // F15: 若实时现货与期货锚定同时存在，对历史期货段做比例向后复权以消除期现基差跳空
+      if (isValidPos(liveSpot?.price) && isValidPos(sinaGc?.price)) {
+        mergedRows = reconcileSpotFuturesBasis(mergedRows, liveSpot.price, sinaGc.price);
+      }
 
       for (const r of mergedRows) {
         const d = r.date;
@@ -956,9 +1022,13 @@ async function syncMarketData(opts = {}) {
         const yTnx = tnxMap.get(d) || latestOnOrBefore(tnxEntries, d)?.[1];
         const yGld = gldMap.get(d) || latestOnOrBefore(gldEntries, d)?.[1];
         const yCny = cnyMap.get(d) || latestOnOrBefore(cnyEntries, d)?.[1];
+        const yGvz = gvzMap.get(d) || latestOnOrBefore(gvzEntries, d)?.[1];
+        const yVix = vixMap.get(d) || latestOnOrBefore(vixEntries, d)?.[1];
         const fTips = latestOnOrBefore(tipsEntries, d);
         const f10y = latestOnOrBefore(f10yEntries, d);
         const fDxy = latestOnOrBefore(fdxyEntries, d);
+        const fFed = latestOnOrBefore(fedEntries, d);
+        const f2y = latestOnOrBefore(f2yEntries, d);
         const cftc = latestOnOrBefore(cftcEntries, d);
 
         if (yDxy && isValidPos(yDxy.close)) r.dxy = yDxy.close;
@@ -967,12 +1037,17 @@ async function syncMarketData(opts = {}) {
         if (f10y && isValidPos(f10y[1])) r.us10y = round(f10y[1], 3);
         else if (yTnx && isValidPos(yTnx.close)) r.us10y = round(yTnx.close, 3);
 
-        if (fTips && isValidSignedNonZero(fTips[1])) {
+        if (fTips && isValidFiniteRate(fTips[1])) {
           r.tips = round(fTips[1], 3);
           r.macroObsDate = fTips[0];
         } else if (f10y) {
           r.macroObsDate = f10y[0];
         }
+
+        if (fFed && isValidFiniteRate(fFed[1], 0, 25)) r.fedFunds = round(fFed[1], 3);
+        if (f2y && isValidFiniteRate(f2y[1], 0, 25)) r.us2y = round(f2y[1], 3);
+        if (yGvz && isValidPos(yGvz.close)) r.gvz = round(yGvz.close, 2);
+        if (yVix && isValidPos(yVix.close)) r.vix = round(yVix.close, 2);
 
         if (yGld && isValidPos(yGld.close)) {
           r.gldClose = yGld.close;
@@ -984,8 +1059,14 @@ async function syncMarketData(opts = {}) {
           r.usdCny = yCny.close;
         }
 
+        if (isValidPos(r.shanghaiClose) && isValidPos(r.usdCny) && r.sgePremiumCny == null) {
+          const implied = (r.londonClose * r.usdCny) / 31.1034768;
+          r.sgePremiumCny = round(r.shanghaiClose - implied, 2);
+        }
+
         if (cftc) {
           r.cftcNet = cftc[1].nonCommNet;
+          if (isValidPos(cftc[1].openInterest)) r.cftcOi = cftc[1].openInterest;
           r.cftcPct = cftc[1].percentile;
           r.cftcObsDate = cftc[0];
         }
@@ -1117,11 +1198,14 @@ function startBackgroundSyncScheduler(docsDir, dbPath) {
 }
 
 module.exports = {
+  USER_AGENT,
   SNAPSHOT_DIR_REL,
   JSONL_FILENAME,
   MONTHLY_JSONL_FILENAME,
   META_FILENAME,
   MANUAL_COOLDOWN_MS,
+  isValidFiniteRate,
+  reconcileSpotFuturesBasis,
   getSnapshotPaths,
   readMarketSnapshot,
   readMonthlySnapshot,

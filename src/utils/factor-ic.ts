@@ -5,13 +5,20 @@ import type { AnalysisReportRow } from '../db/reports.js';
 import type { GoldPricesRepo } from '../db/gold-prices.js';
 import { parseReportJson } from './smart-analysis.js';
 import { forwardReturnPct } from './forward-return.js';
+import { effectiveSampleSizeOverlap } from './decision-thresholds.js';
 
 export interface FactorIcRow {
   key: string;
   name: string;
   /** Spearman ρ（因子分 vs 后 5 日收益） */
   ic: number | null;
+  /** F16: 非重叠步长抽样后的独立样本 Spearman IC */
+  nonOverlappingIc?: number | null;
+  /** F16: 滚动窗口 ICIR（均值 / 标准差），评估因子稳定性 */
+  icir?: number | null;
   sample: number;
+  /** F16: 重叠窗口 Bartlett 等效独立样本数 */
+  effectiveSample?: number;
   /** |IC| < 0.05 且样本够 → 疑似失效 */
   stale: boolean;
   note: string;
@@ -90,9 +97,38 @@ export function computeFactorIc(
   }
 
   const rows: FactorIcRow[] = [];
+  const step = Math.max(1, horizonDays);
   for (const [key, bucket] of series) {
     const ic = spearman(bucket.xs, bucket.ys);
     const sample = bucket.xs.length;
+    const effectiveSample = effectiveSampleSizeOverlap(sample, horizonDays);
+
+    // F16: 非重叠抽样 IC
+    const noXs: number[] = [];
+    const noYs: number[] = [];
+    for (let i = 0; i < sample; i += step) {
+      noXs.push(bucket.xs[i]);
+      noYs.push(bucket.ys[i]);
+    }
+    const nonOverlappingIcRaw = spearman(noXs, noYs);
+
+    // F16: 滚动分块 Rank ICIR（每 10 个观测一块，至少 3 块）
+    let icir: number | null = null;
+    const chunkSize = 10;
+    if (sample >= chunkSize * 3) {
+      const chunkIcs: number[] = [];
+      for (let i = 0; i + chunkSize <= sample; i += chunkSize) {
+        const cIc = spearman(bucket.xs.slice(i, i + chunkSize), bucket.ys.slice(i, i + chunkSize));
+        if (cIc != null) chunkIcs.push(cIc);
+      }
+      if (chunkIcs.length >= 3) {
+        const m = chunkIcs.reduce((a, b) => a + b, 0) / chunkIcs.length;
+        const variance = chunkIcs.reduce((a, b) => a + (b - m) ** 2, 0) / (chunkIcs.length - 1);
+        const sd = Math.sqrt(Math.max(0, variance));
+        if (sd > 1e-6) icir = Math.round((m / sd) * 100) / 100;
+      }
+    }
+
     const stale = sample >= minSample && ic != null && Math.abs(ic) < 0.05;
     let note = '样本不足';
     if (ic == null) note = sample < 5 ? '样本不足' : '无法计算';
@@ -104,7 +140,10 @@ export function computeFactorIc(
       key,
       name: bucket.name,
       ic: ic != null ? Math.round(ic * 1000) / 1000 : null,
+      nonOverlappingIc: nonOverlappingIcRaw != null ? Math.round(nonOverlappingIcRaw * 1000) / 1000 : null,
+      icir,
       sample,
+      effectiveSample,
       stale,
       note,
     });

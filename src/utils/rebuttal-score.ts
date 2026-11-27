@@ -55,17 +55,31 @@ export function calibrateStrengthMultiplier(
   return Math.max(0.05, Math.min(0.50, Math.round(next * 1000) / 1000));
 }
 
-/** 计算反驳修正明细（供评分构成展示） */
+export type RebuttalCounterDirection = 'bear_rebuttal' | 'bull_rebuttal';
+
+/**
+ * F18: 计算反驳修正明细（单向严格钳制，防止空头分被「看空反驳」反向拉高）：
+ * - bear_rebuttal（默认）：仅能压低乐观分，rawAdjustment = min(0, (100 - bearScore - originalScore) * mult)
+ * - bull_rebuttal（对称多头反驳）：仅能修正过度悲观分，rawAdjustment = max(0, (counterScore - originalScore) * mult)
+ */
 export function computeRebuttalAdjustment(
   originalScore: number,
   bearScore: number,
   rebuttalStrength: RebuttalStrength,
   calibrate?: MultiplierCalibrateInput | null,
+  counterDirection: RebuttalCounterDirection = 'bear_rebuttal',
 ): RebuttalAdjustmentDetail {
   const baseMult = STRENGTH_MULTIPLIER[rebuttalStrength];
   const multiplier = calibrateStrengthMultiplier(baseMult, calibrate);
   const bearishImpliedScore = 100 - bearScore;
-  const rawAdjustment = (bearishImpliedScore - originalScore) * multiplier;
+
+  let rawAdjustment: number;
+  if (counterDirection === 'bull_rebuttal') {
+    rawAdjustment = Math.max(0, (bearScore - originalScore) * multiplier);
+  } else {
+    rawAdjustment = Math.min(0, (bearishImpliedScore - originalScore) * multiplier);
+  }
+
   const adjustedScore = Math.max(0, Math.min(100, Math.round(originalScore + rawAdjustment)));
 
   const absAdjust = Math.abs(rawAdjustment);
@@ -75,27 +89,24 @@ export function computeRebuttalAdjustment(
   } else if (rawAdjustment < 0) {
     netEffect = absAdjust < 5 ? 'downgraded' : 'significant_downgrade';
   } else {
-    netEffect = 'unchanged';
+    netEffect = 'upgraded';
   }
 
   return { adjustedScore, netEffect, bearishImpliedScore, multiplier, rawAdjustment };
 }
 
 /**
- * 将 bearScore（看空力度，越高越空）映射到与综合分同向的「隐含综合分」，
- * 再按反驳强度向该目标靠拢。
- *
- * 旧公式 (bearScore - originalScore) 在 bearScore > originalScore 时会错误抬高偏多分
- * （例：59 分 + strong 反驳 bear=71 → 63），与 CORRECTNESS-SPEC「反驳压低乐观分」矛盾。
+ * 将反驳力度映射到评分修正（默认 bear_rebuttal 单向压低乐观分，绝不拉高偏空分）。
  */
 export function adjustScoreWithRebuttal(
   originalScore: number,
   bearScore: number,
   rebuttalStrength: RebuttalStrength,
   calibrate?: MultiplierCalibrateInput | null,
+  counterDirection: RebuttalCounterDirection = 'bear_rebuttal',
 ): { adjustedScore: number; netEffect: RebuttalAnalysis['netEffect'] } {
   const { adjustedScore, netEffect } = computeRebuttalAdjustment(
-    originalScore, bearScore, rebuttalStrength, calibrate,
+    originalScore, bearScore, rebuttalStrength, calibrate, counterDirection,
   );
   return { adjustedScore, netEffect };
 }

@@ -33,6 +33,12 @@ export interface EventGoldTransmission {
   sop: string;
   /** 操作含义：从不直接给加减仓，只提示阅读 */
   readingHint: string;
+  /** v2.5 跨市场真伪核验状态 */
+  veracityStatus?: 'confirmed' | 'bait_suspected' | 'noise_filtered' | 'quiet';
+  /** v2.5 真伪核验标签 */
+  veracityBadge?: string;
+  /** v2.5 钓鱼/派发/诱空警示（无则 null） */
+  baitWarning?: string | null;
 }
 
 function parseVix(vixText: string | undefined): number | null {
@@ -172,12 +178,13 @@ export interface BuildTransmissionInput {
 }
 
 /**
- * 构建事件→黄金传导卡
+ * 构建事件→黄金传导卡（含 v2.5 跨市场防钓鱼证伪）
  */
 export function buildEventGoldTransmission(input: BuildTransmissionInput): EventGoldTransmission {
   const m = input.marketData;
   const tips = m?.usTreasury?.tips?.value ?? null;
   const dxyChange = m?.dollarIndex?.value?.change ?? null;
+  const goldChange = m?.london?.price?.change ?? null;
   const geoText = input.sentiment?.geopoliticalRisk;
   const geo = geoLevel(geoText);
   const vix = parseVix(input.sentiment?.vix);
@@ -216,7 +223,50 @@ export function buildEventGoldTransmission(input: BuildTransmissionInput): Event
   const conflict =
     loud.some(l => l.bias === 'supportive') && loud.some(l => l.bias === 'headwind');
 
+  const ratesLeg = legs.find(l => l.channel === 'rates')!;
+  const dollarLeg = legs.find(l => l.channel === 'dollar')!;
+  const riskLeg = legs.find(l => l.channel === 'risk')!;
+
+  // v2.5 跨市场防钓鱼证伪：
+  // 1) 避险/地缘叙事喊多，但实际利率或美元逆风且金价不涨反跌 => 疑似利多钓鱼/高位派发
+  // 2) 宏观利空通道主导，但金价放量逆势大涨 => 疑似利空诱空/已充分计价
+  let veracityStatus: EventGoldTransmission['veracityStatus'] = 'quiet';
+  let veracityBadge = '— 无显著事件催化';
+  let baitWarning: string | null = null;
+
+  const bullBait =
+    riskLeg.bias === 'supportive'
+    && (
+      ((ratesLeg.bias === 'headwind' || dollarLeg.bias === 'headwind') && (goldChange == null || goldChange <= 0.15))
+      || (goldChange != null && goldChange <= -0.5)
+    );
+  const bearBait =
+    loud.length > 0
+    && loud.every(l => l.bias === 'headwind')
+    && goldChange != null
+    && goldChange >= 0.5;
+
   const actionable = loud.length > 0;
+  if (bullBait) {
+    veracityStatus = 'bait_suspected';
+    veracityBadge = '⚠️ 疑似利多钓鱼/跨市场证伪';
+    const pxStr = goldChange != null ? `伦敦金反跌 ${goldChange.toFixed(2)}%` : '利率/美元硬通道逆风';
+    baitWarning = `地缘/避险叙事偏多但${pxStr}，谨防高位利多派发或消息试探气球，勿凭标题追高。`;
+  } else if (bearBait) {
+    veracityStatus = 'bait_suspected';
+    veracityBadge = '⚠️ 疑似利空诱空/市场反向走强';
+    baitWarning = `宏观通道偏利空但伦敦金逆势上涨 +${goldChange!.toFixed(2)}%，警惕利空出尽或诱空洗盘。`;
+  } else if (!actionable) {
+    veracityStatus = 'quiet';
+    veracityBadge = '— 无显著事件催化';
+  } else if (conflict) {
+    veracityStatus = 'noise_filtered';
+    veracityBadge = '⚠️ 通道分歧/需二次核验';
+  } else {
+    veracityStatus = 'confirmed';
+    veracityBadge = '✅ 跨市场三通道同向确认';
+  }
+
   let headline: string;
   if (!actionable) {
     headline = '热点对金价传导不清，可忽略标题党';
@@ -237,12 +287,17 @@ export function buildEventGoldTransmission(input: BuildTransmissionInput): Event
     headline,
     legs,
     eventSnippet,
-    sop: '每条热点只问：改利率？改美元？改避险？三问都不清 → 不据此加减仓。',
-    readingHint: actionable
-      ? (conflict
-        ? '阅读：对照双打分与仓位%；冲突时维持定投，不把战争当满仓理由。'
-        : '阅读：把本卡与「较昨日驱动」对照；一致才提高关注，仍以仓位%为准。')
-      : '阅读：跳过新闻长文，只看仓位%、较昨日与对错行即可。',
+    sop: '每条热点只问：改利率？改美元？改避险？且需看真金白银（TIPS/DXY/金价）二阶反应证伪。',
+    readingHint: baitWarning
+      ? `防钓鱼提示：${baitWarning}`
+      : actionable
+        ? (conflict
+          ? '阅读：对照双打分与仓位%；冲突时维持定投，不把战争当满仓理由。'
+          : '阅读：把本卡与「较昨日驱动」对照；一致才提高关注，仍以仓位%为准。')
+        : '阅读：跳过新闻长文，只看仓位%、较昨日与对错行即可。',
+    veracityStatus,
+    veracityBadge,
+    baitWarning,
   };
 }
 
@@ -257,12 +312,15 @@ function biasZh(b: TransmissionLeg['bias']): string {
 
 export function formatTransmissionConsole(t: EventGoldTransmission, indent = '  '): string {
   const lines = [
-    `${indent}🛰️ 事件→黄金传导`,
+    `${indent}🛰️ 事件→黄金传导${t.veracityBadge ? `  [${t.veracityBadge}]` : ''}`,
     `${indent}  ${t.headline}`,
   ];
   for (const leg of t.legs) {
     if (leg.strength < 25 && leg.bias === 'quiet') continue;
     lines.push(`${indent}  · ${leg.label}：${biasZh(leg.bias)}（${leg.strength}）— ${leg.evidence}`);
+  }
+  if (t.baitWarning) {
+    lines.push(`${indent}  ⚠️ ${t.baitWarning}`);
   }
   lines.push(`${indent}  ${t.readingHint}`);
   return lines.join('\n');
@@ -272,7 +330,7 @@ export function formatTransmissionMarkdown(t: EventGoldTransmission): string {
   const lines = [
     '## 🛰️ 事件→黄金传导',
     '',
-    `> **${t.headline}**`,
+    `> **${t.headline}**${t.veracityBadge ? `  \`${t.veracityBadge}\`` : ''}`,
     '',
     t.sop,
     '',
@@ -283,6 +341,9 @@ export function formatTransmissionMarkdown(t: EventGoldTransmission): string {
     lines.push(`| ${leg.label} | ${biasZh(leg.bias)} | ${leg.strength} | ${leg.evidence} |`);
   }
   lines.push('');
+  if (t.baitWarning) {
+    lines.push(`- **⚠️ 防钓鱼警示**：${t.baitWarning}`);
+  }
   if (t.eventSnippet) {
     lines.push(`- 事件摘录：${t.eventSnippet}`);
   }

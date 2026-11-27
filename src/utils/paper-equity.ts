@@ -37,17 +37,43 @@ export interface PaperEquityPoint {
   halfNav: number;
 }
 
+export interface PaperEquityOptions {
+  /** 现金闲置部分年化收益（如货基 0.018 = 1.8%），默认 0 以保持纯金价基准兼容 */
+  cashAnnualRate?: number;
+  /** 单边调仓交易成本（基点 bps，如 15 = 0.15%），默认 0 */
+  transactionCostBps?: number;
+  /** 调仓缓冲带（百分点，如 15 表示目标仓变动 <15% 不调仓以降低换手），默认 0 */
+  rebalanceBandPct?: number;
+}
+
+/** 支付宝/场外黄金基金真实回测推荐参数（1.8% 货基现金收益 + 15bp 单边摩擦 + 15% 调仓缓冲带） */
+export const DEFAULT_REALISTIC_BACKTEST_OPTIONS: Required<PaperEquityOptions> = {
+  cashAnnualRate: 0.018,
+  transactionCostBps: 15,
+  rebalanceBandPct: 15,
+};
+
 export interface PaperEquityStats {
   /** 区间累计收益 %（起点 100） */
   totalReturnPct: number | null;
-  /** 按日频几何年化的收益 %（交易日近似） */
+  /** 按日频几何年化的收益 %（严格以交易日收益条数 / 252 计算） */
   annReturnPct: number | null;
-  /** 日收益年化波动 %（策略为仓位加权收益的波动） */
+  /** 日收益年化波动 %（样本标准差 n-1） */
   annVolPct: number | null;
   /** 最大回撤 %（正数） */
   maxDrawdownPct: number | null;
   /** 日均仓位 %（仅策略） */
   avgPositionPct: number | null;
+  /** F17: 年化夏普比率（相对 cashAnnualRate） */
+  sharpe?: number | null;
+  /** F17: 年化索提诺比率（仅下行偏差） */
+  sortino?: number | null;
+  /** F17: 卡玛比率（年化收益 / 最大回撤） */
+  calmar?: number | null;
+  /** F17: 年化单边换手率 %（仅策略） */
+  annualTurnoverPct?: number | null;
+  /** F17: 区间累计交易摩擦成本 %（仅策略） */
+  totalCostPct?: number | null;
 }
 
 export interface PaperEquityResult {
@@ -62,20 +88,51 @@ export interface PaperEquityResult {
   warnings: string[];
 }
 
-function navStats(navs: number[], dailyReturns: number[]): PaperEquityStats {
-  if (navs.length === 0) {
-    return { totalReturnPct: null, annReturnPct: null, annVolPct: null, maxDrawdownPct: null, avgPositionPct: null };
+function navStats(
+  navs: number[],
+  dailyReturns: number[],
+  cashAnnualRate = 0,
+): PaperEquityStats {
+  if (navs.length === 0 || dailyReturns.length === 0) {
+    return {
+      totalReturnPct: null,
+      annReturnPct: null,
+      annVolPct: null,
+      maxDrawdownPct: null,
+      avgPositionPct: null,
+      sharpe: null,
+      sortino: null,
+      calmar: null,
+    };
   }
   const totalReturnPct = (navs[navs.length - 1] / navs[0] - 1) * 100;
-  const n = navs.length;
-  const years = n / 252;
+  // F17: 严格使用真实交易日收益笔数 dailyReturns.length（而非 navs.length = N+1）
+  const years = dailyReturns.length / 252;
   const annReturnPct = years > 0 ? ((navs[navs.length - 1] / navs[0]) ** (1 / years) - 1) * 100 : null;
 
   let vol: number | null = null;
+  let sharpe: number | null = null;
+  let sortino: number | null = null;
   if (dailyReturns.length >= 5) {
     const mean = dailyReturns.reduce((a, b) => a + b, 0) / dailyReturns.length;
-    const varSum = dailyReturns.reduce((a, b) => a + (b - mean) ** 2, 0) / dailyReturns.length;
-    vol = Math.sqrt(varSum) * Math.sqrt(252) * 100;
+    const varSum = dailyReturns.reduce((a, b) => a + (b - mean) ** 2, 0) / (dailyReturns.length - 1);
+    const dailySd = Math.sqrt(Math.max(0, varSum));
+    vol = dailySd * Math.sqrt(252) * 100;
+
+    const rfDaily = cashAnnualRate / 252;
+    const excessMean = mean - rfDaily;
+    if (dailySd > 1e-9) {
+      sharpe = Math.round(((excessMean / dailySd) * Math.sqrt(252)) * 100) / 100;
+    }
+
+    const downsideSq = dailyReturns.reduce((acc, r) => {
+      const diff = r - rfDaily;
+      return diff < 0 ? acc + diff * diff : acc;
+    }, 0) / dailyReturns.length;
+    const downsideDev = Math.sqrt(Math.max(0, downsideSq));
+    if (downsideDev > 1e-9) {
+      sortino = Math.round(((excessMean / downsideDev) * Math.sqrt(252)) * 100) / 100;
+    }
   }
 
   let peak = navs[0];
@@ -85,14 +142,21 @@ function navStats(navs: number[], dailyReturns: number[]): PaperEquityStats {
     const dd = (peak - nav) / peak;
     if (dd > maxDd) maxDd = dd;
   }
+  const maxDrawdownPct = Math.round(maxDd * 1000) / 10;
+  const calmar = (annReturnPct != null && maxDrawdownPct > 0.1)
+    ? Math.round((annReturnPct / maxDrawdownPct) * 100) / 100
+    : null;
 
   const round1 = (v: number | null) => (v == null ? null : Math.round(v * 10) / 10);
   return {
     totalReturnPct: Math.round(totalReturnPct * 100) / 100,
     annReturnPct: round1(annReturnPct),
     annVolPct: round1(vol),
-    maxDrawdownPct: Math.round(maxDd * 1000) / 10,
+    maxDrawdownPct,
     avgPositionPct: null,
+    sharpe,
+    sortino,
+    calmar,
   };
 }
 
@@ -103,7 +167,12 @@ function navStats(navs: number[], dailyReturns: number[]): PaperEquityStats {
 export function buildPaperEquity(
   bars: PaperEquityBar[],
   decisions: PaperEquityDecision[],
+  options?: PaperEquityOptions,
 ): PaperEquityResult {
+  const cashAnnualRate = Math.max(0, options?.cashAnnualRate ?? 0);
+  const transactionCostRate = Math.max(0, options?.transactionCostBps ?? 0) / 10_000;
+  const rebalanceBandPct = Math.max(0, options?.rebalanceBandPct ?? 0);
+  const rfDaily = cashAnnualRate / 252;
   const warnings: string[] = [];
 
   // 净化 + 升序 + 同日去重（保留后者）
@@ -182,6 +251,9 @@ export function buildPaperEquity(
   let strategyNav = 100;
   let holdNav = 100;
   let halfNav = 100;
+  let prevAppliedPct: number | null = null;
+  let totalTurnoverWeight = 0;
+  let totalCostWeight = 0;
 
   for (let i = startIdx; i < sortedBars.length; i++) {
     const prev = sortedBars[i - 1];
@@ -193,20 +265,36 @@ export function buildPaperEquity(
       decisionPtr++;
     }
 
-    const pct = currentPct;
-    if (pct == null) continue; // 理论上 startIdx 之前已确保存在决策，防御性跳过
+    if (currentPct == null) continue;
+
+    // F17: 调仓缓冲带（若变动幅度小于 rebalanceBandPct 且已有持仓，则维持原仓位以降低无效换手）
+    let pct = currentPct;
+    if (prevAppliedPct != null && rebalanceBandPct > 0 && Math.abs(currentPct - prevAppliedPct) < rebalanceBandPct) {
+      pct = prevAppliedPct;
+    }
 
     const r = bar.close / prev.close - 1;
     const rPct = r * 100;
     const w = pct / 100;
 
-    strategyNav *= 1 + w * r;
-    holdNav *= 1 + r;
-    halfNav *= 1 + 0.5 * r;
+    // F17: 调仓摩擦成本（仅在仓位发生变动时按 |Δw| * transactionCostRate 扣除）
+    const deltaW = prevAppliedPct == null ? 0 : Math.abs(w - prevAppliedPct / 100);
+    const cost = deltaW * transactionCostRate;
+    totalTurnoverWeight += deltaW;
+    totalCostWeight += cost;
+    prevAppliedPct = pct;
 
-    strategyDailyReturns.push(w * r);
+    // F17: 现金闲置部分 (1 - w) 计入无风险/货基日收益 rfDaily
+    const stratRet = w * r + (1 - w) * rfDaily - cost;
+    const halfRet = 0.5 * r + 0.5 * rfDaily;
+
+    strategyNav *= 1 + stratRet;
+    holdNav *= 1 + r;
+    halfNav *= 1 + halfRet;
+
+    strategyDailyReturns.push(stratRet);
     holdDailyReturns.push(r);
-    halfDailyReturns.push(0.5 * r);
+    halfDailyReturns.push(halfRet);
     appliedPcts.push(pct);
 
     strategyNavs.push(Math.round(strategyNav * 100) / 100);
@@ -223,16 +311,19 @@ export function buildPaperEquity(
     });
   }
 
-  const strategy = navStats(strategyNavs, strategyDailyReturns);
+  const strategy = navStats(strategyNavs, strategyDailyReturns, cashAnnualRate);
   strategy.avgPositionPct = appliedPcts.length
     ? Math.round((appliedPcts.reduce((a, b) => a + b, 0) / appliedPcts.length) * 10) / 10
     : null;
+  const years = strategyDailyReturns.length > 0 ? strategyDailyReturns.length / 252 : 0;
+  strategy.annualTurnoverPct = years > 0 ? Math.round((totalTurnoverWeight / years) * 1000) / 10 : 0;
+  strategy.totalCostPct = Math.round(totalCostWeight * 10000) / 100;
 
   return {
     points,
     strategy,
-    hold: navStats(holdNavs, holdDailyReturns),
-    half: navStats(halfNavs, halfDailyReturns),
+    hold: navStats(holdNavs, holdDailyReturns, cashAnnualRate),
+    half: navStats(halfNavs, halfDailyReturns, cashAnnualRate),
     storedDecisions,
     proxyDecisions,
     skippedNoPrice,

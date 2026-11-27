@@ -217,17 +217,40 @@ function positioningFactor(cftcPercentile: number): MidTermFactor {
 }
 
 /**
- * 因子 6：官方与 ETF 买盘
+ * 因子 6：官方与 ETF 买盘（F09：仅消费央行购金 + ETF 资金流，剔除 CFTC 避免与 positioningFactor 正反双计）
  * 央行购金与 ETF 持仓是中期最「慢」的资金项，方向性强于价格噪音。
  */
 function officialFlowFactor(signal: InstitutionalSignal): MidTermFactor {
-  const raw = signal.overallScore;
+  const hasEtf = signal.etfFlow && typeof signal.etfFlow.score === 'number';
+  const hasCb = signal.centralBank && typeof signal.centralBank.score === 'number';
+  let raw: number;
+  let note: string;
+  if (hasEtf || hasCb) {
+    const parts: Array<{ score: number; weight: number }> = [];
+    if (hasEtf && !signal.etfFlow.summary?.includes('不足')) {
+      parts.push({ score: signal.etfFlow.score, weight: 0.55 });
+    }
+    if (hasCb && !signal.centralBank.summary?.includes('暂无')) {
+      parts.push({ score: signal.centralBank.score, weight: 0.45 });
+    }
+    if (parts.length > 0) {
+      const wSum = parts.reduce((s, p) => s + p.weight, 0);
+      raw = Math.round(parts.reduce((s, p) => s + p.score * (p.weight / wSum), 0));
+      note = `官方/ETF 独立买盘 ${raw}/100（仅央行+ETF，已剔除 CFTC 避免重复计分）`;
+    } else {
+      raw = Math.round((hasEtf ? signal.etfFlow.score : 50) * 0.55 + (hasCb ? signal.centralBank.score : 50) * 0.45);
+      note = `官方/ETF 买盘 ${raw}/100（央行+ETF）`;
+    }
+  } else {
+    raw = signal.overallScore;
+    note = `主力综合信号 ${raw}/100（仅传入汇总分，未拆分 CFTC）`;
+  }
   return mk(
     'official_flow',
     '官方/ETF 买盘',
     raw,
     clamp(raw, 15, 85),
-    `主力综合信号 ${raw}/100（CFTC + ETF + 央行）`,
+    note,
   );
 }
 

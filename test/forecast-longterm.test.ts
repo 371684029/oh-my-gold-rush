@@ -150,7 +150,7 @@ describe('web/forecast-longterm (26-year real monthly dataset + 1Y/2Y/5Y auditab
       const h = fc.horizons[key];
       expect(h.isLongTerm).toBe(true);
       expect(h.points.length).toBe(expectedMonths[key]);
-      expect(h.sampleStats.method).toBe('macro_25y_monthly_fhs_shrinkage');
+      expect(h.sampleStats.method).toBe('macro_26y_demeaned_log_fhs_mixed_weights');
       expect(h.sampleStats.rawSampleSize).toBeGreaterThanOrEqual(200);
       expect(h.sampleStats.effectiveSampleSize).toBeGreaterThan(10);
       expect(h.summary.beatCpiProb).not.toBeNull();
@@ -164,7 +164,7 @@ describe('web/forecast-longterm (26-year real monthly dataset + 1Y/2Y/5Y auditab
       expect(h.summary.cagr.p50).toBeLessThanOrEqual(h.summary.cagr.p75);
       expect(h.summary.cagr.p75).toBeLessThanOrEqual(h.summary.cagr.p90);
 
-      // 每个未来月均单调且具真实 YYYY-MM 日期与锚定 CNY
+      // 每个未来月均单调且具真实 YYYY-MM 日期与联合 USD/CNY 汇率路径（F12）
       for (const pt of h.points) {
         expect(/^\d{4}-\d{2}$/.test(pt.ym)).toBe(true);
         expect(pt.p10).toBeLessThanOrEqual(pt.p25);
@@ -173,8 +173,12 @@ describe('web/forecast-longterm (26-year real monthly dataset + 1Y/2Y/5Y auditab
         expect(pt.p75).toBeLessThanOrEqual(pt.p90);
         expect(pt.usd.p10).toBeLessThanOrEqual(pt.usd.p50);
         expect(pt.usd.p50).toBeLessThanOrEqual(pt.usd.p90);
-        const expectedCny = fc.spot.cny * (1 + pt.p50 / 100);
-        expect(Math.abs(pt.cny.p50 - expectedCny)).toBeLessThan(0.25);
+        expect(pt.cny.p10).toBeLessThanOrEqual(pt.cny.p25);
+        expect(pt.cny.p25).toBeLessThanOrEqual(pt.cny.p50);
+        expect(pt.cny.p50).toBeLessThanOrEqual(pt.cny.p75);
+        expect(pt.cny.p75).toBeLessThanOrEqual(pt.cny.p90);
+        const frozenCny = fc.spot.cny * (1 + pt.p50 / 100);
+        expect(Math.abs(pt.cny.p50 - frozenCny) / frozenCny).toBeLessThan(0.25);
       }
 
       // 月线历史尾点锚定现价 0%

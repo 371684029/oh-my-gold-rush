@@ -131,8 +131,8 @@ describe('web/forecast-data + web/forecast-engine (5-year fused real dataset)', 
     expect(lastHist.pct).toBe(0);
     expect(lastHist.cny).toBe(fc.spot.cny);
 
-    // 5年数据下，连 60 日长视野都拥有真实条件历史样本（不再降级为分块模拟）
-    expect(fc.horizons['60'].sampleStats.method).toBe('conditional_fhs_shrinkage');
+    // 5年数据下，连 60 日长视野都拥有真实去均值对数 FHS 样本与混合分布权重（F02/F04）
+    expect(fc.horizons['60'].sampleStats.method).toBe('demeaned_log_fhs_mixed_weights');
     expect(fc.horizons['60'].sampleStats.rawSampleSize).toBeGreaterThan(1000);
 
     for (const key of ['5', '20', '60'] as const) {
@@ -150,11 +150,13 @@ describe('web/forecast-data + web/forecast-engine (5-year fused real dataset)', 
         expect(pt.p75).toBeLessThanOrEqual(pt.p90);
         expect(pt.usd.p10).toBeLessThanOrEqual(pt.usd.p50);
         expect(pt.usd.p50).toBeLessThanOrEqual(pt.usd.p90);
-        expect(pt.cny.p10).toBeLessThanOrEqual(pt.cny.p50);
-        expect(pt.cny.p50).toBeLessThanOrEqual(pt.cny.p90);
-        // CNY 预测锚定实时上海金现价，无缝衔接 T+0
-        const expectedCny = fc.spot.cny * (1 + pt.p50 / 100);
-        expect(Math.abs(pt.cny.p50 - expectedCny)).toBeLessThan(0.15);
+        expect(pt.cny.p10).toBeLessThanOrEqual(pt.cny.p25);
+        expect(pt.cny.p25).toBeLessThanOrEqual(pt.cny.p50);
+        expect(pt.cny.p50).toBeLessThanOrEqual(pt.cny.p75);
+        expect(pt.cny.p75).toBeLessThanOrEqual(pt.cny.p90);
+        // F12: CNY 路径已联合模拟历史 USD/CNY 汇率联动（非冻结汇率），应位于合理斑带内
+        const frozenCny = fc.spot.cny * (1 + pt.p50 / 100);
+        expect(Math.abs(pt.cny.p50 - frozenCny) / frozenCny).toBeLessThan(0.08);
       }
 
       for (const s of h.structure) {

@@ -44,6 +44,10 @@ export const MIN_HEALTHY_COVERAGE = 0.75;
 
 export interface QuantScoreParams {
   closes: number[];
+  /** 可选日内最高价序列（与 closes 等长），用于计算真实 14 日 Wilder ATR%（F07） */
+  highs?: number[];
+  /** 可选日内最低价序列（与 closes 等长），用于计算真实 14 日 Wilder ATR%（F07） */
+  lows?: number[];
   dxy?: number[];
   us10y?: number[];
   tips?: number[];
@@ -77,18 +81,18 @@ export interface QuantScoreResult {
 // ============================================================
 
 export const DEFAULT_WEIGHTS: Record<string, number> = {
-  trend:     0.12,
-  rsi:       0.10,
-  macd:      0.10,
-  bollinger: 0.05,
-  valuation: 0.08,
-  flow:      0.15,
-  dxy:       0.12,
-  us10y:     0.08,
-  tips:      0.10,
-  volatility:0.05,
-  regime:    0.05,
-  event_heat:0.00, // 默认关闭；事件传导卡不进此权重（docs/USER-VALUE.md §3.1）
+  trend:      0.14, // F07: 原 volatility 5% 方向权重归零，重新分配至趋势 (+2%) 与 TIPS (+3%)
+  rsi:        0.10,
+  macd:       0.10,
+  bollinger:  0.05,
+  valuation:  0.08,
+  flow:       0.15,
+  dxy:        0.12,
+  us10y:      0.08,
+  tips:       0.13,
+  volatility: 0.00, // F07: 波动率是无方向风险尺度，仅入风控/带宽层，退出方向打分
+  regime:     0.05,
+  event_heat: 0.00, // 默认关闭；事件传导卡不进此权重（docs/USER-VALUE.md §3.1）
 };
 
 function clamp(v: number, lo: number, hi: number): number { return Math.max(lo, Math.min(hi, v)); }
@@ -130,9 +134,32 @@ function trendFactor(closes: number[]): QuantFactorDetail {
   return detail('trend', '金价趋势(MA20)', Math.round(dev*100)/100, clamp(50+dev*5,10,90));
 }
 
+/**
+ * F08: 分段 RSI(14) 因子 — 消除与布林带 %B 及 Web 端超买标注的语义矛盾：
+ * - [50, 68]：温和多头动能（50 → 64）
+ * - (68, 75]：动能趋缓（64 → 52）
+ * - > 75：超买过热回落至中性/微空（52 → 35）
+ * - [32, 50)：温和偏弱（36 → 50）
+ * - [25, 32)：超卖筑底回升（48 → 36）
+ * - < 25：极端超卖逆向修复（48 → 65）
+ */
 function rsiFactor(closes: number[]): QuantFactorDetail {
   const raw = latestRSI(closes, 14) ?? 50;
-  return detail('rsi', 'RSI(14)', Math.round(raw*100)/100, Math.round(clamp(raw,5,95)));
+  let score: number;
+  if (raw >= 50 && raw <= 68) {
+    score = 50 + ((raw - 50) / 18) * 14; // 50..64
+  } else if (raw > 68 && raw <= 75) {
+    score = 64 - ((raw - 68) / 7) * 12; // 64..52
+  } else if (raw > 75) {
+    score = 52 - ((raw - 75) / 25) * 17; // 52..35
+  } else if (raw >= 32 && raw < 50) {
+    score = 50 - ((50 - raw) / 18) * 14; // 50..36
+  } else if (raw >= 25 && raw < 32) {
+    score = 36 + ((32 - raw) / 7) * 12; // 36..48
+  } else {
+    score = 48 + ((25 - raw) / 25) * 17; // 48..65
+  }
+  return detail('rsi', 'RSI(14)', Math.round(raw * 100) / 100, Math.round(clamp(score, 10, 90)));
 }
 
 function macdFactor(closes: number[]): QuantFactorDetail {
@@ -171,48 +198,84 @@ function dxyFactor(dxy: number[]): QuantFactorDetail {
   return detail('dxy', '美元指数(DXY)', Math.round(dev*100)/100, clamp(50-dev*10,10,90));
 }
 
+/**
+ * F03: 10Y 名义收益率按基点绝对偏离（bps）计分，替代相对百分比除零风险。
+ * 每偏离 MA20 +25bp 扣 12 分，平滑映射至 [10, 90]。
+ */
 function us10yFactor(us10y: number[]): QuantFactorDetail {
   const ma = latestMA(us10y, 20);
-  const cur = us10y[us10y.length - 1];
+  const cur = us10y[us10y.length - 1]!;
   const base = ma ?? cur;
-  const dev = base > 0 ? ((cur - base) / base) * 100 : 0;
-  return detail('us10y', '10Y名义收益率', Math.round(dev*100)/100, clamp(50-dev*8,10,90));
+  const devBp = (cur - base) * 100;
+  const score = clamp(50 - (devBp / 25) * 12, 10, 90);
+  return detail('us10y', '10Y名义收益率(bp)', Math.round(devBp * 10) / 10, Math.round(score));
 }
 
 /**
- * TIPS 实际收益率 — 黄金最重要的单一驱动因子
- * 实际收益率 = 名义利率 - 通胀预期，TIPS 直接反映。
- * 实际利率↑ → 黄金持有机会成本↑ → 承压
- * 实际利率↓（甚至负值）→ 黄金吸引力↑ → 受益
+ * F03: TIPS 实际收益率 — 黄金最重要的单一驱动因子（区间尺度，严禁除以 |base|）。
+ * 统一使用相对 MA20 的基点偏离 devBp = (cur - ma20) * 100，在 0.00% 附近完全连续平滑。
+ * 每偏离 +25bp 扣 15 分，映射至 [10, 90]。
  */
 function tipsFactor(tips: number[]): QuantFactorDetail {
   const ma = latestMA(tips, 20);
-  const cur = tips[tips.length - 1];
+  const cur = tips[tips.length - 1]!;
   const base = ma ?? cur;
-  const dev = base !== 0 ? ((cur - base) / Math.abs(base)) * 100 : cur * 100;
-  return detail('tips', '实际收益率(TIPS)', Math.round(cur*10000)/10000, clamp(50-dev*0.8,10,90));
+  const devBp = (cur - base) * 100;
+  const score = clamp(50 - (devBp / 25) * 15, 10, 90);
+  return detail('tips', '实际收益率(TIPS)', Math.round(cur * 10000) / 10000, Math.round(score));
 }
 
 // ============================================================
-// 因子 10：波动率 (ATR/Price)
-// 高波动 → 不确定性上升，避险需求推升黄金，为中性偏多信号。
-// 低波动（如 VIX 低位）→ 市场缺乏恐慌，黄金缺少避险买盘。
-// 以 0.5%/日 ATR 为中枢，向上给多、向下给空，区间 [30,70]。
+// 因子 10：真实波幅 ATR%（仅作风险观测元数据，不计方向权重 — F07）
+// 提供 High/Low 时按标准 14 日 Wilder True Range 计算；
+// 缺高低价时注明 Close-to-Close Realized Vol，normalizedScore 恒为 50（无方向）。
 // ============================================================
-const ATR_PIVOT_PCT = 0.5;
-
-function volatilityFactor(closes: number[]): QuantFactorDetail {
+function volatilityFactor(closes: number[], highs?: number[], lows?: number[]): QuantFactorDetail {
   const period = 14;
   if (closes.length < period + 1) {
-    return detail('volatility', '波动率(ATR)', 0, 50);
+    return detail('volatility', '波动率(ATR·仅风控)', 0, 50);
   }
-  let sumTR = 0;
-  for (let i = closes.length - period; i < closes.length; i++) {
-    sumTR += Math.abs(closes[i] - closes[i - 1]) / closes[i - 1] * 100;
+  const hasHlc =
+    Array.isArray(highs)
+    && Array.isArray(lows)
+    && highs.length === closes.length
+    && lows.length === closes.length;
+
+  let atrPct: number;
+  let label: string;
+  if (hasHlc) {
+    const trPcts: number[] = [];
+    for (let i = 1; i < closes.length; i++) {
+      const prevC = closes[i - 1]!;
+      const h = highs![i]!;
+      const l = lows![i]!;
+      if (prevC <= 0 || !Number.isFinite(h) || !Number.isFinite(l)) continue;
+      const tr = Math.max(h - l, Math.abs(h - prevC), Math.abs(l - prevC));
+      trPcts.push((tr / prevC) * 100);
+    }
+    if (trPcts.length >= period) {
+      // Wilder 平滑 ATR%
+      let atr = trPcts.slice(0, period).reduce((s, v) => s + v, 0) / period;
+      for (let i = period; i < trPcts.length; i++) {
+        atr = (atr * (period - 1) + trPcts[i]!) / period;
+      }
+      atrPct = atr;
+      label = '波动率(Wilder ATR%·仅风控)';
+    } else {
+      atrPct = 0;
+      label = '波动率(ATR·仅风控)';
+    }
+  } else {
+    let sumMove = 0;
+    for (let i = closes.length - period; i < closes.length; i++) {
+      const prevC = closes[i - 1]!;
+      sumMove += prevC > 0 ? (Math.abs(closes[i]! - prevC) / prevC) * 100 : 0;
+    }
+    atrPct = sumMove / period;
+    label = '波动率(Close-to-Close·仅风控)';
   }
-  const atrPct = sumTR / period;
-  const normalized = clamp(50 + (atrPct - ATR_PIVOT_PCT) * 20, 30, 70);
-  return detail('volatility', '波动率(ATR)', Math.round(atrPct*100)/100, Math.round(normalized));
+  // F07: 波动率无方向性，normalizedScore 恒定 50 且权重为 0
+  return detail('volatility', label, Math.round(atrPct * 100) / 100, 50);
 }
 
 // ============================================================
@@ -261,7 +324,7 @@ function eventHeatFactor(eventScore?: number): QuantFactorDetail {
 // ============================================================
 
 export function computeQuantScore(params: QuantScoreParams): QuantScoreResult {
-  const { closes, dxy, us10y, tips, flowSignal, regimeTag, eventScore, macroAgeDays } = params;
+  const { closes, highs, lows, dxy, us10y, tips, flowSignal, regimeTag, eventScore, macroAgeDays } = params;
 
   if (closes.length < 20) {
     return minimalResult(flowSignal?.overallScore ?? 50, regimeTag);
@@ -277,7 +340,7 @@ export function computeQuantScore(params: QuantScoreParams): QuantScoreResult {
   factors.bollinger  = bollingerFactor(closes);
   factors.valuation  = valuationFactor(closes);
   factors.flow       = flowFactor(flowSignal);
-  factors.volatility = volatilityFactor(closes);
+  factors.volatility = volatilityFactor(closes, highs, lows);
 
   const isStale = (age: number | null | undefined): boolean => age != null && age > MAX_MACRO_AGE_DAYS;
 

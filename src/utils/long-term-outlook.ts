@@ -23,6 +23,10 @@ import {
   formatHistoricalBandLine,
   type HistoricalReturnBand,
 } from './long-term-backtest.js';
+import {
+  computeHorizonEightDimensionScore,
+  type EightDimensionProfile,
+} from './eight-dimensions.js';
 
 export interface LongTermOutlookInput {
   technical: TechnicalAnalysis;
@@ -36,18 +40,20 @@ export interface LongTermOutlookInput {
   priceHistory?: GoldPriceRecord[];
   /** 上一日（或最近）长期展望，用于平滑防抖 */
   previousOutlook?: LongTermOutlook | null;
+  /** v2.4 可选：八维全景评分（存在时 1/3/5 年直接走慢变量八维权重，消息面/短线情绪严格 0%） */
+  dimensions?: Partial<EightDimensionProfile>;
 }
 
 const HORIZONS: LongTermHorizonYears[] = [1, 3, 5];
 
 /**
- * 各期限权重：[技术, 基本面, 情绪(结构), 宏观阶段]
- * 3/5 年显著降低技术权重；情绪侧重央行/ETF 等结构表述
+ * F14: 各期限慢变量权重：[技术, 基本面, 情绪, 宏观阶段]
+ * 3/5 年严格剥离日度情绪面（权重 0%），由基本面与宏观周期慢变量主导。
  */
 const WEIGHTS: Record<LongTermHorizonYears, [number, number, number, number]> = {
-  1: [0.15, 0.35, 0.25, 0.25],
-  3: [0.05, 0.35, 0.35, 0.25],
-  5: [0.00, 0.30, 0.40, 0.30],
+  1: [0.10, 0.50, 0.00, 0.40],
+  3: [0.05, 0.55, 0.00, 0.40],
+  5: [0.00, 0.60, 0.00, 0.40],
 };
 
 /** 当日综合分掺入比例：仅 1 年轻微参考，3/5 年脱钩 */
@@ -146,8 +152,8 @@ function softCumulativeBand(
   years: LongTermHorizonYears,
 ): { lo: number; hi: number } {
   const ann = heuristicAnnualMid(direction, bias);
-  // 简化：中枢 ≈ ann * years * 0.85（非复利夸张），半宽随 sqrt(years)
-  const mid = ann * years * 0.85;
+  // F14: 改为严格几何复利 ((1 + ann/100)^years - 1) * 100，消除单利 * 0.85 失真
+  const mid = (Math.pow(1 + ann / 100, years) - 1) * 100;
   const half = (direction === 'neutral' ? 6 : 8) * Math.sqrt(years);
   let lo = mid - half;
   let hi = mid + half;
@@ -300,14 +306,21 @@ function buildHorizon(
   years: LongTermHorizonYears,
   histBand: HistoricalReturnBand | null,
 ): LongTermHorizonOutlook {
-  const [wT, wF, wS, wM] = WEIGHTS[years];
-  const tech = directionBias(input.technical.score, input.technical.direction);
-  const fund = directionBias(input.fundamental.score, input.fundamental.direction);
-  const sent = directionBias(input.sentiment.score, input.sentiment.direction);
-  const macro = macroBias(input.macroRegime);
+  let bias: number;
+  if (input.dimensions && Object.keys(input.dimensions).length > 0) {
+    const horizonKey = years === 1 ? '1y' : years === 3 ? '2y' : '5y';
+    const dimRes = computeHorizonEightDimensionScore(input.dimensions, horizonKey);
+    const macro = macroBias(input.macroRegime);
+    bias = dimRes.score * 0.75 + macro * 0.25;
+  } else {
+    const [wT, wF, wS, wM] = WEIGHTS[years];
+    const tech = directionBias(input.technical.score, input.technical.direction);
+    const fund = directionBias(input.fundamental.score, input.fundamental.direction);
+    const sent = directionBias(input.sentiment.score, input.sentiment.direction);
+    const macro = macroBias(input.macroRegime);
+    bias = tech * wT + fund * wF + sent * wS + macro * wM;
+  }
   const overall = directionBias(input.overallScore, input.overallDirection);
-
-  let bias = tech * wT + fund * wF + sent * wS + macro * wM;
   const ob = OVERALL_BLEND[years];
   if (ob > 0) {
     bias = bias * (1 - ob) + overall * ob;

@@ -1,13 +1,27 @@
 'use strict';
 
-// 黄金长期宏观周期预测引擎（1年 / 2年 / 5年 · 纯函数、严格因果零前视泄漏）
+// 黄金长期宏观周期预测引擎 v2.4（1年 / 2年 / 5年 · 纯函数、严格因果零前视泄漏）
 // 数据源：26年连续月线（Yahoo GC=F + DX-Y.NYB + FRED DFII10/DGS10/CPIAUCSL/DEXCHUS）
-// 原则（对齐 AGENTS.md §8 与 long-term-outlook.ts）：
-//   1. 1Y/2Y/5Y 与短期日线 RSI/MACD 完全脱钩，仅由慢变量（TIPS 实际利率、CPI 通胀、Gold/CPI 真实估值分位、美元36月周期、24月实现波动率）主导
-//   2. 严格因果截断（仅使用 <= asOfYm 的月线与宏观观测），禁止任何未来信息泄漏
-//   3. 每一个结论、每一个因子、每一个情景均附带 25 年历史实证统计与真实观测日期，做到有据可查、诚实标注不确定性
+// 原则（对齐 AGENTS.md §8、PLAN-V2.4 与 long-term-outlook.ts）：
+//   1. 1Y/2Y/5Y 与日线消息面/短线情绪完全脱钩（权重严格为 0%），由基本面、政策面、筹码面与量化长期锚主导
+//   2. F01 严格峰谷回撤 + F02 去均值对数 FHS + F04 同源混合权重 + F12 人民币联合汇率路径 + F13 55年实际购买力先验锚
+//   3. 严格因果截断（仅使用 <= asOfYm 的月线与宏观观测），禁止任何未来信息泄漏
 
 const { TROY_OUNCE_TO_GRAM, DEFAULT_USD_CNY } = require('./forecast-data.cjs');
+const {
+  computePathMaxDrawdown,
+  causalMeanLogReturn,
+  buildDemeanedLogFhsPath,
+  mixSampleWeights,
+  weightedQuantilesBatch,
+  weightedEventProbPct,
+} = require('./fhs-math.cjs');
+const {
+  assembleHorizonEightDimensions,
+  DIMENSION_META,
+} = require('./eight-dimensions.cjs');
+
+const CNY_BASIS_NOTE = '人民币路径已纳入历史 USD/CNY 汇率联动（不含 SGE 极端溢价突变风险）';
 
 const LONG_TERM_HORIZONS = [
   {
@@ -75,39 +89,7 @@ function median(arr) {
   return sorted.length % 2 === 1 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
 }
 
-function weightedQuantilesBatch(values, weights, qs) {
-  if (!values.length) return qs.map(() => 0);
-  const pairs = [];
-  let totalW = 0;
-  for (let i = 0; i < values.length; i++) {
-    const v = values[i];
-    const w = Math.max(0, weights[i] ?? 1);
-    if (Number.isFinite(v) && w > 0) {
-      pairs.push({ v, w });
-      totalW += w;
-    }
-  }
-  if (!pairs.length) return qs.map(() => 0);
-  pairs.sort((a, b) => a.v - b.v);
-  if (totalW <= 0) {
-    const mid = pairs[Math.floor(pairs.length / 2)].v;
-    return qs.map(() => mid);
-  }
-  return qs.map(q => {
-    const target = clamp(q, 0, 1) * totalW;
-    let cum = 0;
-    for (let i = 0; i < pairs.length; i++) {
-      const prevCum = cum;
-      cum += pairs[i].w;
-      if (cum >= target) {
-        if (i === 0) return pairs[0].v;
-        const frac = pairs[i].w > 0 ? (target - prevCum) / pairs[i].w : 0;
-        return pairs[i - 1].v + (pairs[i].v - pairs[i - 1].v) * clamp(frac, 0, 1);
-      }
-    }
-    return pairs[pairs.length - 1].v;
-  });
-}
+// weightedQuantilesBatch 已统一由 ./fhs-math.cjs 提供
 
 function addMonthsYm(ym, offset) {
   const [y, m] = ym.split('-').map(Number);
@@ -477,6 +459,9 @@ function buildFactorAudit(cfg, rows, feats, asOfIdx, sampleEntries, curRow, curF
 
   return [
     {
+      dimensionKey: 'fundamental',
+      dimensionCode: DIMENSION_META.fundamental.code,
+      dimensionTitle: DIMENSION_META.fundamental.title,
       factor: '10Y TIPS 实际利率',
       currentValue: curFeat.tipsRaw != null ? `${round(curFeat.tipsRaw, 2)}%` : '—',
       sourceDate: `FRED DFII10 · ${curRow.tipsObsDate || curRow.date}`,
@@ -487,6 +472,9 @@ function buildFactorAudit(cfg, rows, feats, asOfIdx, sampleEntries, curRow, curF
       mechanism: '黄金无票息，美债实际收益率决定长期持有黄金的机会成本。',
     },
     {
+      dimensionKey: 'policy',
+      dimensionCode: DIMENSION_META.policy.code,
+      dimensionTitle: DIMENSION_META.policy.title,
       factor: 'TIPS 12个月周期变化',
       currentValue: `${tipsChgBp >= 0 ? '+' : ''}${tipsChgBp} bp`,
       sourceDate: `FRED DFII10 12M Δ · ${curRow.tipsObsDate || curRow.date}`,
@@ -494,9 +482,12 @@ function buildFactorAudit(cfg, rows, feats, asOfIdx, sampleEntries, curRow, curF
       impact: tipsChgBucket.impact,
       impactLabel: tipsChgBucket.impactLabel,
       empiricalStat: fmtEmp(empTipsChg, tipsChgBucket.label),
-      mechanism: '实证表明利率变化方向（紧缩 vs 降息周期）比静态绝对水平更具拐点意义。',
+      mechanism: '实证表明货币政策利率变化方向（紧缩 vs 降息周期）比静态绝对水平更具拐点意义。',
     },
     {
+      dimensionKey: 'positioning',
+      dimensionCode: DIMENSION_META.positioning.code,
+      dimensionTitle: DIMENSION_META.positioning.title,
       factor: '通胀调整实际金价 (Gold/CPI)',
       currentValue: curFeat.realGoldIndex != null ? `${round(curFeat.realGoldIndex, 1)}` : '—',
       sourceDate: `Yahoo GC=F ÷ FRED CPIAUCSL · ${curRow.date}`,
@@ -504,9 +495,12 @@ function buildFactorAudit(cfg, rows, feats, asOfIdx, sampleEntries, curRow, curF
       impact: valBucket.impact,
       impactLabel: valBucket.impactLabel,
       empiricalStat: fmtEmp(empVal, valBucket.label),
-      mechanism: '剔除美元长期通胀后的真实估值标尺，用于约束 2–5 年期的均值回归预期，防止高位线性外推。',
+      mechanism: '剔除美元长期通胀后的真实筹码估值标尺，用于约束 2–5 年期的均值回归预期，防止高位线性外推。',
     },
     {
+      dimensionKey: 'fundamental',
+      dimensionCode: DIMENSION_META.fundamental.code,
+      dimensionTitle: DIMENSION_META.fundamental.title,
       factor: '美国 CPI 同比通胀',
       currentValue: curFeat.cpiYoYRaw != null ? `${round(curFeat.cpiYoYRaw, 2)}%` : '—',
       sourceDate: `FRED CPIAUCSL · ${curRow.cpiObsDate || curRow.ym}`,
@@ -517,6 +511,9 @@ function buildFactorAudit(cfg, rows, feats, asOfIdx, sampleEntries, curRow, curF
       mechanism: '黄金的百年名义价格中枢锚定法币购买力稀释速度。',
     },
     {
+      dimensionKey: 'fundamental',
+      dimensionCode: DIMENSION_META.fundamental.code,
+      dimensionTitle: DIMENSION_META.fundamental.title,
       factor: '美元指数 DXY (相对36月均值)',
       currentValue: `${round(curFeat.dxy, 1)} (${curFeat.dxyDev36m >= 0 ? '+' : ''}${round(curFeat.dxyDev36m, 1)}%)`,
       sourceDate: `Yahoo DX-Y.NYB · ${curRow.date}`,
@@ -527,16 +524,140 @@ function buildFactorAudit(cfg, rows, feats, asOfIdx, sampleEntries, curRow, curF
       mechanism: '黄金以美元计价，美元大周期走弱通常放大黄金名义涨幅。',
     },
     {
+      dimensionKey: 'quantitative',
+      dimensionCode: DIMENSION_META.quantitative.code,
+      dimensionTitle: DIMENSION_META.quantitative.title,
       factor: '24个月实现月波动率 σ_m',
       currentValue: `${curFeat.vol24m}%/月 (年化${round(curFeat.vol24m * Math.sqrt(12), 1)}%)`,
-      sourceDate: `Yahoo GC=F 25Y 月线 · ${curRow.ym}`,
+      sourceDate: `Yahoo GC=F 26Y 月线 · ${curRow.ym}`,
       percentile25y: `第 ${Math.round(volPct25y)}% 分位`,
-      impact: volBucket.impact,
-      impactLabel: volBucket.impactLabel,
+      impact: 'neutral',
+      impactLabel: curFeat.vol24m >= 5.0 ? '高波加宽风险带' : '常规带宽',
       empiricalStat: fmtEmp(empVol, volBucket.label),
-      mechanism: '用于 FHS 长期概率扇形带宽缩放（钳制在 0.70×–1.40×，避免短期波动扭曲多年预期）。',
+      mechanism: '仅用于去均值对数 FHS 长期概率扇形带宽缩放（0.70×–1.40×），绝不作为方向押注。',
     },
   ];
+}
+
+/** 构造长期（1y / 2y / 5y）八维全景对象：消息面与短线情绪面权重严格为 0% */
+function buildLongTermEightDimensions(cfg, curRow, curFeat, dailyRec, upEndProb, beatCpiProb, effectiveSampleSize, shrinkageWeight, independentCycles, realReturnAnchor) {
+  // B1 基本面：TIPS 水平 + CPI 同比 + DXY 36M 周期
+  const tipsLevelS = clamp(56 - (curFeat.tips - 1.2) * 14, 22, 82);
+  const cpiS = clamp(44 + curFeat.cpiYoY * 4.2, 32, 76);
+  const dxyS = clamp(50 - curFeat.dxyDev36m * 2.2, 25, 78);
+  const b1Score = Math.round(tipsLevelS * 0.45 + cpiS * 0.30 + dxyS * 0.25);
+
+  // S2 政策面：TIPS 12M 政策周期方向 + 联邦基金利率 / 2s10s 曲线（正交于 TIPS 绝对水平）
+  const tipsChgS = clamp(50 - curFeat.tipsChg12m * 18, 22, 82);
+  const curvePart = dailyRec?.yieldCurve2s10sBp != null
+    ? clamp(52 + Math.tanh(dailyRec.yieldCurve2s10sBp / 80) * 18, 28, 76)
+    : null;
+  const s2Score = curvePart != null ? Math.round(tipsChgS * 0.7 + curvePart * 0.3) : Math.round(tipsChgS);
+
+  // S4 筹码面（长期供需与真实估值底盘）：Gold/CPI 25年估值分位（防高位外推）+ CFTC 长期拥挤
+  const valS = clamp(76 - curFeat.realGoldPct * 0.52, 24, 78);
+  const cftcS = dailyRec?.cftcPercentile != null
+    ? (dailyRec.cftcPercentile >= 85 ? 36 : dailyRec.cftcPercentile <= 25 ? 66 : 52)
+    : null;
+  const s4Score = cftcS != null ? Math.round(valS * 0.75 + cftcS * 0.25) : Math.round(valS);
+
+  // S1 资金面（长期结构权重仅 5–8%）：GLD 20D / 机构结构流
+  const s1Score = dailyRec?.officialFlowScore ?? dailyRec?.flowScore ?? null;
+
+  // B3 技术面（长期锚，权重仅 5–8%）：12 月均线结构，完全脱钩日线 RSI/MACD
+  const b3Score = Math.round(curFeat.ma12Dev >= 20
+    ? clamp(58 - (curFeat.ma12Dev - 20) * 0.9, 36, 58)
+    : clamp(50 + curFeat.ma12Dev * 0.85, 32, 72));
+
+  // S5 量化面：26年抗通胀实证胜率 + 1971+ 实际购买力先验锚 + 有效独立周期数
+  const s5Score = Math.round(clamp(
+    50 + (upEndProb - 50) * 0.55 + ((beatCpiProb ?? 55) - 50) * 0.35,
+    25,
+    80,
+  ));
+
+  return assembleHorizonEightDimensions({
+    fundamental: {
+      score: b1Score,
+      coverage: 1,
+      metrics: [
+        { k: '10Y TIPS 实际利率', v: curFeat.tipsRaw != null ? `${round(curFeat.tipsRaw, 2)}%` : '—', tone: curFeat.tips >= 2.0 ? 'bear' : curFeat.tips <= 0.8 ? 'bull' : 'neutral' },
+        { k: '美国 CPI 同比通胀', v: curFeat.cpiYoYRaw != null ? `${round(curFeat.cpiYoYRaw, 2)}%` : '—', tone: curFeat.cpiYoY >= 2.8 ? 'bull' : 'neutral' },
+        { k: 'DXY 相对36月均值', v: `${round(curFeat.dxy, 1)} (${curFeat.dxyDev36m >= 0 ? '+' : ''}${round(curFeat.dxyDev36m, 1)}%)`, tone: curFeat.dxyDev36m >= 3 ? 'bear' : curFeat.dxyDev36m <= -3 ? 'bull' : 'neutral' },
+      ],
+      summary: `长期核心定价锚（占 ${Math.round((cfg.years >= 2 ? 0.35 : 0.30) * 100)}%）：由实际利率水平、通胀复利与美元大周期主导黄金多年中枢。`,
+      dataFreshness: curRow.tipsObsDate || curRow.date,
+    },
+    news: {
+      score: null,
+      coverage: 0,
+      metrics: [{ k: '长期视野隔离规则', v: '权重严格 0%（日度消息不外推多年）', tone: 'neutral' }],
+      summary: '严格按金融学时间尺度隔离短期新闻催化，不污染 1–5 年配置判断。',
+      dataFreshness: '长期脱钩',
+    },
+    technical: {
+      score: b3Score,
+      coverage: 1,
+      metrics: [
+        { k: '现价相对 12月均线', v: `${curFeat.ma12Dev >= 0 ? '+' : ''}${round(curFeat.ma12Dev, 1)}%`, tone: curFeat.ma12Dev >= 22 ? 'bear' : curFeat.ma12Dev >= 2 ? 'bull' : 'neutral' },
+        { k: '日线指标隔离', v: '已完全脱钩日线 RSI / MACD', tone: 'neutral' },
+      ],
+      summary: '仅保留 12 月长期均线结构参考，剥离日线波动噪音。',
+      dataFreshness: curRow.ym,
+    },
+    capitalFlow: {
+      score: s1Score,
+      coverage: s1Score != null ? 1 : 0,
+      metrics: [
+        { k: '央行/ETF 资金底盘', v: s1Score != null ? `${s1Score}/100` : '待更新', tone: (s1Score ?? 50) >= 58 ? 'bull' : (s1Score ?? 50) <= 42 ? 'bear' : 'neutral' },
+      ],
+      summary: '跟踪黄金 ETF 与全球机构长期资金底盘趋势。',
+      dataFreshness: dailyRec?.cftcObsDate || curRow.ym,
+    },
+    policy: {
+      score: s2Score,
+      coverage: 1,
+      metrics: [
+        { k: 'TIPS 12个月周期Δ', v: `${curFeat.tipsChg12m >= 0 ? '+' : ''}${Math.round(curFeat.tipsChg12m * 100)} bp`, tone: curFeat.tipsChg12m <= -0.35 ? 'bull' : curFeat.tipsChg12m >= 0.35 ? 'bear' : 'neutral' },
+        ...(dailyRec?.yieldCurve2s10sBp != null ? [{ k: '美债 10Y-2Y 利差', v: `${dailyRec.yieldCurve2s10sBp >= 0 ? '+' : ''}${dailyRec.yieldCurve2s10sBp} bp`, tone: dailyRec.yieldCurve2s10sBp >= 20 ? 'bull' : 'neutral' }] : []),
+        { k: '央行去美元化购金', v: '结构性长期买盘托底', tone: 'bull' },
+      ],
+      summary: '刻画美联储紧缩/宽松大周期拐点与全球央行外汇储备多元化政策趋势。',
+      dataFreshness: curRow.tipsObsDate || curRow.date,
+    },
+    sentiment: {
+      score: null,
+      coverage: 0,
+      metrics: [{ k: '长期视野隔离规则', v: '权重严格 0%（日度情绪不参与多年）', tone: 'neutral' }],
+      summary: '日度恐慌/贪婪情绪对 1–5 年回报无预测力，严格设为 0% 权重。',
+      dataFreshness: '长期脱钩',
+    },
+    positioning: {
+      score: s4Score,
+      coverage: 1,
+      metrics: [
+        { k: '真实金价估值 Gold/CPI', v: `第 ${Math.round(curFeat.realGoldPct)}% 分位 (26年)`, tone: curFeat.realGoldPct >= 80 ? 'bear' : curFeat.realGoldPct <= 30 ? 'bull' : 'neutral' },
+        ...(dailyRec?.cftcPercentile != null ? [{ k: 'CFTC 3年拥挤分位', v: `第 ${Math.round(dailyRec.cftcPercentile)}% 分位`, tone: dailyRec.cftcPercentile >= 85 ? 'bear' : dailyRec.cftcPercentile <= 25 ? 'bull' : 'neutral' }] : []),
+      ],
+      summary: curFeat.realGoldPct >= 80
+        ? '通胀调整后真实估值处于 26 年高位，历史上易出现阶段性估值消化，宜分批定投。'
+        : '以 Gold/CPI 真实购买力估值与长期持仓结构约束多年均值回归边界。',
+      dataFreshness: curRow.cpiObsDate || curRow.ym,
+    },
+    quantitative: {
+      score: s5Score,
+      coverage: 1,
+      metrics: [
+        { k: `${cfg.shortLabel}跑赢美国CPI概率`, v: beatCpiProb != null ? `${beatCpiProb}%` : '—', tone: (beatCpiProb ?? 50) >= 60 ? 'bull' : 'neutral' },
+        { k: '1971+ 实际购买力锚', v: `实际+2.0%/年 · 名义≈+${realReturnAnchor.nominalCagrPct}%/年`, tone: 'neutral' },
+        { k: '等效独立周期数', v: `约 ${independentCycles} 个非重叠周期 (N_eff=${effectiveSampleSize})`, tone: independentCycles >= 10 ? 'bull' : 'bear' },
+        { k: '24月实现波动率 σ_m', v: `${curFeat.vol24m}%/月 (仅带宽定标)`, tone: 'neutral' },
+      ],
+      summary: `去均值对数 FHS + 权重层收缩 ${Math.round(shrinkageWeight * 100)}%；诚实披露 2000–2026 仅含约 ${independentCycles} 个独立 ${cfg.shortLabel} 周期，并用 1971+ 55 年实际回报锚防止单牛市样本偏误。`,
+      warning: independentCycles <= 6 ? `注意：26 年历史仅包含约 ${independentCycles} 个独立 ${cfg.shortLabel} 周期，请重点参考 1971+ 长期购买力先验锚。` : null,
+      dataFreshness: curRow.ym,
+    },
+  }, cfg.key);
 }
 
 /** 构造三情景宏观推演与推翻条件 */
@@ -623,7 +744,7 @@ function buildScenariosAndTriggers(cfg, lastPt, cagr, curFeat, spotUsd, ma12, ma
   return { scenarios, invalidationTriggers };
 }
 
-/** 构建单个长期视野（1y / 2y / 5y）的完整严格因果预测包 */
+/** 构建单个长期视野（1y / 2y / 5y）的完整严格因果预测包（v2.4: F01/F02/F04/F12/F13） */
 function buildSingleLongTermHorizon(cfg, pastRows, futureRows, feats, spotUsd, spotCny, usdCny, dailyRec) {
   const asOfIdx = pastRows.length - 1;
   const curRow = pastRows[asOfIdx];
@@ -631,7 +752,21 @@ function buildSingleLongTermHorizon(cfg, pastRows, futureRows, feats, spotUsd, s
   const months = cfg.months;
   const years = cfg.years;
   const closes = pastRows.map(r => r.londonClose);
+  const cnyCloses = pastRows.map(r => (r.londonClose * (r.usdCny || DEFAULT_USD_CNY)) / TROY_OUNCE_TO_GRAM);
   const sigma0 = curFeat.vol24m;
+
+  // 计算因果 24 月人民币实现波动率（用于联合汇率路径 FHS）
+  const cnyVolAt = (idx) => {
+    const start = Math.max(1, idx - 23);
+    const rets = [];
+    for (let k = start; k <= idx; k++) {
+      if (cnyCloses[k] > 0 && cnyCloses[k - 1] > 0) rets.push(Math.log(cnyCloses[k] / cnyCloses[k - 1]) * 100);
+    }
+    return rets.length >= 6 ? clamp(std(rets), 2.0, 7.5) : 4.2;
+  };
+  const cnySigma0 = cnyVolAt(asOfIdx);
+  const muUsd = causalMeanLogReturn(closes, asOfIdx);
+  const muCny = causalMeanLogReturn(cnyCloses, asOfIdx);
 
   // 严格因果候选起点月：m >= 12 且 m + months <= asOfIdx
   const maxStart = asOfIdx - months;
@@ -661,18 +796,24 @@ function buildSingleLongTermHorizon(cfg, pastRows, futureRows, feats, spotUsd, s
     const endCpi = pastRows[m + months].cpi;
     const sigmaD = feats[m].vol24m;
     const volScale = clamp(sigma0 / sigmaD, 0.70, 1.40);
+    const cnyVolScale = clamp(cnySigma0 / cnyVolAt(m), 0.70, 1.40);
 
-    const scaledPath = [];
-    let minRet = 0;
-    let maxRet = 0;
-    let rawMinRet = 0;
+    // F02: 去均值单步对数收益 FHS（保证 P > 0，不放大漂移）
+    const scaledPath = buildDemeanedLogFhsPath(closes, m, months, volScale, muUsd);
+    const cnyScaledPath = buildDemeanedLogFhsPath(cnyCloses, m, months, cnyVolScale, muCny);
+
+    // 原始路径用于 topAnalogs 峰谷回撤审计（修复 2008–2013 报 0% 的 F01 缺陷！）
+    const rawPath = [];
     for (let h = 1; h <= months; h++) {
-      const rawPct = ((closes[m + h] - startPrice) / startPrice) * 100;
-      const scaled = rawPct * volScale;
-      scaledPath.push(scaled);
-      if (scaled < minRet) minRet = scaled;
-      if (scaled > maxRet) maxRet = scaled;
-      if (rawPct < rawMinRet) rawMinRet = rawPct;
+      rawPath.push(((closes[m + h] - startPrice) / startPrice) * 100);
+    }
+    const rawDdInfo = computePathMaxDrawdown(rawPath);
+    const scaledDdInfo = computePathMaxDrawdown(scaledPath);
+    const cnyDdInfo = computePathMaxDrawdown(cnyScaledPath);
+
+    let maxRet = 0;
+    for (let h = 0; h < scaledPath.length; h++) {
+      if (scaledPath[h] > maxRet) maxRet = scaledPath[h];
     }
 
     let sqSum = 0;
@@ -702,11 +843,15 @@ function buildSingleLongTermHorizon(cfg, pastRows, futureRows, feats, spotUsd, s
       rawWeight: similarity,
       volScale: round(volScale, 2),
       scaledPath,
+      cnyScaledPath,
       rawEndPct,
       cagrPct: toCagrPct(rawEndPct, years),
-      maxDdPct: round(rawMinRet, 1),
+      rawMaxDdPct: rawDdInfo.maxDrawdownPct,
+      scaledMaxDdPct: scaledDdInfo.maxDrawdownPct,
+      scaledMaxUnderwaterPct: scaledDdInfo.maxUnderwaterPct,
+      cnyMaxDdPct: cnyDdInfo.maxDrawdownPct,
       scaledEndPct: round(scaledPath[months - 1], 2),
-      minRet,
+      minRet: scaledDdInfo.maxUnderwaterPct,
       maxRet,
       beatCpi,
     });
@@ -737,55 +882,66 @@ function buildSingleLongTermHorizon(cfg, pastRows, futureRows, feats, spotUsd, s
   const effectiveSampleSize = sumW2 > 0 ? round((sumW * sumW) / sumW2, 1) : 0;
   const shrinkageWeight = round(SHRINKAGE_K_LONG / (effectiveSampleSize + SHRINKAGE_K_LONG), 2);
 
-  // 先算期末正收益概率与跑赢通胀概率，供三面卡片与 KPI 共享
-  const endRets = sampleEntries.map(e => e.scaledPath[months - 1]);
-  let upW = 0;
-  let beatCpiW = 0;
-  let cpiTotalW = 0;
-  for (let i = 0; i < sampleEntries.length; i++) {
-    if (endRets[i] > 0) upW += weights[i];
-    if (sampleEntries[i].beatCpi != null) {
-      cpiTotalW += weights[i];
-      if (sampleEntries[i].beatCpi) beatCpiW += weights[i];
-    }
-  }
-  const upEndProb = sumW > 0 ? round((upW / sumW) * 100, 1) : 50;
-  const beatCpiProb = cpiTotalW > 0 ? round((beatCpiW / cpiTotalW) * 100, 1) : null;
-
-  // 慢变量综合分与温和偏置（严格脱钩日线，红档归 0）
-  const pillars = buildLongTermPillars(cfg, curRow, curFeat, dailyRec, sampleEntries, upEndProb, beatCpiProb);
-  const compositeScore = Math.round(
-    pillars.fundamental.score * cfg.pillarWeights.fundamental +
-    pillars.information.score * cfg.pillarWeights.information +
-    pillars.technical.score * cfg.pillarWeights.technical,
-  );
+  // F04: 统一使用样本权重层混合测度 mixedWeights（红档完全收缩至 λ=1，不附加 heuristic driftPct）
   const gateBlocked = dailyRec?.gate && dailyRec.gate.actionable === false;
-  const rawTiltNorm = gateBlocked ? 0 : clamp((compositeScore - 50) / 50, -1, 1);
+  const effectiveShrinkage = gateBlocked ? 1.0 : shrinkageWeight;
+  const mixedWeights = mixSampleWeights(weights, effectiveShrinkage);
 
-  // 逐月计算双层分位 P10/P25/P50/P75/P90 + 无条件25年基准 P50
+  // F13: 计算等效独立周期数 + 1971–2026 (55年布雷顿森林后) 实际购买力长期先验锚
+  const independentCycles = round(pastRows.length / months, 1);
+  const expectedInflationPct = clamp(curFeat.cpiYoY ?? 2.5, 1.5, 4.0);
+  const anchorRealCagrPct = 2.0;
+  const anchorNominalCagrPct = round(anchorRealCagrPct + expectedInflationPct, 1);
+  const anchorCumPct = round((Math.pow(1 + anchorNominalCagrPct / 100, years) - 1) * 100, 1);
+  const realReturnAnchor = {
+    period: '1971–2026（55年布雷顿森林解体后全周期）',
+    realCagrPct: anchorRealCagrPct,
+    expectedInflationPct: round(expectedInflationPct, 1),
+    nominalCagrPct: anchorNominalCagrPct,
+    cumPct: anchorCumPct,
+    note: `黄金 1971 年脱钩美元以来跨越 1980–1999 二十年熊市与 2000–2026 牛市，长期实际年化购买力回报约 +${anchorRealCagrPct.toFixed(1)}%/年；按当前温和通胀 ${round(expectedInflationPct, 1)}% 折算，名义长期复利先验锚约 +${anchorNominalCagrPct}%/年（${cfg.shortLabel}累计约 +${anchorCumPct}%），用于对冲 2000–2026 单一多头周期的样本偏误。`,
+  };
+
+  // 同一 mixedWeights 下计算期末正收益概率与跑赢通胀概率
+  const upEndProb = weightedEventProbPct(sampleEntries, mixedWeights, e => e.scaledPath[months - 1] > 0, 1) ?? 50;
+  const beatCpiProb = weightedEventProbPct(sampleEntries, mixedWeights, e => (e.beatCpi == null ? null : e.beatCpi), 1);
+
+  const pillars = buildLongTermPillars(cfg, curRow, curFeat, dailyRec, sampleEntries, upEndProb, beatCpiProb);
+  const eightDimensions = buildLongTermEightDimensions(
+    cfg,
+    curRow,
+    curFeat,
+    dailyRec,
+    upEndProb,
+    beatCpiProb,
+    effectiveSampleSize,
+    effectiveShrinkage,
+    independentCycles,
+    realReturnAnchor,
+  );
+  const compositeScore = eightDimensions.compositeScore;
+
+  // 逐月基于同一 mixedWeights 计算 USD 与联合汇率 CNY 双层分位 P10/P25/P50/P75/P90
   const QUANT_LIST = [0.10, 0.25, 0.50, 0.75, 0.90];
   const points = [];
   for (let h = 1; h <= months; h++) {
     const vals = sampleEntries.map(e => e.scaledPath[h - 1]);
-    const [cP10, cP25, cP50, cP75, cP90] = weightedQuantilesBatch(vals, weights, QUANT_LIST);
-    const [uP10, uP25, uP50, uP75, uP90] = weightedQuantilesBatch(vals, uncondWeights, QUANT_LIST);
+    const cnyVals = sampleEntries.map(e => e.cnyScaledPath[h - 1]);
+    let [p10, p25, p50, p75, p90] = weightedQuantilesBatch(vals, mixedWeights, QUANT_LIST);
+    const [uP50] = weightedQuantilesBatch(vals, uncondWeights, [0.50]);
 
-    // 长期偏置非常克制，主要由 25 年真实条件分布与无条件基准主导
-    const driftPct = rawTiltNorm * 0.08 * sigma0 * Math.sqrt(h);
-    const mix = (c, u) => (1 - shrinkageWeight) * c + shrinkageWeight * u + driftPct;
+    let [cp10, cp25, cp50, cp75, cp90] = weightedQuantilesBatch(cnyVals, mixedWeights, QUANT_LIST);
+    const [cuP50] = weightedQuantilesBatch(cnyVals, uncondWeights, [0.50]);
 
-    let p10 = mix(cP10, uP10);
-    let p25 = mix(cP25, uP25);
-    let p50 = mix(cP50, uP50);
-    let p75 = mix(cP75, uP75);
-    let p90 = mix(cP90, uP90);
-
-    // 防极端负价（黄金价格下限保护）
-    p10 = Math.max(-55, p10);
     p25 = Math.max(p10, p25);
     p50 = Math.max(p25, p50);
     p75 = Math.max(p50, p75);
     p90 = Math.max(p75, p90);
+
+    cp25 = Math.max(cp10, cp25);
+    cp50 = Math.max(cp25, cp50);
+    cp75 = Math.max(cp50, cp75);
+    cp90 = Math.max(cp75, cp90);
 
     const toUsd = (pct) => round(spotUsd * (1 + pct / 100), 2);
     const toCny = (pct) => round(spotCny * (1 + pct / 100), 2);
@@ -801,18 +957,25 @@ function buildSingleLongTermHorizon(cfg, pastRows, futureRows, feats, spotUsd, s
       baselineP50: round(uP50, 2),
       cagrP50: toCagrPct(p50, h / 12),
       usd: { p10: toUsd(p10), p25: toUsd(p25), p50: toUsd(p50), p75: toUsd(p75), p90: toUsd(p90), baselineP50: toUsd(uP50) },
-      cny: { p10: toCny(p10), p25: toCny(p25), p50: toCny(p50), p75: toCny(p75), p90: toCny(p90), baselineP50: toCny(uP50) },
+      cny: { p10: toCny(cp10), p25: toCny(cp25), p50: toCny(cp50), p75: toCny(cp75), p90: toCny(cp90), baselineP50: toCny(cuP50) },
     });
   }
 
-  // 期内最大回撤分位
-  const minRets = sampleEntries.map(e => e.minRet);
-  const [cDd90, cDd50] = weightedQuantilesBatch(minRets, weights, [0.10, 0.50]);
-  const [uDd90, uDd50] = weightedQuantilesBatch(minRets, uncondWeights, [0.10, 0.50]);
-  const maxDdP50 = round((1 - shrinkageWeight) * cDd50 + shrinkageWeight * uDd50, 1);
-  const maxDdP90 = round((1 - shrinkageWeight) * cDd90 + shrinkageWeight * uDd90, 1);
+  // F01 + F04: 同一 mixedWeights 下计算严格峰谷最大回撤（MaxDD）、相对起点浮亏（MaxUnderwater）及人民币回撤
+  const maxDdSeries = sampleEntries.map(e => e.scaledMaxDdPct);
+  const maxUwSeries = sampleEntries.map(e => e.scaledMaxUnderwaterPct);
+  const cnyDdSeries = sampleEntries.map(e => e.cnyMaxDdPct);
+  const [dd90, dd50] = weightedQuantilesBatch(maxDdSeries, mixedWeights, [0.10, 0.50]);
+  const [uw90, uw50] = weightedQuantilesBatch(maxUwSeries, mixedWeights, [0.10, 0.50]);
+  const [cnyDd90, cnyDd50] = weightedQuantilesBatch(cnyDdSeries, mixedWeights, [0.10, 0.50]);
+  const maxDdP50 = round(dd50, 1);
+  const maxDdP90 = round(dd90, 1);
+  const maxUnderwaterP50 = round(uw50, 1);
+  const maxUnderwaterP90 = round(uw90, 1);
+  const cnyMaxDdP50 = round(cnyDd50, 1);
+  const cnyMaxDdP90 = round(cnyDd90, 1);
 
-  // 长期关键结构位（MA12 / MA36 / MA60 / 近5年高点）+ 历史触达频率
+  // 长期关键结构位（MA12 / MA36 / MA60 / 近5年高点）+ 同一 mixedWeights 历史触达频率
   const cnyPerUsdRatio = spotUsd > 0 ? (spotCny / spotUsd) : (usdCny / TROY_OUNCE_TO_GRAM);
   const ma12 = smaAt(closes, asOfIdx, 12);
   const ma36 = smaAt(closes, asOfIdx, 36);
@@ -827,29 +990,26 @@ function buildSingleLongTermHorizon(cfg, pastRows, futureRows, feats, spotUsd, s
   if (ma36) structureRaw.push({ label: '36月均线 (MA36 · 周期中枢)', priceUsd: ma36 });
   if (ma60) structureRaw.push({ label: '60月均线 (MA60 · 5年成本锚)', priceUsd: ma60 });
 
-  const endDrift = rawTiltNorm * 0.08 * sigma0 * Math.sqrt(months);
   const structure = structureRaw.map(lvl => {
     const pctFromSpot = round(((lvl.priceUsd / spotUsd) - 1) * 100, 2);
     const kind = pctFromSpot >= 0 ? 'resistance' : 'support';
-    let touchW = 0;
-    for (let i = 0; i < sampleEntries.length; i++) {
-      const e = sampleEntries[i];
-      const touched = kind === 'resistance'
-        ? (e.maxRet + endDrift >= pctFromSpot)
-        : (e.minRet + endDrift <= pctFromSpot);
-      if (touched) touchW += weights[i];
-    }
+    const touchProb = weightedEventProbPct(
+      sampleEntries,
+      mixedWeights,
+      e => (kind === 'resistance' ? e.maxRet >= pctFromSpot : e.minRet <= pctFromSpot),
+      0,
+    );
     return {
       label: lvl.label,
       kind,
       pctFromSpot,
       priceUsd: round(lvl.priceUsd, 2),
       priceCny: round(lvl.priceUsd * cnyPerUsdRatio, 2),
-      touchProb: sumW > 0 ? round((touchW / sumW) * 100, 0) : null,
+      touchProb,
     };
   }).sort((a, b) => b.priceUsd - a.priceUsd);
 
-  // 精选 Top 5 独立历史宏观周期起点（严格相隔 >= 12 个月，避免连续月份凑数！）
+  // 精选 Top 5 独立历史宏观周期起点（严格相隔 >= 12 个月，附真实峰谷 MaxDD）
   const topAnalogs = [];
   for (const e of sortedByW) {
     if (topAnalogs.length >= 5) break;
@@ -867,23 +1027,24 @@ function buildSingleLongTermHorizon(cfg, pastRows, futureRows, feats, spotUsd, s
       similarity: e.similarity,
       rawEndPct: e.rawEndPct,
       cagrPct: e.cagrPct,
-      maxDdPct: e.maxDdPct,
+      maxDdPct: e.rawMaxDdPct,
       scaledEndPct: e.scaledEndPct,
       volScale: e.volScale,
     });
   }
 
-  // 事后真实月线复盘（仅用于历史日期，如选择 2024-11-01 复盘 1 年走势）
+  // 事后真实月线复盘（人民币按真实历史 USD/CNY 折算）
   const actualReplay = [];
   for (let h = 1; h <= months && h <= futureRows.length; h++) {
     const fr = futureRows[h - 1];
     const pct = round(((fr.londonClose - spotUsd) / spotUsd) * 100, 2);
+    const fx = fr.usdCny || usdCny || DEFAULT_USD_CNY;
     actualReplay.push({
       h,
       date: fr.ym,
       pct,
       usd: round(fr.londonClose, 2),
-      cny: round(spotCny * (1 + pct / 100), 2),
+      cny: round((fr.londonClose * fx) / TROY_OUNCE_TO_GRAM, 2),
     });
   }
 
@@ -906,13 +1067,14 @@ function buildSingleLongTermHorizon(cfg, pastRows, futureRows, feats, spotUsd, s
   const factorAudit = buildFactorAudit(cfg, pastRows, feats, asOfIdx, sampleEntries, curRow, curFeat);
   const { scenarios, invalidationTriggers } = buildScenariosAndTriggers(cfg, last, cagr, curFeat, spotUsd, ma12, ma36);
 
-  // 月线历史段（用于图表左侧展示 3/4/5 年月线历史 + MA12）
+  // 月线历史段（用于图表左侧展示 3/4/5 年月线历史 + MA12，人民币按真实历史汇率）
   const histStart = Math.max(0, asOfIdx - cfg.histMonths + 1);
   const history = [];
   for (let i = histStart; i <= asOfIdx; i++) {
     const pUsd = closes[i];
     const ma12Val = smaAt(closes, i, 12);
-    const pCny = i === asOfIdx ? spotCny : round(pUsd * cnyPerUsdRatio, 2);
+    const ma12CnyVal = smaAt(cnyCloses, i, 12);
+    const pCny = i === asOfIdx ? spotCny : round(cnyCloses[i], 2);
     history.push({
       date: pastRows[i].ym,
       fullDate: pastRows[i].date,
@@ -920,7 +1082,7 @@ function buildSingleLongTermHorizon(cfg, pastRows, futureRows, feats, spotUsd, s
       cny: pCny,
       pct: round(((pUsd - spotUsd) / spotUsd) * 100, 2),
       ma20Usd: ma12Val != null ? round(ma12Val, 2) : null,
-      ma20Cny: ma12Val != null ? round(ma12Val * cnyPerUsdRatio, 2) : null,
+      ma20Cny: ma12CnyVal != null ? round(ma12CnyVal, 2) : null,
       ma20Pct: ma12Val != null ? round(((ma12Val - spotUsd) / spotUsd) * 100, 2) : null,
     });
   }
@@ -942,12 +1104,13 @@ function buildSingleLongTermHorizon(cfg, pastRows, futureRows, feats, spotUsd, s
       sampleStats: {
         rawSampleSize: sampleEntries.length,
         effectiveSampleSize,
-        shrinkageWeight,
+        independentCycles,
+        shrinkageWeight: effectiveShrinkage,
         currentVolPct: round(sigma0, 2),
         annualizedVolPct: round(sigma0 * Math.sqrt(12), 1),
         volUnit: '%/月',
-        monthlySpan: `${pastRows[0].ym} ～ ${curRow.ym}（${pastRows.length} 个月）`,
-        method: 'macro_25y_monthly_fhs_shrinkage',
+        monthlySpan: `${pastRows[0].ym} ～ ${curRow.ym}（${pastRows.length} 个月 · 约 ${independentCycles} 个独立周期）`,
+        method: 'macro_26y_demeaned_log_fhs_mixed_weights',
       },
       summary: {
         endP50Pct: last.p50,
@@ -961,8 +1124,14 @@ function buildSingleLongTermHorizon(cfg, pastRows, futureRows, feats, spotUsd, s
         cagr,
         maxDdP50,
         maxDdP90,
+        maxUnderwaterP50,
+        maxUnderwaterP90,
+        cnyMaxDdP50,
+        cnyMaxDdP90,
+        cnyBasisNote: CNY_BASIS_NOTE,
         upEndProb,
         beatCpiProb,
+        realReturnAnchor,
       },
       points,
       structure,
@@ -972,10 +1141,12 @@ function buildSingleLongTermHorizon(cfg, pastRows, futureRows, feats, spotUsd, s
         factorAudit,
         scenarios,
         invalidationTriggers,
-        methodologyNote: `基于 ${pastRows[0].ym} 至 ${curRow.ym} 共 ${pastRows.length} 个真实历史月线（涵盖 2003–2011 宽松牛市、2011–2015 紧缩熊市、2016–2019 筑底、2020 零利率、2022–2026 高利率五轮完整宏观周期），按 5 项官方慢变量 Z-score 相似度加权、去重叠降权（N_eff=${effectiveSampleSize}）并向 25 年无条件分布执行 ${Math.round(shrinkageWeight * 100)}% 经验贝叶斯收缩。多年期分布用于资产配置与定投纪律，不承诺精确点位。`,
+        realReturnAnchor,
+        methodologyNote: `基于 ${pastRows[0].ym} 至 ${curRow.ym} 共 ${pastRows.length} 个真实历史月线（等效约 ${independentCycles} 个独立 ${cfg.shortLabel} 周期），采用去均值单步对数 FHS + 严格峰谷回撤 + 样本权重层 ${Math.round(effectiveShrinkage * 100)}% 经验贝叶斯混合；人民币路径纳入历史 USD/CNY 联合汇率波动；并附 1971+ 55 年实际购买力先验锚（实际+2.0%/年）对冲近 26 年结构性多头周期偏误。`,
       },
     },
     pillars,
+    eightDimensions,
     history,
   };
 }
@@ -1029,6 +1200,7 @@ function buildLongTermForecastBundle({ monthlyRecords, asOfDate, spotUsd, spotCn
   const feats = extractMonthlyFeatures(pastRows);
   const horizons = {};
   const pillarsByHorizon = {};
+  const eightDimensionsByHorizon = {};
   const historyByHorizon = {};
 
   for (const cfg of LONG_TERM_HORIZONS) {
@@ -1045,6 +1217,7 @@ function buildLongTermForecastBundle({ monthlyRecords, asOfDate, spotUsd, spotCn
     if (built) {
       horizons[cfg.key] = built.horizonData;
       pillarsByHorizon[cfg.key] = built.pillars;
+      eightDimensionsByHorizon[cfg.key] = built.eightDimensions;
       historyByHorizon[cfg.key] = built.history;
     }
   }
@@ -1054,6 +1227,7 @@ function buildLongTermForecastBundle({ monthlyRecords, asOfDate, spotUsd, spotCn
   return {
     horizons,
     pillarsByHorizon,
+    eightDimensionsByHorizon,
     historyByHorizon,
     monthlyStats: {
       bars: pastRows.length,

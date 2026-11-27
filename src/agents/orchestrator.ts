@@ -10,6 +10,13 @@ import { GoldPricesRepo } from '../db/gold-prices.js';
 import { InstitutionalFlowsRepo } from '../db/institutional-flows.js';
 import { computeInstitutionalSignal } from '../indicators/flow-signal.js';
 import { computeQuantScore } from '../indicators/quant-score.js';
+import { latestMA, latestRSI } from '../indicators/index.js';
+import { computeCapitalFlowDimension } from '../indicators/capital-flow.js';
+import { computePolicyCycleDimension } from '../indicators/policy-cycle.js';
+import { computeBehavioralSentimentDimension } from '../indicators/behavioral-sentiment.js';
+import { computePositioningChipDimension } from '../indicators/positioning-chip.js';
+import { makeDimensionItem, type EightDimensionProfile } from '../utils/eight-dimensions.js';
+import { auditNewsVeracity, type NewsItemInput, type MarketVerificationSnapshot } from '../utils/news-veracity.js';
 import { resolveOverallScore, enforceOverallScore } from '../utils/overall-score.js';
 import { applyCalibrationScore, directionFromScore } from '../utils/calibration-adjust.js';
 import { adjustScoreWithRebuttal } from '../utils/rebuttal-score.js';
@@ -22,6 +29,7 @@ import type { CausalChainMatch } from '../utils/gold-causal-rules.js';
 import type { TechnicalAnalysis, FundamentalAnalysis, SentimentAnalysis, Direction, ShortTermStrategy, MidTermStrategy, Scenarios, RebuttalAnalysis, GoldAnalysisReport } from '../types/analysis.js';
 import type { MarketData } from '../types/market.js';
 import type { FundAnalysis } from '../types/fund.js';
+import type { InstitutionalSignal } from '../types/institutional.js';
 
 const ORCHESTRATOR_PROMPT = `你是黄金投资研究综合编排师。你将汇总技术面、基本面、情绪面、基金面四维度分析，结合反驳分析和校准数据，输出双视角策略报告。
 
@@ -182,23 +190,25 @@ export class OrchestratorAgent extends BaseAgent {
     let quantCoverage: number | undefined;
     let quantMissingFactors: string[] | undefined;
     let quantStaleFactors: string[] | undefined;
+    let sortedCloses: number[] = [];
+    let latestFlowSignal: InstitutionalSignal | undefined;
     try {
       const pricesRepo = new GoldPricesRepo(db);
       const recentRecords = pricesRepo.getRecent(120);
       const closes = forwardFillCloses(recentRecords);
-      const sorted = closes.filter((v): v is number => v != null);
+      sortedCloses = closes.filter((v): v is number => v != null);
       const dxySeries = pickMacroSeries(recentRecords, r => r.dollarIndex);
       const us10ySeries = pickMacroSeries(recentRecords, r => r.us10yYield);
       const tipsSeries = pickMacroSeries(recentRecords, r => r.tipsYield);
-      const flowSignal = computeInstitutionalSignal(
+      latestFlowSignal = computeInstitutionalSignal(
         marketData?.london?.price?.value ?? null,
       );
       const quantResult = computeQuantScore({
-        closes: sorted,
+        closes: sortedCloses,
         dxy: dxySeries.values.length >= 20 ? dxySeries.values : undefined,
         us10y: us10ySeries.values.length >= 20 ? us10ySeries.values : undefined,
         tips: tipsSeries.values.length >= 20 ? tipsSeries.values : undefined,
-        flowSignal,
+        flowSignal: latestFlowSignal,
         regimeTag: opts.macroRegime.tag,
         macroAgeDays: {
           dxy: dxySeries.ageDays,
@@ -214,6 +224,256 @@ export class OrchestratorAgent extends BaseAgent {
     } catch {
       quantScore = undefined;
       quantFactors = undefined;
+    }
+
+    // 装配 v2.4 八维全景（三基 + 五专），纯本地合成、零额外 LLM 调用
+    let dimensions: EightDimensionProfile | undefined;
+    try {
+      const todayIso = new Date().toISOString().slice(0, 10);
+      const londonSpot = marketData?.london?.price?.value ?? null;
+      const shanghaiSpot = marketData?.shanghai?.price?.value ?? null;
+      const gold5dRet = sortedCloses.length >= 6 && sortedCloses[sortedCloses.length - 6]! > 0
+        ? ((sortedCloses[sortedCloses.length - 1]! - sortedCloses[sortedCloses.length - 6]!) / sortedCloses[sortedCloses.length - 6]!) * 100
+        : null;
+      const sgePrem = londonSpot && londonSpot > 0 && shanghaiSpot && shanghaiSpot > 0
+        ? shanghaiSpot - (londonSpot * 7.25) / 31.1034768
+        : null;
+
+      const capFlow = computeCapitalFlowDimension({
+        gldChange5dTons: latestFlowSignal?.etfFlow.change5d ?? null,
+        gldChange20dTons: latestFlowSignal?.etfFlow.change20d ?? null,
+        sgePremiumCny: sgePrem,
+        gold5dReturnPct: gold5dRet,
+        obsDates: { gld: todayIso, sge: todayIso },
+      });
+
+      const policyDim = computePolicyCycleDimension({
+        us10y: marketData?.usTreasury?.yield10y?.value ?? null,
+        pbocConsecutiveMonths: latestFlowSignal?.centralBank.pbocConsecutiveMonths ?? null,
+        pbocMonthlyChangeTons: latestFlowSignal?.centralBank.pbocMonthlyChange ?? null,
+        regulatoryNote: fundamental.fedStance || null,
+        obsDates: { pboc: todayIso },
+      });
+
+      const vixMatch = (sentiment.vix || '').match(/(\d+\.?\d*)/);
+      const parsedVix = vixMatch ? parseFloat(vixMatch[1]!) : null;
+      const rsi14 = sortedCloses.length >= 15 ? latestRSI(sortedCloses, 14) : null;
+      const ma20Dev = sortedCloses.length >= 20 ? latestDeviationFromMA(sortedCloses, 20) : null;
+      const sentDim = computeBehavioralSentimentDimension({
+        vix: parsedVix,
+        rsi14,
+        ma20DevZscore: ma20Dev != null ? ma20Dev / 2.2 : null,
+        obsDate: todayIso,
+      });
+
+      const ma60Cost = sortedCloses.length >= 20
+        ? latestMA(sortedCloses, Math.min(60, sortedCloses.length))
+        : null;
+      const posDim = computePositioningChipDimension({
+        cftcNetOiPercentile3y: latestFlowSignal?.cftc.percentile ?? null,
+        spotUsd: londonSpot,
+        costAnchorUsd: ma60Cost,
+        costAnchorLabel: sortedCloses.length >= 60 ? '60D 均线成本锚' : '20D 均线成本锚',
+        obsDates: { cftc: todayIso, costAnchor: todayIso },
+      });
+
+      // v2.5 B2 消息面真伪审计与跨市场防钓鱼证伪（彻底消除 0.5*情绪+0.5*基本面 重复计分）
+      const newsItems: NewsItemInput[] = [];
+      const geoHeadline = (sentiment.geopoliticalRisk || '').trim();
+      if (geoHeadline.length > 4 && !/^(无|暂无|中性|平稳|一般)$/.test(geoHeadline)) {
+        const claimedDir = /缓和|降温|停火|利空|压制/.test(geoHeadline)
+          ? 'bearish'
+          : /升级|战争|冲突|避险|高|紧张|利多/.test(geoHeadline)
+            ? 'bullish'
+            : sentiment.direction;
+        newsItems.push({
+          headline: geoHeadline,
+          snippet: sentiment.summary,
+          sources: sentiment.sources?.length ? sentiment.sources : ['未注明来源'],
+          claimedDirection: claimedDir,
+        });
+      }
+      for (const c of (opts.causalChains ?? []).slice(0, 3)) {
+        const effText = `${c.cause} → ${c.effect}`;
+        const cDir = /利空|压制|承压|回落|下跌/.test(effText)
+          ? 'bearish'
+          : /利多|支撑|抬升|上涨|走强/.test(effText)
+            ? 'bullish'
+            : sentiment.direction;
+        newsItems.push({
+          headline: effText,
+          sources: sentiment.sources?.length ? sentiment.sources : (fundamental.sources ?? []),
+          claimedDirection: cDir,
+        });
+      }
+      const marketVerifySnap: MarketVerificationSnapshot = {
+        goldDailyRetPct: marketData?.london?.price?.change ?? null,
+        gold5dRetPct: gold5dRet,
+        dxyDailyRetPct: marketData?.dollarIndex?.value?.change ?? null,
+        vix: parsedVix,
+        gldFlow5d: latestFlowSignal?.etfFlow.change5d ?? null,
+        cftcCrowdingPct: latestFlowSignal?.cftc.percentile ?? null,
+      };
+      const newsAudit = auditNewsVeracity(newsItems, marketVerifySnap);
+
+      dimensions = {
+        fundamental: makeDimensionItem('fundamental', {
+          score: fundamental.score,
+          coverage: 1,
+          keyPoints: fundamental.keyPoints,
+          counterPoints: fundamental.counterPoints,
+          sources: fundamental.sources,
+          dataFreshness: todayIso,
+          summary: fundamental.summary,
+        }),
+        news: makeDimensionItem('news', {
+          score: newsAudit.newsScore,
+          coverage: newsAudit.coverage,
+          metrics: [
+            {
+              key: 'news_veracity',
+              label: '真伪核验评级',
+              value: newsAudit.veracityBadge,
+              tone: newsAudit.veracityStatus === 'confirmed'
+                ? 'bull'
+                : newsAudit.veracityStatus === 'bait_suspected'
+                  ? 'bear'
+                  : 'neutral',
+              source: 'v2.5 跨市场证伪',
+              obsDate: todayIso,
+            },
+            {
+              key: 'news_audit_counts',
+              label: '实证 / 钓鱼 / 滤噪',
+              value: `${newsAudit.verifiedCount} / ${newsAudit.baitCount} / ${newsAudit.filteredCount}`,
+              tone: newsAudit.baitCount > 0 ? 'bear' : 'neutral',
+              source: 'v2.5 真伪引擎',
+              obsDate: todayIso,
+            },
+          ],
+          keyPoints: [
+            newsAudit.veracityBadge,
+            newsAudit.summary,
+            ...(opts.causalChains?.slice(0, 2).map(c => `${c.cause}→${c.effect}`) ?? []),
+          ],
+          counterPoints: [
+            ...(newsAudit.baitAlert ? [newsAudit.baitAlert] : []),
+            ...sentiment.counterPoints.slice(0, 2),
+          ],
+          sources: sentiment.sources,
+          dataFreshness: todayIso,
+          summary: `${newsAudit.veracityBadge} · ${newsAudit.summary}`,
+        }),
+        technical: makeDimensionItem('technical', {
+          score: technical.score,
+          coverage: 1,
+          keyPoints: technical.keyPoints,
+          counterPoints: technical.counterPoints,
+          sources: technical.sources,
+          dataFreshness: todayIso,
+          summary: technical.summary,
+        }),
+        capitalFlow: makeDimensionItem('capitalFlow', {
+          score: capFlow.coverage > 0 ? capFlow.score : null,
+          coverage: capFlow.coverage,
+          metrics: capFlow.metrics.map(m => ({
+            key: m.key,
+            label: m.label,
+            value: m.displayValue,
+            tone: m.tone,
+            source: m.source,
+            obsDate: m.obsDate,
+          })),
+          keyPoints: capFlow.metrics.map(m => `${m.label}: ${m.displayValue}`),
+          sources: ['SPDR GLD', 'CFTC COT', 'SGE Au99.99'],
+          dataFreshness: todayIso,
+          summary: capFlow.summary,
+        }),
+        policy: makeDimensionItem('policy', {
+          score: policyDim.coverage > 0 ? policyDim.score : null,
+          coverage: policyDim.coverage,
+          metrics: policyDim.metrics.map(m => ({
+            key: m.key,
+            label: m.label,
+            value: m.displayValue,
+            tone: m.tone,
+            source: m.source,
+            obsDate: m.obsDate,
+          })),
+          keyPoints: [policyDim.cycleLabel, fundamental.fedStance].filter(Boolean),
+          sources: ['FRED', 'PBOC'],
+          dataFreshness: todayIso,
+          summary: policyDim.summary,
+        }),
+        sentiment: makeDimensionItem('sentiment', {
+          score: Math.max(
+            0,
+            Math.min(100, Math.round((sentDim.coverage > 0 ? sentDim.score : sentiment.score) + newsAudit.contrarianSentimentBias)),
+          ),
+          coverage: sentDim.coverage > 0 ? sentDim.coverage : 0.6,
+          metrics: [
+            ...sentDim.metrics.map(m => ({
+              key: m.key,
+              label: m.label,
+              value: m.displayValue,
+              tone: m.tone,
+              source: m.source,
+              obsDate: m.obsDate,
+            })),
+            ...(newsAudit.baitAlert
+              ? [{
+                  key: 'anti_bait_signal',
+                  label: '防钓鱼反向修正',
+                  value: `${newsAudit.contrarianSentimentBias > 0 ? '+' : ''}${newsAudit.contrarianSentimentBias}分`,
+                  tone: (newsAudit.contrarianSentimentBias < 0 ? 'bear' : 'bull') as 'bull' | 'bear' | 'neutral',
+                  source: 'v2.5 防钓鱼引擎',
+                  obsDate: todayIso,
+                }]
+              : []),
+          ],
+          keyPoints: [
+            ...(newsAudit.baitAlert ? [newsAudit.baitAlert] : []),
+            ...(sentDim.behaviorWarning ? [sentDim.behaviorWarning] : sentiment.keyPoints.slice(0, 2)),
+          ],
+          counterPoints: sentiment.counterPoints.slice(0, 2),
+          sources: ['CBOE VIX/GVZ', '本地价格行为', 'v2.5 防钓鱼审计'],
+          dataFreshness: todayIso,
+          summary: [
+            newsAudit.baitAlert,
+            sentDim.coverage > 0 ? sentDim.summary : sentiment.summary,
+          ].filter(Boolean).join('；'),
+        }),
+        positioning: makeDimensionItem('positioning', {
+          score: posDim.coverage > 0 ? posDim.score : null,
+          coverage: posDim.coverage,
+          metrics: posDim.metrics.map(m => ({
+            key: m.key,
+            label: m.label,
+            value: m.displayValue,
+            tone: m.tone,
+            source: m.source,
+            obsDate: m.obsDate,
+          })),
+          keyPoints: posDim.crowdingWarning ? [posDim.crowdingWarning] : posDim.metrics.map(m => `${m.label}: ${m.displayValue}`),
+          sources: ['CFTC COT', 'WGC AISC'],
+          dataFreshness: todayIso,
+          summary: posDim.summary,
+        }),
+        quantitative: makeDimensionItem('quantitative', {
+          score: quantScore ?? null,
+          coverage: quantCoverage ?? 0,
+          keyPoints: quantScore != null
+            ? [`纯量化复合分 ${quantScore}/100（覆盖 ${Math.round((quantCoverage ?? 0) * 100)}%）`]
+            : ['量化历史序列不足'],
+          sources: ['本地多因子量化模型'],
+          dataFreshness: todayIso,
+          summary: quantScore != null
+            ? `纯量化评分 ${quantScore}/100（零LLM、100%可复现，有效因子覆盖 ${Math.round((quantCoverage ?? 0) * 100)}%）`
+            : '量化历史序列不足，暂未出分',
+        }),
+      };
+    } catch {
+      dimensions = undefined;
     }
 
     const schema = {
@@ -394,6 +654,7 @@ ${horizon === 'short' ? '仅短期视角' : horizon === 'mid' ? '仅中长期视
       fundamental,
       sentiment,
       fund,
+      dimensions,
       rebuttal: workingRebuttal,
       tailRisks: workingRebuttal.tailRisks ?? [],
       overall: {

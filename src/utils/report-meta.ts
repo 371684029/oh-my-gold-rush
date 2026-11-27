@@ -25,6 +25,16 @@ export interface ReportMetaHorizon {
   stance?: string | null;
 }
 
+export interface ReportMetaDimensionSummary {
+  code: 'B1' | 'B2' | 'B3' | 'S1' | 'S2' | 'S3' | 'S4' | 'S5';
+  category: 'base' | 'specialized';
+  title: string;
+  score: number | null;
+  direction: Direction;
+  coverage: number;
+  summary: string;
+}
+
 export interface ReportMeta {
   schemaVersion: typeof REPORT_META_SCHEMA;
   date: string;
@@ -72,6 +82,8 @@ export interface ReportMeta {
   longTerm: LongTermOutlook | null;
   /** 概率路径扇形（可选，v1 扩展） */
   probPath?: ProbPathMeta | null;
+  /** 八维全景评分摘要（三基 + 五专，v2.4 可选扩展） */
+  dimensions?: Record<string, ReportMetaDimensionSummary> | null;
 }
 
 export interface BuildReportMetaInput {
@@ -193,6 +205,22 @@ export function buildReportMeta(input: BuildReportMetaInput): ReportMeta {
     midTerm: report.midTermOutlook ?? null,
     longTerm: report.longTermOutlook ?? null,
     probPath: input.probPath ?? null,
+    dimensions: report.dimensions
+      ? Object.fromEntries(
+          Object.entries(report.dimensions).map(([k, d]) => [
+            k,
+            {
+              code: d.code,
+              category: d.category,
+              title: d.title,
+              score: d.score,
+              direction: d.direction,
+              coverage: d.coverage,
+              summary: d.summary,
+            },
+          ]),
+        )
+      : null,
   };
 }
 

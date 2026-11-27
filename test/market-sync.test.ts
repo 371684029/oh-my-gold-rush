@@ -93,9 +93,19 @@ describe('web/market-sync (5-year persistence, COALESCE protection & Git snapsho
       expect(hyd.hydrated).toBe(true);
       expect(hyd.count).toBe(2);
 
-      // 再次写入缺失 shanghaiClose 与 0 价 TIPS 时，不得覆盖已有有效值
+      // 再次写入 0 价上海金与缺失 TIPS 时，不得覆盖已有有效值（COALESCE 保护）
       marketSync.persistRowsToSqlite(
-        [{ date: '2026-11-26', londonClose: 3570.0, shanghaiClose: 0, tips: 0 }],
+        [{ date: '2026-11-26', londonClose: 3570.0, shanghaiClose: 0, tips: undefined }],
+        [],
+        dbPath,
+      );
+
+      // F06: 真实利率 TIPS 可合法为 0.00% 或负值（如 2020-2022），不得被当成无效 0 丢弃
+      marketSync.persistRowsToSqlite(
+        [
+          { date: '2026-11-24', londonClose: 3520.0, tips: 0 },
+          { date: '2026-11-23', londonClose: 3510.0, tips: -0.45 },
+        ],
         [],
         dbPath,
       );
@@ -106,11 +116,15 @@ describe('web/market-sync (5-year persistence, COALESCE protection & Git snapsho
         shanghai_close: number;
         tips_yield: number;
       };
+      const rowZero = db.prepare('SELECT tips_yield FROM gold_prices WHERE date = ?').get('2026-11-24') as { tips_yield: number };
+      const rowNeg = db.prepare('SELECT tips_yield FROM gold_prices WHERE date = ?').get('2026-11-23') as { tips_yield: number };
       db.close();
 
       expect(row.london_close).toBe(3570.0);
-      expect(row.shanghai_close).toBe(765.89); // COALESCE 保护生效
-      expect(row.tips_yield).toBe(2.79); // 0 不会被写入覆盖
+      expect(row.shanghai_close).toBe(765.89); // 金价 0 被 COALESCE 拦截
+      expect(row.tips_yield).toBe(2.79); // 缺失 TIPS 不覆盖已有值
+      expect(rowZero.tips_yield).toBe(0); // F06: 0.00% 实际利率合法保留
+      expect(rowNeg.tips_yield).toBeCloseTo(-0.45, 2); // F06: 负实际利率合法保留
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true });
     }

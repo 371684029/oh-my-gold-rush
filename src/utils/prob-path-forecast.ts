@@ -9,6 +9,10 @@ import { validClose } from './forward-return.js';
 import { forwardFillCloses } from './price-series.js';
 import { scoreBucketRange } from './score-buckets.js';
 import { findSimilarPatterns, type SimilaritySearchOptions } from './scenario-similarity.js';
+import {
+  computePathMaxDrawdown,
+  scaleCumPctPathLogFhs,
+} from './fhs-math.js';
 import type { ScenarioFeature } from '../types/calibration.js';
 import {
   PROB_PATH_HISTORY_DAYS,
@@ -187,6 +191,22 @@ function applyDeoverlapWeights(
   return { paths: weighted, effectiveSampleSize: nEff };
 }
 
+function causalDailyLogDrift(prices: GoldPricesRepo, asOf: string): number {
+  const rows = prices.getRecent(360, asOf).filter(r => r.date <= asOf && validClose(r.londonClose));
+  if (rows.length < 10) return 0;
+  let sum = 0;
+  let cnt = 0;
+  for (let i = 1; i < rows.length; i++) {
+    const p0 = rows[i - 1]!.londonClose!;
+    const p1 = rows[i]!.londonClose!;
+    if (p0 > 0 && p1 > 0) {
+      sum += Math.log(p1 / p0);
+      cnt++;
+    }
+  }
+  return cnt > 0 ? sum / cnt : 0;
+}
+
 function buildFhsPaths(
   prices: GoldPricesRepo,
   dates: Array<{ date: string; baseWeight: number }>,
@@ -194,6 +214,7 @@ function buildFhsPaths(
   asOf: string,
   spotVol: number | null,
 ): Array<{ date: string; values: number[]; baseWeight: number }> {
+  const muRef = causalDailyLogDrift(prices, asOf);
   const out: Array<{ date: string; values: number[]; baseWeight: number }> = [];
   for (const item of dates) {
     const raw = forwardPathCumPct(prices, item.date, horizon, asOf);
@@ -207,7 +228,7 @@ function buildFhsPaths(
     }
     out.push({
       date: item.date,
-      values: raw.map(v => v * scale),
+      values: scaleCumPctPathLogFhs(raw, scale, muRef),
       baseWeight: item.baseWeight,
     });
   }
@@ -251,21 +272,16 @@ function computeWeightedQuantiles(
     points.push({ h, p10, p25, p50, p75, p90 });
   }
 
-  // 路径最大回撤与期末收涨概率
+  // F01: 严格几何峰谷最大回撤 + 相对起点最大浮亏（拆分两口径）+ 同测度期末收涨概率
   const ddPairs: Array<{ value: number; weight: number }> = [];
+  const uwPairs: Array<{ value: number; weight: number }> = [];
   let upW = 0;
   let totalW = 0;
   for (const p of combined) {
     if (p.values.length < horizon) continue;
-    let peak = 0;
-    let maxDd = 0;
-    for (let i = 0; i < horizon; i++) {
-      const v = p.values[i]!;
-      if (v > peak) peak = v;
-      const dd = v - peak;
-      if (dd < maxDd) maxDd = dd;
-    }
-    ddPairs.push({ value: maxDd, weight: p.weight });
+    const { maxDrawdownPct, maxUnderwaterPct } = computePathMaxDrawdown(p.values.slice(0, horizon));
+    ddPairs.push({ value: maxDrawdownPct, weight: p.weight });
+    uwPairs.push({ value: maxUnderwaterPct, weight: p.weight });
     if (p.values[horizon - 1]! > 0) upW += p.weight;
     totalW += p.weight;
   }
@@ -274,6 +290,8 @@ function computeWeightedQuantiles(
     ? {
         maxDdP50: round2(weightedQuantile(ddPairs, 0.5)),
         maxDdP90: round2(weightedQuantile(ddPairs, 0.1)),
+        maxUnderwaterP50: round2(weightedQuantile(uwPairs, 0.5)),
+        maxUnderwaterP90: round2(weightedQuantile(uwPairs, 0.1)),
         upEndProb: totalW > 0 ? round2((upW / totalW) * 100) : 50,
       }
     : null;
