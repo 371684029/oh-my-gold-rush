@@ -6,8 +6,9 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const Database = require('better-sqlite3');
+const { getGlobalCircuitBreaker } = require('./source-circuit-breaker.cjs');
 
-const USER_AGENT = 'GoldRush/2.4 (gold research engine)';
+const USER_AGENT = 'GoldRush/2.6 (gold research engine)';
 const SNAPSHOT_DIR_REL = 'market-data';
 const JSONL_FILENAME = 'gold-daily-5y.jsonl';
 const MONTHLY_JSONL_FILENAME = 'gold-monthly-25y.jsonl';
@@ -86,8 +87,24 @@ function assertAllowedUrl(rawUrl) {
   return parsed.toString();
 }
 
-async function fetchJsonSafe(rawUrl, timeoutMs = 12_000, extraHeaders = {}) {
+function sourceKeyFromUrl(rawUrl) {
   try {
+    const h = new URL(rawUrl).hostname;
+    if (h.includes('yahoo')) return 'yahoo';
+    if (h.includes('fred')) return 'fred';
+    if (h.includes('gold-api')) return 'gold_api';
+    if (h.includes('sinajs')) return 'sina';
+    if (h.includes('cftc')) return 'cftc';
+    return h;
+  } catch {
+    return 'unknown';
+  }
+}
+
+async function fetchJsonSafe(rawUrl, timeoutMs = 12_000, extraHeaders = {}) {
+  const breaker = getGlobalCircuitBreaker();
+  const srcKey = sourceKeyFromUrl(rawUrl);
+  const { value } = await breaker.execute(srcKey, async () => {
     const safeUrl = assertAllowedUrl(rawUrl);
     const res = await fetch(safeUrl, {
       headers: { 'User-Agent': USER_AGENT, Accept: 'application/json,*/*', ...extraHeaders },
@@ -95,13 +112,14 @@ async function fetchJsonSafe(rawUrl, timeoutMs = 12_000, extraHeaders = {}) {
     });
     if (!res.ok) return null;
     return await res.json();
-  } catch {
-    return null;
-  }
+  });
+  return value;
 }
 
 async function fetchTextSafe(rawUrl, timeoutMs = 15_000, extraHeaders = {}, encoding = 'utf8') {
-  try {
+  const breaker = getGlobalCircuitBreaker();
+  const srcKey = sourceKeyFromUrl(rawUrl);
+  const { value } = await breaker.execute(srcKey, async () => {
     const safeUrl = assertAllowedUrl(rawUrl);
     const res = await fetch(safeUrl, {
       headers: { 'User-Agent': USER_AGENT, Accept: 'text/csv,text/plain,*/*', ...extraHeaders },
@@ -110,9 +128,12 @@ async function fetchTextSafe(rawUrl, timeoutMs = 15_000, extraHeaders = {}, enco
     if (!res.ok) return null;
     const buf = Buffer.from(await res.arrayBuffer());
     return buf.toString(encoding);
-  } catch {
-    return null;
-  }
+  });
+  return value;
+}
+
+function getSourceHealth() {
+  return getGlobalCircuitBreaker().getHealthSnapshot();
 }
 
 function yahooTsToNyDate(ts) {
@@ -750,6 +771,10 @@ function openGoldRushDb(dbPath) {
       created_at TEXT DEFAULT (datetime('now'))
     );
   `);
+  // v2.6 幂等列迁移：补齐 GVZ / US2Y / 上海金美元溢价
+  try { db.exec('ALTER TABLE gold_prices ADD COLUMN gvz REAL'); } catch { /* ok */ }
+  try { db.exec('ALTER TABLE gold_prices ADD COLUMN us2y_yield REAL'); } catch { /* ok */ }
+  try { db.exec('ALTER TABLE gold_prices ADD COLUMN sge_premium_usd REAL'); } catch { /* ok */ }
   return db;
 }
 
@@ -760,9 +785,10 @@ function persistRowsToSqlite(rows, cftcWeekly, dbPath) {
     const upsertPrice = db.prepare(`
       INSERT INTO gold_prices (
         date, london_close, london_high, london_low,
-        shanghai_close, etf_nav, dollar_index, us10y_yield, tips_yield
+        shanghai_close, etf_nav, dollar_index, us10y_yield, tips_yield,
+        gvz, us2y_yield, sge_premium_usd
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(date) DO UPDATE SET
         london_close = COALESCE(excluded.london_close, gold_prices.london_close),
         london_high = COALESCE(excluded.london_high, gold_prices.london_high),
@@ -771,7 +797,10 @@ function persistRowsToSqlite(rows, cftcWeekly, dbPath) {
         etf_nav = COALESCE(excluded.etf_nav, gold_prices.etf_nav),
         dollar_index = COALESCE(excluded.dollar_index, gold_prices.dollar_index),
         us10y_yield = COALESCE(excluded.us10y_yield, gold_prices.us10y_yield),
-        tips_yield = COALESCE(excluded.tips_yield, gold_prices.tips_yield)
+        tips_yield = COALESCE(excluded.tips_yield, gold_prices.tips_yield),
+        gvz = COALESCE(excluded.gvz, gold_prices.gvz),
+        us2y_yield = COALESCE(excluded.us2y_yield, gold_prices.us2y_yield),
+        sge_premium_usd = COALESCE(excluded.sge_premium_usd, gold_prices.sge_premium_usd)
     `);
 
     const upsertCftc = db.prepare(`
@@ -792,6 +821,9 @@ function persistRowsToSqlite(rows, cftcWeekly, dbPath) {
     const tx = db.transaction(() => {
       for (const r of rows) {
         if (!r?.date || !isValidPos(r.londonClose)) continue;
+        const sgePremUsd = (typeof r.sgePremiumCny === 'number' && Number.isFinite(r.sgePremiumCny) && isValidPos(r.usdCny))
+          ? round((r.sgePremiumCny / r.usdCny) * 31.1034768, 2)
+          : (typeof r.sgePremiumUsd === 'number' && Number.isFinite(r.sgePremiumUsd) ? round(r.sgePremiumUsd, 2) : null);
         upsertPrice.run(
           r.date,
           round(r.londonClose, 2),
@@ -802,6 +834,9 @@ function persistRowsToSqlite(rows, cftcWeekly, dbPath) {
           isValidPos(r.dxy) ? round(r.dxy, 2) : null,
           isValidPos(r.us10y) ? round(r.us10y, 3) : null,
           isValidFiniteRate(r.tips) ? round(r.tips, 3) : null,
+          isValidPos(r.gvz) ? round(r.gvz, 2) : null,
+          isValidFiniteRate(r.us2y, 0, 25) ? round(r.us2y, 3) : null,
+          sgePremUsd,
         );
       }
       for (const c of (cftcWeekly || [])) {
@@ -1218,4 +1253,5 @@ module.exports = {
   syncMonthlyHistory,
   startBackgroundSyncScheduler,
   parseSinaQuoteLine,
+  getSourceHealth,
 };

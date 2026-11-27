@@ -29,6 +29,10 @@ export interface CalibrateOptions {
   walkForward: boolean;
   /** 情景概率 Brier 校准（包 G：预报上行概率 vs 实际上涨频率） */
   brier: boolean;
+  /** v2.6: 概率扇面 CRPS + P10–P90 区间覆盖率实证校准 */
+  crps?: boolean;
+  /** v2.6: 消息面真伪与防钓鱼分桶事后审计 */
+  newsAudit?: boolean;
 }
 
 /** 周期摘要命令选项 */

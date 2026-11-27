@@ -1,180 +1,624 @@
-'use strict';
-
-// GoldRush v2.5 — 消息面真伪甄别与跨市场防钓鱼证伪引擎（Web CJS 镜像）
-// 与 src/utils/news-veracity.ts 保持完全一致的四道防线逻辑：
-//   1. 信源分级（未知源降 C） 2. 匿名吹风/煽动识别 3. 跨市场三通道价格证伪 4. 钓鱼反向情绪提取
-
-const RUMOR_OR_TRIAL_BALLOON_RE =
-  /知情人士|消息人士|据传|网传|小作文|传闻|据说|听说|有消息称|sources\s*say|people\s*familiar|unnamed\s*official|rumou?r|unconfirmed/i;
-const SENSATIONAL_HYPE_RE =
-  /史诗级|必涨|必买|马上破|冲上\d+|崩盘预警|一夜暴富|惊天|重磅炸弹|暴涨倒计时|血洗|紧急逃命|shocking|guaranteed|skyrocket|crash\s*imminent/i;
-
+// AUTO-GENERATED from src/utils/news-veracity.ts by scripts/sync-web-cjs.mjs — DO NOT EDIT MANUALLY
+// Run `npm run sync:web` after modifying src/utils/news-veracity.ts.
+"use strict";
+// GoldRush v2.5 — 消息面真伪甄别、防钓鱼证伪与反向价值提取引擎（纯本地纯函数，零 LLM/DB/网络）
+//
+// 四道防线：
+//   1. 信源分级 + 独立交叉核验（A 级官方/交易所，B 级主流电讯需多源印证，C 级/未知源绝不入事实层）
+//   2. 时效与文本特征检测（>72h 旧闻翻炒归零；识别匿名吹风、试探气球、煽动性标题党）
+//   3. 三通道跨市场价格证伪（TIPS 实际利率 / DXY 美元 / 金价二阶反应 / GLD 资金流）
+//      - 利好消息 + 债汇不买账 / 金价下跌 / 筹码拥挤 => bait_trap（疑似钓鱼派发）
+//      - 利空恐慌 + 实际利率下行 / 金价不跌反涨       => bait_trap（疑似诱空错杀）
+//   4. 价值分流与指数半衰期衰减（T½ = 36h）：
+//      - verified_fact -> 按预期差与衰减进入 B2 消息面
+//      - noise_filtered / unconfirmed_rumor / stale_rehash -> B2 权重严格为 0
+//      - bait_trap -> B2 事实权重置 0，同时提取反向情绪修正量与预警注入 S3 情绪面
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NEWS_MAX_AGE_HOURS = exports.NEWS_HALF_LIFE_HOURS = void 0;
+exports.gradeNewsSourceStrict = gradeNewsSourceStrict;
+exports.auditSingleNewsItem = auditSingleNewsItem;
+exports.auditNewsVeracity = auditNewsVeracity;
+exports.auditDailyTransmissionVeracity = auditDailyTransmissionVeracity;
+const decision_thresholds_js_1 = require("./decision-thresholds.cjs");
+const source_rank_js_1 = require("./source-rank.cjs");
+const macro_surprise_js_1 = require("./macro-surprise.cjs");
+/** 信息半衰期（小时）：36 小时后边际权重减半 */
+exports.NEWS_HALF_LIFE_HOURS = 36;
+/** 超过该小时数视为旧闻翻炒，不再进入当日 B2 消息面 */
+exports.NEWS_MAX_AGE_HOURS = 72;
+/** 显式 A 级官方/权威机构关键词（用于更严格的新闻信源分级） */
+const STRICT_GRADE_A_PATTERNS = [
+    /federal\s*reserve|fomc|美联储|鲍威尔/i,
+    /bureau\s*of\s*labor|bls|美国劳工部|bea|美国商务部/i,
+    /pboc|中国人民银行|外管局|国家外汇管理局/i,
+    /lbma|comex|cme|上海黄金交易所|上金所|sge/i,
+    /world\s*gold\s*council|世界黄金协会|imf|bis|fred/i,
+];
+/** 显式 B 级主流财经电讯 */
+const STRICT_GRADE_B_PATTERNS = [
+    /reuters|路透|bloomberg|彭博|financial\s*times|ft\.com|wsj|华尔街日报/i,
+    /财联社|华尔街见闻|金十|东方财富|证券时报|上海证券报|第一财经|investing\.com|kitco|wind/i,
+];
+/** 显式 C 级社媒/自媒体/论坛 */
+const STRICT_GRADE_C_PATTERNS = [
+    /雪球|微博|知乎|贴吧|头条|公众号|小红书|抖音|reddit|twitter|x\.com|匿名|网传|自媒体|论坛|群聊/i,
+];
+/** 吹风/试探气球/匿名传闻文本模式 */
+const RUMOR_OR_TRIAL_BALLOON_RE = /知情人士|消息人士|据传|网传|小作文|传闻|据说|听说|有消息称|sources\s*say|people\s*familiar|unnamed\s*official|rumou?r|unconfirmed/i;
+/** 情绪煽动/标题党模式 */
+const SENSATIONAL_HYPE_RE = /史诗级|必涨|必买|马上破|冲上\d+|崩盘预警|一夜暴富|惊天|重磅炸弹|暴涨倒计时|血洗|紧急逃命|shocking|guaranteed|skyrocket|crash\s*imminent|to\s*the\s*moon/i;
 function clamp(v, lo, hi) {
-  return Math.max(lo, Math.min(hi, v));
+    return Math.max(lo, Math.min(hi, v));
 }
-
 function round(v, digits = 2) {
-  const m = Math.pow(10, digits);
-  return Math.round(v * m) / m;
+    const m = Math.pow(10, digits);
+    return Math.round(v * m) / m;
 }
-
 /**
- * 结合当日日报事件传导摘要与客观市场通道（TIPS / DXY / 金价日涨跌 / GLD 动量 / CFTC 拥挤度），
- * 执行跨市场真伪证伪并提取 S3 反向钓鱼警示。
+ * v2.5 严格新闻信源分级：
+ * 与行情报价的 gradeSource 不同，新闻领域「未知来源默认降为 C 级」（宁缺毋滥），
+ * 避免匿名博客或自媒体混入 B 级事实层。
  */
-function auditDailyTransmissionVeracity(rec, feat, prevRec) {
-  const tr = rec?.transmission;
-  if (!tr || !Array.isArray(tr.channels) || tr.channels.length === 0) {
-    return {
-      status: 'quiet',
-      badge: rec?.hasAiReport ? '— 无显著事件催化' : '— 无当日AI日报(重归一)',
-      b2Score: null,
-      b2Coverage: 0,
-      marketConfirmation: 'unconfirmed',
-      contrarianSentimentBias: 0,
-      baitAlert: null,
-      noiseShrinkageBoost: 0,
-      evidenceLine: '当日无显著事件传导通道，已自动交由其余有效维度重归一',
-    };
-  }
-
-  // 1) 从三通道计算事件面宣称的净方向
-  let net = 0;
-  let wSum = 0;
-  let ratesBias = 0;
-  let dollarBias = 0;
-  let riskBias = 0;
-  for (const ch of tr.channels) {
-    const s = Math.max(1, ch.strength || 1);
-    const sign = ch.bias === '利多金' ? 1 : ch.bias === '利空金' ? -1 : 0;
-    net += sign * s;
-    wSum += s;
-    if (/利率|TIPS/i.test(ch.channel || '')) ratesBias = sign * s;
-    else if (/美元|DXY/i.test(ch.channel || '')) dollarBias = sign * s;
-    else if (/避险|风险|地缘/i.test(ch.channel || '')) riskBias = sign * s;
-  }
-  const rawScore = wSum > 0 ? Math.round(clamp(50 + (net / wSum) * 28, 18, 84)) : 50;
-  const claimedSign = rawScore >= 56 ? 1 : rawScore <= 44 ? -1 : 0;
-
-  // 2) 计算客观跨市场价格投票（真金白银二阶反应）
-  const goldDailyRetPct =
-    prevRec && prevRec.londonClose > 0 && rec.londonClose > 0
-      ? ((rec.londonClose - prevRec.londonClose) / prevRec.londonClose) * 100
-      : null;
-  const dxyDailyRetPct =
-    prevRec && prevRec.dxy > 0 && rec.dxy > 0
-      ? ((rec.dxy - prevRec.dxy) / prevRec.dxy) * 100
-      : null;
-  const tipsDeltaBp =
-    prevRec && prevRec.tipsYield != null && rec.tipsYield != null
-      ? (rec.tipsYield - prevRec.tipsYield) * 100
-      : null;
-
-  let mSum = 0;
-  let mW = 0;
-  const evParts = [];
-  if (tipsDeltaBp != null && Math.abs(tipsDeltaBp) >= 3) {
-    mSum += clamp(-tipsDeltaBp / 10, -1, 1) * 0.35;
-    mW += 0.35;
-    evParts.push(`TIPS ${tipsDeltaBp > 0 ? '+' : ''}${round(tipsDeltaBp, 1)}bp`);
-  }
-  if (dxyDailyRetPct != null && Math.abs(dxyDailyRetPct) >= 0.25) {
-    mSum += clamp(-dxyDailyRetPct / 0.8, -1, 1) * 0.25;
-    mW += 0.25;
-    evParts.push(`DXY ${dxyDailyRetPct > 0 ? '+' : ''}${round(dxyDailyRetPct, 2)}%`);
-  }
-  if (goldDailyRetPct != null && Math.abs(goldDailyRetPct) >= 0.45) {
-    mSum += clamp(goldDailyRetPct / 1.5, -1, 1) * 0.30;
-    mW += 0.30;
-    evParts.push(`金价 ${goldDailyRetPct > 0 ? '+' : ''}${round(goldDailyRetPct, 2)}%`);
-  }
-  if (rec.gld5dRet != null && Math.abs(rec.gld5dRet) >= 1.2) {
-    mSum += clamp(rec.gld5dRet / 4, -1, 1) * 0.10;
-    mW += 0.10;
-    evParts.push(`GLD5日 ${rec.gld5dRet > 0 ? '+' : ''}${round(rec.gld5dRet, 1)}%`);
-  }
-
-  const marketVote = mW > 0 ? mSum / mW : 0;
-  const textAll = `${tr.verdict || ''} ${tr.excerpt || ''}`;
-  const hasRumor = RUMOR_OR_TRIAL_BALLOON_RE.test(textAll);
-  const hasHype = SENSATIONAL_HYPE_RE.test(textAll);
-
-  // 特殊高发陷阱：地缘/战争标题单独喊多，但实际利率+美元双双逆风
-  const geoOnlyDivergence = riskBias >= 40 && (ratesBias <= -40 || dollarBias <= -40);
-
-  let marketConfirmation = 'unconfirmed';
-  if (mW > 0 && claimedSign !== 0) {
-    const align = claimedSign * marketVote;
-    if (align >= 0.22) marketConfirmation = 'confirmed';
-    else if (align <= -0.25) marketConfirmation = 'contradicted';
-  }
-
-  // 3) 裁决真消息 / 疑似钓鱼背离 / 噪音过滤
-  if (
-    (claimedSign !== 0 && marketConfirmation === 'contradicted')
-    || (geoOnlyDivergence && (goldDailyRetPct == null || goldDailyRetPct < 0.2))
-  ) {
-    const isBullBait = claimedSign > 0 || (geoOnlyDivergence && claimedSign >= 0);
-    const crowded = (rec.cftcPercentile ?? 50) >= 82;
-    const biasMag = isBullBait ? (crowded ? -10 : -7) : 7;
-    const baitAlert = isBullBait
-      ? `防钓鱼警示：消息/地缘偏多但跨市场证伪（${evParts.slice(0, 2).join(' · ') || '债汇逆风'}），警惕利好派发忌追高`
-      : `防诱空警示：消息偏空但市场反向走强（${evParts.slice(0, 2).join(' · ') || '实际利率/金价韧性'}），警惕恐慌错杀`;
-
-    return {
-      status: 'bait_suspected',
-      badge: isBullBait ? '⚠️ 疑似利多钓鱼/背离' : '⚠️ 疑似利空诱空/背离',
-      b2Score: null, // 剥离出事实层，不污染 B2，交由其余正交维度重归一
-      b2Coverage: 0,
-      marketConfirmation: 'contradicted',
-      contrarianSentimentBias: biasMag,
-      baitAlert,
-      noiseShrinkageBoost: 0.15,
-      evidenceLine: evParts.length > 0 ? `价格证伪：${evParts.join(' · ')}` : '地缘叙事与利率/美元硬通道冲突',
-    };
-  }
-
-  if (hasRumor || hasHype) {
-    return {
-      status: 'noise_filtered',
-      badge: '🚫 吹风/标题党已降权',
-      b2Score: Math.round(50 + (rawScore - 50) * 0.35),
-      b2Coverage: 0.4,
-      marketConfirmation,
-      contrarianSentimentBias: 0,
-      baitAlert: '消息摘录含匿名吹风或情绪化措辞，B2 权重已自动压缩',
-      noiseShrinkageBoost: 0.10,
-      evidenceLine: evParts.length > 0 ? `待核实（${evParts.join(' · ')}）` : '含吹风措辞，降权观察',
-    };
-  }
-
-  if (marketConfirmation === 'confirmed') {
-    return {
-      status: 'confirmed',
-      badge: '✅ 跨市场实证确认',
-      b2Score: rawScore,
-      b2Coverage: 1,
-      marketConfirmation: 'confirmed',
-      contrarianSentimentBias: 0,
-      baitAlert: null,
-      noiseShrinkageBoost: 0,
-      evidenceLine: `三通道共振确认：${evParts.join(' · ')}`,
-    };
-  }
-
-  return {
-    status: 'confirmed',
-    badge: '✓ 日报三通道核验',
-    b2Score: Math.round(50 + (rawScore - 50) * 0.75),
-    b2Coverage: 0.8,
-    marketConfirmation: 'unconfirmed',
-    contrarianSentimentBias: 0,
-    baitAlert: null,
-    noiseShrinkageBoost: 0,
-    evidenceLine: evParts.length > 0 ? `通道参考：${evParts.join(' · ')}` : '已按利率/美元/避险三通道压缩噪音',
-  };
+function gradeNewsSourceStrict(sourceName) {
+    const s = (sourceName || '').trim();
+    if (!s)
+        return 'C';
+    if (STRICT_GRADE_A_PATTERNS.some(re => re.test(s)))
+        return 'A';
+    if (STRICT_GRADE_C_PATTERNS.some(re => re.test(s)))
+        return 'C';
+    if (STRICT_GRADE_B_PATTERNS.some(re => re.test(s)))
+        return 'B';
+    // 回落查已有表：仅当显式命中 A 级时保留 A，否则未知来源统一降为 C
+    const known = (0, source_rank_js_1.gradeSource)(s);
+    if (known === 'A')
+        return 'A';
+    return 'C';
 }
-
-module.exports = {
-  auditDailyTransmissionVeracity,
-};
+/** 独立信源去重统计 */
+function analyzeSources(sources) {
+    const uniq = Array.from(new Set(sources.map(s => s.trim().toLowerCase()).filter(Boolean)));
+    let gradeACount = 0;
+    let gradeBCount = 0;
+    let gradeCCount = 0;
+    for (const s of uniq) {
+        const g = gradeNewsSourceStrict(s);
+        if (g === 'A')
+            gradeACount++;
+        else if (g === 'B')
+            gradeBCount++;
+        else
+            gradeCCount++;
+    }
+    const topGrade = gradeACount > 0 ? 'A' : gradeBCount > 0 ? 'B' : 'C';
+    return {
+        topGrade,
+        gradeACount,
+        gradeBCount,
+        gradeCCount,
+        independentTrustedCount: gradeACount + gradeBCount,
+    };
+}
+/** 计算消息时效与指数半衰期衰减 */
+function computeAgeAndDecay(publishedAt, eventDate, nowMs) {
+    const pickMs = (iso) => {
+        if (!iso)
+            return null;
+        const t = Date.parse(iso);
+        return Number.isFinite(t) ? t : null;
+    };
+    const evMs = pickMs(eventDate);
+    const pubMs = pickMs(publishedAt);
+    // 优先用更早的底层事件时间，防止旧闻换今天发布时间重炒
+    const refMs = evMs != null && pubMs != null ? Math.min(evMs, pubMs) : (evMs ?? pubMs);
+    if (refMs == null) {
+        return { ageHours: null, isStale: false, decayFactor: 0.85 };
+    }
+    const ageHours = Math.max(0, (nowMs - refMs) / (1000 * 60 * 60));
+    if (ageHours > exports.NEWS_MAX_AGE_HOURS) {
+        return { ageHours: round(ageHours, 1), isStale: true, decayFactor: 0 };
+    }
+    const decayFactor = Math.pow(0.5, ageHours / exports.NEWS_HALF_LIFE_HOURS);
+    return { ageHours: round(ageHours, 1), isStale: false, decayFactor: round(clamp(decayFactor, 0.15, 1), 3) };
+}
+/**
+ * 跨市场三通道客观验证：计算客观市场对「黄金看多(+1) / 看空(-1)」的投票净值
+ * 返回 [-1, +1] 的 marketVote 及可读通道证据。
+ */
+function evaluateCrossMarketVote(market) {
+    if (!market) {
+        return { hasSignals: false, marketVote: 0, priceRetPct: null, evidence: [] };
+    }
+    let weightedSum = 0;
+    let weightTotal = 0;
+    const evidence = [];
+    // 1) TIPS 实际利率通道（反向：上升利空金，下行利多金）
+    if (market.tipsDeltaBp != null && Number.isFinite(market.tipsDeltaBp)) {
+        const bp = market.tipsDeltaBp;
+        if (Math.abs(bp) >= 3) {
+            const vote = clamp(-bp / 10, -1, 1);
+            weightedSum += vote * 0.35;
+            weightTotal += 0.35;
+            evidence.push(`TIPS ${bp > 0 ? '+' : ''}${round(bp, 1)}bp(${bp > 0 ? '利空金' : '利多金'})`);
+        }
+    }
+    // 2) DXY 美元通道（反向：走强利空金，走弱利多金）
+    if (market.dxyDailyRetPct != null && Number.isFinite(market.dxyDailyRetPct)) {
+        const dxy = market.dxyDailyRetPct;
+        if (Math.abs(dxy) >= 0.25) {
+            const vote = clamp(-dxy / 0.8, -1, 1);
+            weightedSum += vote * 0.25;
+            weightTotal += 0.25;
+            evidence.push(`DXY ${dxy > 0 ? '+' : ''}${round(dxy, 2)}%(${dxy > 0 ? '利空金' : '利多金'})`);
+        }
+    }
+    // 3) 黄金自身二阶价格反应（利好不涨反跌 / 利空不跌反涨是最硬的证伪证据）
+    const priceRetPct = market.goldDailyRetPct != null && Number.isFinite(market.goldDailyRetPct)
+        ? market.goldDailyRetPct
+        : null;
+    if (priceRetPct != null && Math.abs(priceRetPct) >= 0.4) {
+        const vote = clamp(priceRetPct / 1.5, -1, 1);
+        weightedSum += vote * 0.30;
+        weightTotal += 0.30;
+        evidence.push(`金价反应 ${priceRetPct > 0 ? '+' : ''}${round(priceRetPct, 2)}%`);
+    }
+    // 4) GLD 资金流确认
+    if (market.gldFlow5d != null && Number.isFinite(market.gldFlow5d) && Math.abs(market.gldFlow5d) >= 1.5) {
+        const vote = clamp(market.gldFlow5d / 10, -1, 1);
+        weightedSum += vote * 0.10;
+        weightTotal += 0.10;
+        evidence.push(`GLD资金 ${market.gldFlow5d > 0 ? '+' : ''}${round(market.gldFlow5d, 1)}`);
+    }
+    if (weightTotal <= 0) {
+        return { hasSignals: false, marketVote: 0, priceRetPct, evidence };
+    }
+    return {
+        hasSignals: true,
+        marketVote: round(weightedSum / weightTotal, 3),
+        priceRetPct,
+        evidence,
+    };
+}
+/** 审计单条消息：区分真消息 / 假谣言 / 旧闻翻炒 / 钓鱼消息 */
+function auditSingleNewsItem(item, market, nowMs = Date.now()) {
+    const fullText = `${item.headline || ''} ${item.snippet || ''}`;
+    const srcInfo = analyzeSources(item.sources || []);
+    const { ageHours, isStale, decayFactor } = computeAgeAndDecay(item.publishedAt, item.eventDate, nowMs);
+    const cross = evaluateCrossMarketVote(market);
+    const reasons = [];
+    const hasRumorText = RUMOR_OR_TRIAL_BALLOON_RE.test(fullText);
+    const hasHypeText = SENSATIONAL_HYPE_RE.test(fullText);
+    const claimedSign = item.claimedDirection === 'bullish' ? 1 : item.claimedDirection === 'bearish' ? -1 : 0;
+    // 1) 判定跨市场确认状态
+    let marketConfirmation = 'unconfirmed';
+    if (cross.hasSignals && claimedSign !== 0) {
+        const alignment = claimedSign * cross.marketVote;
+        if (alignment >= 0.25) {
+            marketConfirmation = 'confirmed';
+            reasons.push(`跨市场通道同向确认（${cross.evidence.join(' · ')}）`);
+        }
+        else if (alignment <= -0.25) {
+            marketConfirmation = 'contradicted';
+            reasons.push(`跨市场价格证伪（宣称${claimedSign > 0 ? '利多' : '利空'}，但${cross.evidence.join(' · ')}反向运行）`);
+        }
+    }
+    // 2) 旧闻翻炒直接拦截
+    if (isStale) {
+        reasons.push(`底层事件已过 ${ageHours}h（>${exports.NEWS_MAX_AGE_HOURS}h），属旧闻翻炒`);
+        return {
+            headline: item.headline,
+            category: 'stale_rehash',
+            categoryLabel: '旧闻翻炒',
+            veracityScore: 20,
+            effectiveWeight: 0,
+            effectiveDirection: 'neutral',
+            baitRiskScore: 35,
+            corroborationCount: srcInfo.independentTrustedCount,
+            topSourceGrade: srcInfo.topGrade,
+            marketConfirmation,
+            decayFactor: 0,
+            reasons,
+            contrarianSignal: null,
+        };
+    }
+    // 3) 计算钓鱼风险分（0-100）
+    let baitRiskScore = 10;
+    if (hasRumorText) {
+        baitRiskScore += 28;
+        reasons.push('含匿名吹风/传闻措辞（警惕政策试探气球或小作文）');
+    }
+    if (hasHypeText) {
+        baitRiskScore += 26;
+        reasons.push('含强煽动性标题党词汇');
+    }
+    if (marketConfirmation === 'contradicted') {
+        baitRiskScore += 36;
+    }
+    if (claimedSign > 0 && (market?.cftcCrowdingPct ?? 0) >= 82) {
+        baitRiskScore += 14;
+        reasons.push(`CFTC 存量筹码高度拥挤（第${Math.round(market.cftcCrowdingPct)}%分位），高位利多谨防派发`);
+    }
+    if (srcInfo.topGrade === 'A' && !hasRumorText && !hasHypeText) {
+        baitRiskScore -= 20;
+    }
+    baitRiskScore = Math.round(clamp(baitRiskScore, 0, 100));
+    // 4) 分类裁决
+    // 4a) 疑似钓鱼/派发/诱空消息：跨市场显著反向打脸，且存在吹风/煽动/拥挤或非 A 级硬决议
+    const isBaitTrap = claimedSign !== 0
+        && marketConfirmation === 'contradicted'
+        && (baitRiskScore >= 55 || hasRumorText || hasHypeText || srcInfo.topGrade !== 'A');
+    if (isBaitTrap) {
+        const contrarianDir = claimedSign > 0 ? 'bearish' : 'bullish';
+        const biasMag = Math.round(clamp(6 + (baitRiskScore - 55) * 0.2, 6, 14));
+        const contrarianNote = claimedSign > 0
+            ? `疑似利多钓鱼/高位派发（${cross.evidence.slice(0, 2).join('，')}反向走弱），忌 FOMO 追高`
+            : `疑似利空诱空/情绪错杀（${cross.evidence.slice(0, 2).join('，')}反向走强），忌恐慌割肉`;
+        return {
+            headline: item.headline,
+            category: 'bait_trap',
+            categoryLabel: claimedSign > 0 ? '疑似利多钓鱼' : '疑似利空诱空',
+            veracityScore: 25,
+            effectiveWeight: 0, // 严格剥离出 B2 事实层
+            effectiveDirection: 'neutral',
+            baitRiskScore,
+            corroborationCount: srcInfo.independentTrustedCount,
+            topSourceGrade: srcInfo.topGrade,
+            marketConfirmation,
+            decayFactor,
+            reasons,
+            contrarianSignal: {
+                direction: contrarianDir,
+                biasPoints: contrarianDir === 'bearish' ? -biasMag : biasMag,
+                note: contrarianNote,
+            },
+        };
+    }
+    // 4b) 假消息/无依据噪音：仅 C 级或未知来源（无 A/B 级背书）
+    if (srcInfo.topGrade === 'C') {
+        reasons.push('仅 C 级/未知来源，缺乏官方或主流财经电讯交叉印证，已拦截出事实层');
+        return {
+            headline: item.headline,
+            category: hasHypeText || hasRumorText ? 'noise_filtered' : 'unconfirmed_rumor',
+            categoryLabel: hasHypeText || hasRumorText ? '噪音已滤除' : '未核实传闻',
+            veracityScore: 20,
+            effectiveWeight: 0,
+            effectiveDirection: 'neutral',
+            baitRiskScore,
+            corroborationCount: 0,
+            topSourceGrade: 'C',
+            marketConfirmation,
+            decayFactor,
+            reasons,
+            contrarianSignal: null,
+        };
+    }
+    // 4c) 单 B 级 + 匿名吹风且无市场确认 => 未核实传闻（防试探气球混入实证）
+    if (srcInfo.gradeACount === 0 && srcInfo.gradeBCount < 2 && hasRumorText && marketConfirmation !== 'confirmed') {
+        reasons.push('单源 B 级匿名传闻且未获跨市场定价确认，暂列观察不计入事实分');
+        return {
+            headline: item.headline,
+            category: 'unconfirmed_rumor',
+            categoryLabel: '单源吹风待核实',
+            veracityScore: 42,
+            effectiveWeight: 0,
+            effectiveDirection: 'neutral',
+            baitRiskScore,
+            corroborationCount: srcInfo.gradeBCount,
+            topSourceGrade: 'B',
+            marketConfirmation,
+            decayFactor,
+            reasons,
+            contrarianSignal: null,
+        };
+    }
+    // 4d) 实证真消息（A 级官方，或 >=2 家独立 B 级交叉印证，或单 B 级获跨市场同向确认）
+    let veracityScore = 62;
+    if (srcInfo.gradeACount > 0) {
+        veracityScore += 22;
+        reasons.push('含 A 级官方/交易所一级信源');
+    }
+    else if (srcInfo.gradeBCount >= 2) {
+        veracityScore += 16;
+        reasons.push(`${srcInfo.gradeBCount} 家独立 B 级财经电讯交叉印证`);
+    }
+    else {
+        reasons.push('单源 B 级信源（需持续跟踪二阶反应）');
+    }
+    if (marketConfirmation === 'confirmed')
+        veracityScore += 12;
+    else if (marketConfirmation === 'contradicted') {
+        // 即使是 A 级真消息，若市场反向定价（如“利好出尽”），大幅衰减权重并标注预期差背离
+        veracityScore -= 24;
+        reasons.push('虽为一手事实但市场反向定价（疑已提前计价/利好出尽），权重已大幅衰减');
+    }
+    if (hasRumorText)
+        veracityScore -= 12;
+    if (hasHypeText)
+        veracityScore -= 10;
+    veracityScore = Math.round(clamp(veracityScore, 30, 98));
+    // 计算最终进入 B2 的有效权重（受真伪分、半衰期、跨市场背离折扣共同约束）
+    const contradictionMult = marketConfirmation === 'contradicted' ? 0.25 : 1.0;
+    const effectiveWeight = round(clamp((veracityScore / 100) * decayFactor * contradictionMult, 0, 1), 3);
+    return {
+        headline: item.headline,
+        category: 'verified_fact',
+        categoryLabel: marketConfirmation === 'confirmed' ? '实证真消息(市场确认)' : '实证真消息',
+        veracityScore,
+        effectiveWeight,
+        effectiveDirection: item.claimedDirection,
+        baitRiskScore,
+        corroborationCount: srcInfo.independentTrustedCount,
+        topSourceGrade: srcInfo.topGrade,
+        marketConfirmation,
+        decayFactor,
+        reasons,
+        contrarianSignal: null,
+    };
+}
+/**
+ * 对当日消息池执行完整真伪审计、B2 净得分合成与 S3 钓鱼反向信号提取
+ */
+function auditNewsVeracity(items, market, nowMs = Date.now()) {
+    if (!items || items.length === 0) {
+        return {
+            items: [],
+            verifiedCount: 0,
+            baitCount: 0,
+            filteredCount: 0,
+            newsScore: null,
+            newsDirection: 'neutral',
+            coverage: 0,
+            veracityStatus: 'quiet',
+            veracityBadge: '无显著事件催化',
+            contrarianSentimentBias: 0,
+            baitAlert: null,
+            noiseShrinkageBoost: 0,
+            summary: '当日无待审计突发事件，B2 消息面保持静默并由其余维度自动重归一。',
+        };
+    }
+    const audited = items.map(it => auditSingleNewsItem(it, market, nowMs));
+    const verified = audited.filter(a => a.category === 'verified_fact' && a.effectiveWeight > 0);
+    const baits = audited.filter(a => a.category === 'bait_trap');
+    const filtered = audited.filter(a => a.category === 'noise_filtered' || a.category === 'unconfirmed_rumor' || a.category === 'stale_rehash');
+    // 合成 B2 消息面得分（仅采纳 verified_fact，严格零污染）
+    let newsScore = null;
+    let coverage = 0;
+    if (verified.length > 0) {
+        let weightedNet = 0;
+        let totalW = 0;
+        for (let i = 0; i < audited.length; i++) {
+            const a = audited[i];
+            if (a.category !== 'verified_fact' || a.effectiveWeight <= 0)
+                continue;
+            const orig = items[i];
+            const detectedSurprise = orig.surpriseZscore == null
+                ? (0, macro_surprise_js_1.extractMacroSurpriseFromText)(`${orig.headline} ${orig.snippet || ''}`)
+                : null;
+            const effZ = orig.surpriseZscore ?? detectedSurprise?.goldSurpriseZ ?? null;
+            const effDir = (detectedSurprise && detectedSurprise.isSignificant && detectedSurprise.goldDirection !== 'neutral')
+                ? detectedSurprise.goldDirection
+                : a.effectiveDirection;
+            const sign = effDir === 'bullish' ? 1 : effDir === 'bearish' ? -1 : 0;
+            const surpriseBoost = effZ != null && Number.isFinite(effZ)
+                ? clamp(1 + Math.abs(effZ) * 0.25, 0.8, 1.6)
+                : 1;
+            const w = a.effectiveWeight * surpriseBoost;
+            weightedNet += sign * w;
+            totalW += w;
+        }
+        if (totalW > 0) {
+            const norm = weightedNet / totalW; // -1..+1
+            // 最大幅度控制在 [20, 80]，防止单日消息过度挤压基本面与量化面
+            newsScore = Math.round(clamp(50 + norm * 28, 20, 80));
+            coverage = round(clamp(totalW / Math.max(1, verified.length), 0.35, 1), 2);
+        }
+    }
+    // 提取 S3 情绪面反向修正与预警
+    let contrarianBias = 0;
+    const baitNotes = [];
+    for (const b of baits) {
+        if (b.contrarianSignal) {
+            contrarianBias += b.contrarianSignal.biasPoints;
+            baitNotes.push(b.contrarianSignal.note);
+        }
+    }
+    contrarianBias = Math.round(clamp(contrarianBias, -15, 15));
+    const baitAlert = baitNotes.length > 0 ? baitNotes[0] : null;
+    let veracityStatus;
+    let veracityBadge;
+    let noiseShrinkageBoost = 0;
+    if (baits.length > 0 && verified.length === 0) {
+        veracityStatus = 'bait_suspected';
+        veracityBadge = `⚠️ 疑似钓鱼/背离(${baits.length}条已隔离)`;
+        noiseShrinkageBoost = 0.20;
+    }
+    else if (baits.length > 0) {
+        veracityStatus = 'bait_suspected';
+        veracityBadge = `⚠️ 实证${verified.length}条 · 拦截疑似钓鱼${baits.length}条`;
+        noiseShrinkageBoost = 0.12;
+    }
+    else if (verified.length > 0) {
+        veracityStatus = 'confirmed';
+        const confirmedMarket = verified.some(v => v.marketConfirmation === 'confirmed');
+        veracityBadge = confirmedMarket
+            ? `✅ 跨市场实证确认(${verified.length}条)`
+            : `✅ 一/二级信源核验(${verified.length}条)`;
+        noiseShrinkageBoost = 0;
+    }
+    else {
+        veracityStatus = 'noise_filtered';
+        veracityBadge = `🚫 噪音/传闻已滤除(${filtered.length}条)`;
+        noiseShrinkageBoost = 0.10;
+    }
+    const parts = [];
+    if (verified.length > 0)
+        parts.push(`采信实证真消息 ${verified.length} 条`);
+    if (baits.length > 0)
+        parts.push(`拦截疑似钓鱼 ${baits.length} 条并转入情绪反向预警`);
+    if (filtered.length > 0)
+        parts.push(`滤除未核实/旧闻噪音 ${filtered.length} 条`);
+    return {
+        items: audited,
+        verifiedCount: verified.length,
+        baitCount: baits.length,
+        filteredCount: filtered.length,
+        newsScore,
+        newsDirection: newsScore != null ? (0, decision_thresholds_js_1.directionFromScore)(newsScore) : 'neutral',
+        coverage,
+        veracityStatus,
+        veracityBadge,
+        contrarianSentimentBias: contrarianBias,
+        baitAlert,
+        noiseShrinkageBoost,
+        summary: parts.join('；') || '当日消息面平稳。',
+    };
+}
+function auditDailyTransmissionVeracity(rec, _feat, prevRec) {
+    const tr = rec?.transmission;
+    if (!tr || !Array.isArray(tr.channels) || tr.channels.length === 0) {
+        return {
+            status: 'quiet',
+            badge: rec?.hasAiReport ? '— 无显著事件催化' : '— 无当日AI日报(重归一)',
+            b2Score: null,
+            b2Coverage: 0,
+            marketConfirmation: 'unconfirmed',
+            contrarianSentimentBias: 0,
+            baitAlert: null,
+            noiseShrinkageBoost: 0,
+            macroSurpriseSummary: null,
+            evidenceLine: '当日无显著事件传导通道，已自动交由其余有效维度重归一',
+        };
+    }
+    let net = 0;
+    let wSum = 0;
+    let ratesBias = 0;
+    let dollarBias = 0;
+    let riskBias = 0;
+    for (const ch of tr.channels) {
+        const s = Math.max(1, ch.strength || 1);
+        const sign = ch.bias === '利多金' ? 1 : ch.bias === '利空金' ? -1 : 0;
+        net += sign * s;
+        wSum += s;
+        if (/利率|TIPS/i.test(ch.channel || ''))
+            ratesBias = sign * s;
+        else if (/美元|DXY/i.test(ch.channel || ''))
+            dollarBias = sign * s;
+        else if (/避险|风险|地缘/i.test(ch.channel || ''))
+            riskBias = sign * s;
+    }
+    const textAll = `${tr.verdict || ''} ${tr.excerpt || ''}`;
+    const macroSurprise = (0, macro_surprise_js_1.extractMacroSurpriseFromText)(textAll);
+    let rawScore = wSum > 0 ? Math.round(clamp(50 + (net / wSum) * 28, 18, 84)) : 50;
+    if (macroSurprise && macroSurprise.isSignificant) {
+        rawScore = Math.round(clamp(rawScore + macroSurprise.b2DeltaPoints * 0.5, 16, 86));
+    }
+    const claimedSign = rawScore >= 56 ? 1 : rawScore <= 44 ? -1 : 0;
+    const goldDailyRetPct = prevRec && (prevRec.londonClose ?? 0) > 0 && (rec?.londonClose ?? 0) > 0
+        ? ((rec.londonClose - prevRec.londonClose) / prevRec.londonClose) * 100
+        : null;
+    const dxyDailyRetPct = prevRec && (prevRec.dxy ?? 0) > 0 && (rec?.dxy ?? 0) > 0
+        ? ((rec.dxy - prevRec.dxy) / prevRec.dxy) * 100
+        : null;
+    const tipsDeltaBp = prevRec && prevRec.tipsYield != null && rec?.tipsYield != null
+        ? (rec.tipsYield - prevRec.tipsYield) * 100
+        : null;
+    let mSum = 0;
+    let mW = 0;
+    const evParts = [];
+    if (tipsDeltaBp != null && Math.abs(tipsDeltaBp) >= 3) {
+        mSum += clamp(-tipsDeltaBp / 10, -1, 1) * 0.35;
+        mW += 0.35;
+        evParts.push(`TIPS ${tipsDeltaBp > 0 ? '+' : ''}${round(tipsDeltaBp, 1)}bp`);
+    }
+    if (dxyDailyRetPct != null && Math.abs(dxyDailyRetPct) >= 0.25) {
+        mSum += clamp(-dxyDailyRetPct / 0.8, -1, 1) * 0.25;
+        mW += 0.25;
+        evParts.push(`DXY ${dxyDailyRetPct > 0 ? '+' : ''}${round(dxyDailyRetPct, 2)}%`);
+    }
+    if (goldDailyRetPct != null && Math.abs(goldDailyRetPct) >= 0.45) {
+        mSum += clamp(goldDailyRetPct / 1.5, -1, 1) * 0.30;
+        mW += 0.30;
+        evParts.push(`金价 ${goldDailyRetPct > 0 ? '+' : ''}${round(goldDailyRetPct, 2)}%`);
+    }
+    if (rec?.gld5dRet != null && Math.abs(rec.gld5dRet) >= 1.2) {
+        mSum += clamp(rec.gld5dRet / 4, -1, 1) * 0.10;
+        mW += 0.10;
+        evParts.push(`GLD5日 ${rec.gld5dRet > 0 ? '+' : ''}${round(rec.gld5dRet, 1)}%`);
+    }
+    if (macroSurprise && macroSurprise.isSignificant) {
+        evParts.push(`预期差 ${macroSurprise.indicator} z=${macroSurprise.goldSurpriseZ >= 0 ? '+' : ''}${macroSurprise.goldSurpriseZ}`);
+    }
+    const marketVote = mW > 0 ? mSum / mW : 0;
+    const hasRumor = RUMOR_OR_TRIAL_BALLOON_RE.test(textAll);
+    const hasHype = SENSATIONAL_HYPE_RE.test(textAll);
+    const geoOnlyDivergence = riskBias >= 40 && (ratesBias <= -40 || dollarBias <= -40);
+    let marketConfirmation = 'unconfirmed';
+    if (mW > 0 && claimedSign !== 0) {
+        const align = claimedSign * marketVote;
+        if (align >= 0.22)
+            marketConfirmation = 'confirmed';
+        else if (align <= -0.25)
+            marketConfirmation = 'contradicted';
+    }
+    if ((claimedSign !== 0 && marketConfirmation === 'contradicted')
+        || (geoOnlyDivergence && (goldDailyRetPct == null || goldDailyRetPct < 0.2))) {
+        const isBullBait = claimedSign > 0 || (geoOnlyDivergence && claimedSign >= 0);
+        const crowded = (rec?.cftcPercentile ?? 50) >= 82;
+        const biasMag = isBullBait ? (crowded ? -10 : -7) : 7;
+        const baitAlert = isBullBait
+            ? `防钓鱼警示：消息/地缘偏多但跨市场证伪（${evParts.slice(0, 2).join(' · ') || '债汇逆风'}），警惕利好派发忌追高`
+            : `防诱空警示：消息偏空但市场反向走强（${evParts.slice(0, 2).join(' · ') || '实际利率/金价韧性'}），警惕恐慌错杀`;
+        return {
+            status: 'bait_suspected',
+            badge: isBullBait ? '⚠️ 疑似利多钓鱼/背离' : '⚠️ 疑似利空诱空/背离',
+            b2Score: null,
+            b2Coverage: 0,
+            marketConfirmation: 'contradicted',
+            contrarianSentimentBias: biasMag,
+            baitAlert,
+            noiseShrinkageBoost: 0.15,
+            macroSurpriseSummary: macroSurprise?.summary ?? null,
+            evidenceLine: evParts.length > 0 ? `价格证伪：${evParts.join(' · ')}` : '地缘叙事与利率/美元硬通道冲突',
+        };
+    }
+    if (hasRumor || hasHype) {
+        return {
+            status: 'noise_filtered',
+            badge: '🚫 吹风/标题党已降权',
+            b2Score: Math.round(50 + (rawScore - 50) * 0.35),
+            b2Coverage: 0.4,
+            marketConfirmation,
+            contrarianSentimentBias: 0,
+            baitAlert: '消息摘录含匿名吹风或情绪化措辞，B2 权重已自动压缩',
+            noiseShrinkageBoost: 0.10,
+            macroSurpriseSummary: macroSurprise?.summary ?? null,
+            evidenceLine: evParts.length > 0 ? `待核实（${evParts.join(' · ')}）` : '含吹风措辞，降权观察',
+        };
+    }
+    if (marketConfirmation === 'confirmed') {
+        return {
+            status: 'confirmed',
+            badge: '✅ 跨市场实证确认',
+            b2Score: rawScore,
+            b2Coverage: 1,
+            marketConfirmation: 'confirmed',
+            contrarianSentimentBias: 0,
+            baitAlert: null,
+            noiseShrinkageBoost: 0,
+            macroSurpriseSummary: macroSurprise?.summary ?? null,
+            evidenceLine: `三通道共振确认：${evParts.join(' · ')}`,
+        };
+    }
+    return {
+        status: 'confirmed',
+        badge: '✓ 日报三通道核验',
+        b2Score: Math.round(50 + (rawScore - 50) * 0.75),
+        b2Coverage: 0.8,
+        marketConfirmation: 'unconfirmed',
+        contrarianSentimentBias: 0,
+        baitAlert: null,
+        noiseShrinkageBoost: 0,
+        macroSurpriseSummary: macroSurprise?.summary ?? null,
+        evidenceLine: evParts.length > 0 ? `通道参考：${evParts.join(' · ')}` : '已按利率/美元/避险三通道压缩噪音',
+    };
+}

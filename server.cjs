@@ -40,9 +40,17 @@ const { loadDailyForecastDataset, loadMonthlyForecastDataset } = require('./web/
 const { buildDailyGoldForecast, buildDailyForecastArchive } = require('./web/forecast-engine.cjs');
 const { renderForecastPage } = require('./web/forecast-page.cjs');
 const {
+  createDocsIndexCache,
+  extractAvailableMonths,
+  extractFileMonth,
+  renderMonthFilterBar,
+} = require('./web/docs-index.cjs');
+const { buildForecastScorecard } = require('./web/forecast-scorecard.cjs');
+const {
   syncMarketData,
   readSyncMeta,
   startBackgroundSyncScheduler,
+  getSourceHealth,
 } = require('./web/market-sync.cjs');
 
 /** macOS 风格窗口标题栏（装饰性 traffic lights） */
@@ -1305,7 +1313,8 @@ function renderIndex(fileInfos) {
       ? `<div class="rc-verdict"><span class="verdict-chip" style="color:#6b7280;background:rgba(0,0,0,0.04);border-color:rgba(0,0,0,0.1)">🔴 数据不可用 · 勿据此加减仓</span></div>`
       : (info.advice ? `<div class="rc-verdict">${renderCardVerdict(info.score, info.direction)}</div>` : `<div class="rc-snippet muted">${esc(info.filename)}</div>`);
     const search = buildCardSearchBlob(info);
-    return `<a href="/${info.filename}" class="report-card dir-${info.direction || 'neutral'}" data-search="${esc(search)}" data-score="${info.score ?? ''}" data-quant="${listDualScores(info)?.quant ?? ''}">
+    const monthTag = extractFileMonth(info.filename || info.dateLabel);
+    return `<a href="/${info.filename}" class="report-card dir-${info.direction || 'neutral'}" data-month="${esc(monthTag)}" data-search="${esc(search)}" data-score="${info.score ?? ''}" data-quant="${listDualScores(info)?.quant ?? ''}">
       <div class="rc-score"><span class="rc-score-top">${scoreBadge(info.score)}${qualityDot(info.qualityGate)}</span>${quantBadge(info)}</div>
       <div class="rc-body">
         <div class="rc-date">${info.dateLabel} ${info.confidence != null ? `<span class="rc-conf">置信 ${info.confidence}%</span>` : ''} ${posChip(info)}</div>
@@ -1448,7 +1457,7 @@ function renderIndex(fileInfos) {
     ${latestHorizonHtml}
     ${heroHtml}
     ${homePanels ? `<div class="home-panels mac-window glass-strong">${macTitlebar('今日一览')}${homePanels}</div>` : ''}
-    ${rest.length ? `<div class="section-label">历史日报</div><div class="card-grid" id="card-grid">${cardRows}</div>` : ''}
+    ${rest.length ? `<div class="section-label">历史日报</div>${renderMonthFilterBar(extractAvailableMonths(rest), rest.length)}<div class="card-grid" id="card-grid">${cardRows}</div>` : ''}
     ${digests.length ? `<div class="section-label" style="margin-top:28px">周期摘要</div><div class="card-grid" id="digest-grid">${digestRows}</div>` : ''}
     ${reflects.length ? `<div class="section-label" style="margin-top:28px">错因反思</div><div class="card-grid" id="reflect-grid">${reflectRows}</div>` : ''}
     ${others.length ? `<div class="section-label" style="margin-top:28px">其它文档</div><div class="card-grid">${otherRows}</div>` : ''}
@@ -1464,12 +1473,33 @@ function renderIndex(fileInfos) {
   </div>
 
   <script>
+    let activeMonth = 'all';
+
+    function setMonthFilter(month) {
+      activeMonth = month || 'all';
+      document.querySelectorAll('.month-btn').forEach(btn => {
+        const isActive = btn.getAttribute('data-month') === activeMonth;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+      filterCards();
+    }
+
     function filterCards() {
-      const q = document.getElementById('search').value.toLowerCase();
+      const q = (document.getElementById('search')?.value || '').toLowerCase();
+      let visibleHistory = 0;
       document.querySelectorAll('.report-card').forEach(card => {
         const text = (card.getAttribute('data-search') || card.textContent || '').toLowerCase();
-        card.classList.toggle('hidden', q && !text.includes(q));
+        const cardMonth = card.getAttribute('data-month') || '';
+        const inHistoryGrid = card.parentElement && card.parentElement.id === 'card-grid';
+        const matchQuery = !q || text.includes(q);
+        const matchMonth = !inHistoryGrid || activeMonth === 'all' || cardMonth === activeMonth;
+        const show = matchQuery && matchMonth;
+        card.classList.toggle('hidden', !show);
+        if (inHistoryGrid && show) visibleHistory++;
       });
+      const countEl = document.getElementById('month-visible-count');
+      if (countEl) countEl.textContent = '显示 ' + visibleHistory + ' 篇';
     }
 
     let sortMode = 'date';
@@ -1776,6 +1806,9 @@ function renderArticle(mdFilename, rawMarkdown) {
 
 // ===== HTTP 服务 =====
 
+// v2.6: docs/ 目录按 mtime 指纹缓存索引，避免每次刷新首页同步读盘 135+ 篇报告
+const docsIndexCache = createDocsIndexCache(DOCS_DIR, getFileInfos);
+
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://localhost`);
   const relPath = url.pathname === '/' ? '' : decodeURIComponent(url.pathname);
@@ -1800,7 +1833,9 @@ const server = http.createServer((req, res) => {
       const allDates = records.map(r => r.date);
       const archive = buildDailyForecastArchive(records, 18);
       const syncMeta = readSyncMeta(DOCS_DIR);
-      const html = renderForecastPage({ forecast, allDates, archive, syncMeta, baseCss: homeCss });
+      const scorecard = buildForecastScorecard(records, buildDailyGoldForecast);
+      const sourceHealth = getSourceHealth();
+      const html = renderForecastPage({ forecast, allDates, archive, syncMeta, scorecard, sourceHealth, baseCss: homeCss });
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
       return res.end(html);
     } catch (err) {
@@ -1826,6 +1861,8 @@ const server = http.createServer((req, res) => {
           ? { from: monthlyRecords[0].ym, to: monthlyRecords[monthlyRecords.length - 1].ym }
           : null,
         meta: syncMeta,
+        sourceHealth: getSourceHealth(),
+        docsIndexCache: docsIndexCache.getStats(),
       }));
     } catch (err) {
       res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -1891,29 +1928,17 @@ const server = http.createServer((req, res) => {
     }
   }
 
-  // 目录请求 → 文件列表
+  // 目录请求 → 文件列表（v2.6: 命中 mtime 指纹内存缓存，免同步扫盘）
   if (url.pathname === '/' || url.pathname === '/index.html') {
-    fs.readdir(DOCS_DIR, (err, allFiles) => {
-      if (err) {
-        res.writeHead(500);
-        return res.end('Server error');
-      }
-      const mdFiles = allFiles
-        .filter(f => f.endsWith('.md'))
-        .sort((a, b) => {
-          const da = extractFileDate(a);
-          const db = extractFileDate(b);
-          // 最新在前，无日期的排最后
-          if (da && !db) return -1;
-          if (!da && db) return 1;
-          if (da && db && da !== db) return db.localeCompare(da);
-          return b.localeCompare(a);
-        });
-      const fileInfos = getFileInfos(mdFiles);
+    try {
+      const fileInfos = docsIndexCache.getAll();
       const html = renderIndex(fileInfos);
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
       res.end(html);
-    });
+    } catch {
+      res.writeHead(500);
+      res.end('Server error');
+    }
     return;
   }
 

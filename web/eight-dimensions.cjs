@@ -1,15 +1,22 @@
 'use strict';
 
-// GoldRush v2.4 八维全景分析与预测统一契约（CJS 镜像，供 web/ 预测引擎与页面渲染调用）
-// 与 src/utils/eight-dimensions.ts 保持完全一致的权重矩阵与正交定义
+// GoldRush v2.6 八维全景分析与预测 Web 适配器
+// 权重矩阵与维度元数据直接引用自 scripts/sync-web-cjs.mjs 自动生成的 eight-dimensions-core.cjs，零人工双写。
+const {
+  HORIZON_8D_WEIGHTS: CORE_WEIGHTS,
+  DIMENSION_META,
+} = require('./eight-dimensions-core.cjs');
 
 const HORIZON_8D_WEIGHTS = {
-  '5':   { fundamental: 0.05, news: 0.15, technical: 0.20, capitalFlow: 0.20, policy: 0.00, sentiment: 0.15, positioning: 0.07, quantitative: 0.18 },
-  '20':  { fundamental: 0.20, news: 0.05, technical: 0.12, capitalFlow: 0.18, policy: 0.10, sentiment: 0.05, positioning: 0.15, quantitative: 0.15 },
-  '60':  { fundamental: 0.25, news: 0.00, technical: 0.10, capitalFlow: 0.15, policy: 0.15, sentiment: 0.00, positioning: 0.20, quantitative: 0.15 },
-  '1y':  { fundamental: 0.30, news: 0.00, technical: 0.08, capitalFlow: 0.08, policy: 0.22, sentiment: 0.00, positioning: 0.17, quantitative: 0.15 },
-  '2y':  { fundamental: 0.35, news: 0.00, technical: 0.05, capitalFlow: 0.05, policy: 0.25, sentiment: 0.00, positioning: 0.15, quantitative: 0.15 },
-  '5y':  { fundamental: 0.35, news: 0.00, technical: 0.05, capitalFlow: 0.05, policy: 0.25, sentiment: 0.00, positioning: 0.15, quantitative: 0.15 },
+  '5':  CORE_WEIGHTS['5d'],
+  '20': CORE_WEIGHTS['20d'],
+  '60': CORE_WEIGHTS['60d'],
+  '5d': CORE_WEIGHTS['5d'],
+  '20d': CORE_WEIGHTS['20d'],
+  '60d': CORE_WEIGHTS['60d'],
+  '1y': CORE_WEIGHTS['1y'],
+  '2y': CORE_WEIGHTS['2y'],
+  '5y': CORE_WEIGHTS['5y'],
 };
 
 const DIMENSION_ORDER = [
@@ -22,17 +29,6 @@ const DIMENSION_ORDER = [
   'positioning',
   'quantitative',
 ];
-
-const DIMENSION_META = {
-  fundamental:  { code: 'B1', category: 'base',        title: '基本面', subtitle: '实际利率 · 通胀估值 · 美元中枢' },
-  news:         { code: 'B2', category: 'base',        title: '消息面', subtitle: '事件三通道传导 · 预期差催化' },
-  technical:    { code: 'B3', category: 'base',        title: '技术面', subtitle: '多周期均线 · MACD · 结构位' },
-  capitalFlow:  { code: 'S1', category: 'specialized', title: '资金面', subtitle: 'GLD/ETF · CFTC 4W边际 · 上海溢价' },
-  policy:       { code: 'S2', category: 'specialized', title: '政策面', subtitle: '联储周期 · 央行购金 · 监管制度' },
-  sentiment:    { code: 'S3', category: 'specialized', title: '情绪面', subtitle: 'GVZ/VIX · RSI极端段 · 羊群警示' },
-  positioning:  { code: 'S4', category: 'specialized', title: '筹码面', subtitle: 'CFTC 3Y拥挤 · VWAP成本 · AISC底盘' },
-  quantitative: { code: 'S5', category: 'specialized', title: '量化面', subtitle: '对数FHS · ATR风控 · 统计显著性' },
-};
 
 function clamp(v, lo, hi) {
   return Math.max(lo, Math.min(hi, v));

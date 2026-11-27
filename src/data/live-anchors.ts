@@ -1,4 +1,6 @@
 // 多源实时锚定 — Yahoo 不可达时的零 LLM 兜底（gold-api / LBMA / FRED）
+import { getGlobalCircuitBreaker } from '../utils/source-circuit-breaker.js';
+import { computeSgePremiumUsd } from '../db/gold-prices.js';
 
 export interface LiveAnchorPrice {
   symbol: string;
@@ -38,12 +40,16 @@ async function fetchText(url: string, timeoutMs = 20_000): Promise<string | null
   }
 }
 
-/** gold-api.com 实时 XAU/USD（服务器实测可达） */
+/** gold-api.com 实时 XAU/USD（服务器实测可达，带熔断保护） */
 export async function fetchGoldApiLive(): Promise<LiveAnchorPrice | null> {
-  const body = await fetchJson('https://api.gold-api.com/price/XAU') as {
-    price?: number;
-    updatedAt?: string;
-  } | null;
+  const breaker = getGlobalCircuitBreaker();
+  const { value: body } = await breaker.execute('gold_api', async () => {
+    const raw = await fetchJson('https://api.gold-api.com/price/XAU') as {
+      price?: number;
+      updatedAt?: string;
+    } | null;
+    return raw?.price && Number.isFinite(raw.price) && raw.price > 0 ? raw : null;
+  });
   if (!body?.price || !Number.isFinite(body.price) || body.price <= 0) return null;
   const ts = body.updatedAt || new Date().toISOString();
   return {
@@ -141,12 +147,17 @@ export async function fetchLbmaGoldHistory(days = 90): Promise<Array<{ date: str
   return rows.filter(r => Date.parse(r.date) >= fromMs);
 }
 
-/** FRED CSV 最新有效观测值（HTTP/1.1 兼容由运行时 fetch 处理） */
+/** FRED CSV 最新有效观测值（带熔断保护，严格保留真实观测日） */
 export async function fetchFredLatest(seriesId: string): Promise<LiveAnchorPrice | null> {
-  const text = await fetchText(
-    `https://fred.stlouisfed.org/graph/fredgraph.csv?id=${encodeURIComponent(seriesId)}`,
-  );
-  if (!text || text.includes('<html') || text.includes('error')) return null;
+  const breaker = getGlobalCircuitBreaker();
+  const { value: text } = await breaker.execute('fred', async () => {
+    const raw = await fetchText(
+      `https://fred.stlouisfed.org/graph/fredgraph.csv?id=${encodeURIComponent(seriesId)}`,
+    );
+    if (!raw || raw.includes('<html') || raw.includes('error')) return null;
+    return raw;
+  });
+  if (!text) return null;
 
   const lines = text.trim().split(/\r?\n/).filter(Boolean);
   // DATE,VALUE
@@ -170,22 +181,25 @@ export async function fetchFredLatest(seriesId: string): Promise<LiveAnchorPrice
   return null;
 }
 
-/** 聚合：金价 + DXY + 10Y + TIPS（多源瀑布） */
+/** 聚合：金价 + DXY + 10Y + 2Y + TIPS + 上海金溢价（多源瀑布 + 熔断保护） */
 export async function fetchLiveAnchors(): Promise<{
   gold: LiveAnchorPrice | null;
   dxy: LiveAnchorPrice | null;
   us10y: LiveAnchorPrice | null;
+  us2y: LiveAnchorPrice | null;
   tips: LiveAnchorPrice | null;
   shanghai: LiveAnchorPrice | null;
   etf: LiveAnchorPrice | null;
   usdcny: LiveAnchorPrice | null;
+  sgePremiumUsd: number | null;
 }> {
-  const [goldApi, sinaGold, dxyFred, dxySina, us10y, tips, sinaShanghai, sinaEtf, usdcny] = await Promise.all([
+  const [goldApi, sinaGold, dxyFred, dxySina, us10y, us2y, tips, sinaShanghai, sinaEtf, usdcny] = await Promise.all([
     fetchGoldApiLive(),
     fetchSinaHq('hf_GC'),
     fetchFredLatest('DTWEXBGS'),
     fetchSinaHq('DINIW'), // 美元指数
     fetchFredLatest('DGS10'),
+    fetchFredLatest('DGS2'),
     fetchFredLatest('DFII10'),
     fetchSinaHq('gds_AU9999'), // 上海金 Au99.99（SGE）
     fetchSinaHq('sh518880'), // 黄金ETF 518880 实时价
@@ -194,6 +208,7 @@ export async function fetchLiveAnchors(): Promise<{
 
   const gold = goldApi ?? sinaGold;
   const dxy = dxyFred ?? dxySina;
+  const sgePremiumUsd = computeSgePremiumUsd(sinaShanghai?.price, gold?.price, usdcny?.price);
 
-  return { gold, dxy, us10y, tips, shanghai: sinaShanghai, etf: sinaEtf, usdcny };
+  return { gold, dxy, us10y, us2y, tips, shanghai: sinaShanghai, etf: sinaEtf, usdcny, sgePremiumUsd };
 }

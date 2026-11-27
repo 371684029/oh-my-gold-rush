@@ -4,6 +4,7 @@
 // 一键切换：伦敦金($/oz) / 国内金(¥/克) / 涨跌幅(%) · 5/20/60交易日 · 每日一图切换与历史复盘对照
 
 const { renderAppTabs } = require('./nav-tabs.cjs');
+const { renderForecastScorecardHtml } = require('./forecast-scorecard.cjs');
 
 function esc(s) {
   return String(s ?? '')
@@ -22,7 +23,7 @@ function safeJsonForScript(obj) {
     .replace(/\u2029/g, '\\u2029');
 }
 
-function renderForecastPage({ forecast, allDates, archive, syncMeta, baseCss }) {
+function renderForecastPage({ forecast, allDates, archive, syncMeta, scorecard, sourceHealth, baseCss }) {
   if (!forecast) {
     return `<!DOCTYPE html>
 <html lang="zh-CN">
@@ -154,6 +155,112 @@ ${baseCss}
   color: var(--text-3);
   pointer-events: none;
   cursor: default;
+}
+
+/* v2.6 历史实盘校准成绩单样式（独立命名空间 .fc-cal-*，避免与长期情景卡 .fc-sc-* 冲突） */
+.fc-scorecard-panel {
+  margin: 18px 0 6px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 0.5px solid var(--hairline-light);
+  box-shadow: var(--shadow-card);
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.fc-cal-topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.fc-cal-main-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+.fc-cal-main-title small {
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--text-2);
+  margin-left: 6px;
+}
+.fc-cal-right-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+}
+.fc-cal-news-pill {
+  padding: 3px 9px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.05);
+  color: var(--text-2);
+  font-weight: 500;
+}
+.fc-cal-health {
+  padding: 3px 9px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+.fc-cal-health.ok { background: rgba(22, 163, 74, 0.10); color: #15803d; }
+.fc-cal-health.warn { background: rgba(234, 88, 12, 0.12); color: #c2410c; }
+.fc-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 720px) {
+  .fc-cal-grid { grid-template-columns: 1fr; }
+}
+.fc-cal-card {
+  background: rgba(255, 255, 255, 0.65);
+  border: 0.5px solid var(--hairline);
+  border-radius: 12px;
+  padding: 12px 14px;
+  min-width: 0;
+}
+.fc-cal-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.fc-cal-title { font-size: 13px; font-weight: 700; color: var(--text); }
+.fc-cal-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+.fc-cal-badge.good { background: rgba(22, 163, 74, 0.12); color: #15803d; }
+.fc-cal-badge.warn { background: rgba(217, 119, 6, 0.14); color: #b45309; }
+.fc-cal-badge.neutral { background: rgba(100, 116, 139, 0.12); color: #475569; }
+.fc-cal-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+@media (max-width: 560px) {
+  .fc-cal-metrics { grid-template-columns: 1fr; gap: 10px; }
+}
+.fc-cal-m { min-width: 0; }
+.fc-cal-k { font-size: 11px; color: var(--text-2); margin-bottom: 2px; }
+.fc-cal-v { font-family: var(--mono); font-size: 16px; font-weight: 700; color: var(--text); }
+.fc-cal-s { font-size: 10.5px; color: var(--text-3); margin-top: 2px; }
+.fc-regime-chip {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(184, 134, 11, 0.12);
+  color: #8a6400;
+  font-weight: 600;
 }
 
 /* 数据新鲜度与一键刷新条 */
@@ -1246,6 +1353,8 @@ ${baseCss}
       </div>
     </section>
 
+    ${renderForecastScorecardHtml(scorecard, sourceHealth)}
+
     <div class="fc-sec-head">
       <h2>📅 每日走势预测存档（点击任意日期回放与复盘）</h2>
       <span>每日自动生成 · 历史日支持叠加事后真实走势检验</span>
@@ -1886,11 +1995,16 @@ ${baseCss}
           : '<tr><td colspan="4" class="txt" style="color:var(--text-2)">采用严格因果 FHS 分块波动模拟</td></tr>';
       }
 
+      const rk = hData.regimeKernel;
+      const rkHtml = !isLT && rk
+        ? ('<span class="fc-regime-chip" title="' + escHtml(rk.rationale || '') + '">🧭 ' + escHtml(rk.label) + ' (' + escHtml(rk.badge) + ')</span>')
+        : '';
       document.getElementById('fc-fhs-meta').innerHTML = isLT
         ? ('<span>24月实现月波动率 σ_m = <strong>' + hData.sampleStats.currentVolPct + '%/月</strong>（年化 ' + hData.sampleStats.annualizedVolPct + '%）</span>' +
            '<span>独立有效样本 N_eff = <strong>' + hData.sampleStats.effectiveSampleSize + '</strong>（完整窗口 ' + hData.sampleStats.rawSampleSize + ' 月）</span>' +
            '<span>向25年基准收缩 λ = <strong>' + Math.round(hData.sampleStats.shrinkageWeight * 100) + '%</strong></span>')
-        : ('<span>FHS 日波动率 σ₀ = <strong>' + hData.sampleStats.currentVolPct + '%</strong>（年化 ' + hData.sampleStats.annualizedVolPct + '%）</span>' +
+        : (rkHtml +
+           '<span>FHS 日波动率 σ₀ = <strong>' + hData.sampleStats.currentVolPct + '%</strong>（年化 ' + hData.sampleStats.annualizedVolPct + '%）</span>' +
            '<span>有效独立样本 N_eff = <strong>' + hData.sampleStats.effectiveSampleSize + '</strong>（原始 ' + hData.sampleStats.rawSampleSize + '）</span>' +
            '<span>贝叶斯收缩 λ = <strong>' + Math.round(hData.sampleStats.shrinkageWeight * 100) + '%</strong></span>');
 

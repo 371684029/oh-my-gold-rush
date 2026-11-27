@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-06-18",
+  "generatedAt": "2026-11-27T06:37:46.480Z",
+  "backfilledFromMarkdown": true,
+  "score": 52,
+  "scoreLow": null,
+  "scoreHigh": null,
+  "direction": "bearish",
+  "quantScore": null,
+  "quantCoverage": null,
+  "gate": {
+    "tier": "yellow",
+    "actionable": true,
+    "overallConfidence": 60
+  },
+  "dual": null,
+  "position": null,
+  "advice": {
+    "source": "score",
+    "label": "偏空",
+    "headline": "综合分 52/100 偏空",
+    "action": "暂缓主动加仓，仅保留极小额底仓定投观察。"
+  },
+  "short": {
+    "score": 52,
+    "direction": "bearish"
+  },
+  "mid": null,
+  "long": null
+}

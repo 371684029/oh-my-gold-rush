@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-07-30",
+  "generatedAt": "2026-11-27T06:37:46.496Z",
+  "backfilledFromMarkdown": true,
+  "score": 41,
+  "scoreLow": 32,
+  "scoreHigh": 50,
+  "direction": "bearish",
+  "quantScore": 58,
+  "quantCoverage": 100,
+  "gate": {
+    "tier": "yellow",
+    "actionable": true,
+    "overallConfidence": 70
+  },
+  "dual": {
+    "llmScore": 41,
+    "quantScore": 58,
+    "delta": -17,
+    "alignment": "conflict",
+    "actionPolicy": "hold_on_conflict"
+  },
+  "position": {
+    "targetPct": 40,
+    "label": "偏轻",
+    "tilt": "reduce",
+    "headline": "双体系不一致，维持纪律仓、不追方向",
+    "action": "建议相对计划仓约 40%；以定投层为主（85%），波段仓轻仓或空仓"
+  },
+  "advice": {
+    "source": "dual_conflict",
+    "label": "双分分歧",
+    "headline": "LLM(41) 与量化(58) 存在分歧，目标仓位受限于 40%（偏轻）",
+    "action": "双体系未共振，以定投为主、暂不追单。"
+  },
+  "short": {
+    "score": 41,
+    "direction": "bearish"
+  },
+  "mid": null,
+  "long": null
+}

@@ -19,6 +19,7 @@ const {
   DIMENSION_META,
 } = require('./eight-dimensions.cjs');
 const { auditDailyTransmissionVeracity } = require('./news-veracity.cjs');
+const { buildRegimeAwareWeights } = require('./regime-kernel.cjs');
 
 const HORIZONS = [5, 20, 60];
 const SHRINKAGE_K = 12;
@@ -559,10 +560,24 @@ function buildSingleHorizonForecast(records, closes, cnyCloses, features, asOfId
     stats[k] = { m: mean(vals), s: std(vals) || 1 };
   }
 
-  // 按视野分配特征距离权重（5日偏技术+波动；20/60日偏基本面+慢变量+宏观）
-  const distWeights = horizon === 5
-    ? { ma20Dev: 1.5, rsi: 1.2, volPct: 1.4, quantScore: 1.5, tips: 1.1, dxy: 1.1, flow: 1.0, midTermScore: 0.4, ma50Dev: 0.5 }
-    : { tips: 2.0, dxy: 1.8, midTermScore: 1.8, ma50Dev: 1.4, flow: 1.4, volPct: 1.1, ma20Dev: 0.5, rsi: 0.3, quantScore: 0.5 };
+  // v2.6: 分宏观体制（Regime-Aware）严格因果动态特征核（仅用 <= asOfIdx 数据，安全收缩防过拟合）
+  const idx60Ago = Math.max(0, asOfIdx - 60);
+  const tips60Ago = features[idx60Ago]?.tips ?? curFeat.tips;
+  const tipsDelta60dBp = Number.isFinite(curFeat.tips) && Number.isFinite(tips60Ago)
+    ? round((curFeat.tips - tips60Ago) * 100, 1)
+    : null;
+  const yieldSpread2s10s = (curRec.us10y != null && curRec.us2y != null)
+    ? round(curRec.us10y - curRec.us2y, 3)
+    : null;
+  const regimeKernel = buildRegimeAwareWeights(horizon, {
+    tips: curFeat.tips,
+    tipsDelta60dBp,
+    dxyDevMa60: curRec.dxyDevMa60 ?? null,
+    volPct: curFeat.volPct,
+    gvz: curRec.gvz ?? null,
+    yieldSpread2s10s,
+  });
+  const distWeights = regimeKernel.weights;
 
   // 1) 收集历史路径 + 去均值单步对数 FHS（F02）+ 严格几何峰谷最大回撤（F01）+ 人民币联合汇率路径（F12）
   const muUsd = causalMeanLogReturn(closes, asOfIdx);
@@ -764,6 +779,17 @@ function buildSingleHorizonForecast(records, closes, cnyCloses, features, asOfId
       cny: { p10: toCny(cp10), p25: toCny(cp25), p50: toCny(cp50), p75: toCny(cp75), p90: toCny(cp90), baselineP50: toCny(cuP50) },
     });
   }
+
+  // 无条件历史基准的终点五分位（供 CRPS / CRPSS 概率扇面技能校准使用）
+  const endValsAll = sampleEntries.map(e => e.scaledPath[horizon - 1]);
+  const [bP10, bP25, bP50, bP75, bP90] = weightedQuantilesBatch(endValsAll, uncondWeights, QUANT_LIST);
+  const baselineQuantiles = {
+    p10: round(bP10, 2),
+    p25: round(bP25, 2),
+    p50: round(bP50, 2),
+    p75: round(bP75, 2),
+    p90: round(bP90, 2),
+  };
 
   // 4) F01 + F04: 同一 mixedWeights 下计算严格几何峰谷回撤（MaxDD）、相对起点浮亏（MaxUnderwater）与收涨概率
   const maxDdSeries = sampleEntries.map(e => e.maxDdPct);
@@ -1019,6 +1045,7 @@ function buildSingleHorizonForecast(records, closes, cnyCloses, features, asOfId
     compositeScore,
     verdict,
     pillarWeights: pw,
+    regimeKernel,
     sampleStats: {
       rawSampleSize: sampleEntries.length,
       effectiveSampleSize,
@@ -1037,6 +1064,7 @@ function buildSingleHorizonForecast(records, closes, cnyCloses, features, asOfId
       endP75Pct: last.p75,
       endP90Pct: last.p90,
       baselineEndP50Pct: last.baselineP50,
+      baselineQuantiles,
       endUsd: last.usd,
       endCny: last.cny,
       maxDdP50,
@@ -1056,7 +1084,7 @@ function buildSingleHorizonForecast(records, closes, cnyCloses, features, asOfId
       factorAudit,
       scenarios: null,
       invalidationTriggers,
-      methodologyNote: `基于近 5 年连续实盘日线（${records[0].date} ～ ${curRec.date}，严格零前视泄漏），采用去均值单步对数 FHS + 严格几何峰谷回撤 + 9 项特征 Z-score 相似核（N_eff=${effectiveSampleSize}）+ 样本权重层 ${Math.round(effectiveShrinkage * 100)}% 经验贝叶斯混合（分位数与胜率同源完全自洽）；人民币路径纳入历史 USD/CNY 联合汇率波动。`,
+      methodologyNote: `基于近 5 年连续实盘日线（${records[0].date} ～ ${curRec.date}，严格零前视泄漏），采用去均值单步对数 FHS + 严格几何峰谷回撤 + 分体制动态相似核「${regimeKernel.label}」（N_eff=${effectiveSampleSize}）+ 样本权重层 ${Math.round(effectiveShrinkage * 100)}% 经验贝叶斯混合（分位数与胜率同源完全自洽）；人民币路径纳入历史 USD/CNY 联合汇率波动。`,
     },
   };
 }

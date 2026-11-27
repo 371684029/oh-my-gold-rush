@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-07-03",
+  "generatedAt": "2026-11-27T06:37:46.486Z",
+  "backfilledFromMarkdown": true,
+  "score": 65,
+  "scoreLow": null,
+  "scoreHigh": null,
+  "direction": "neutral",
+  "quantScore": null,
+  "quantCoverage": null,
+  "gate": {
+    "tier": "red",
+    "actionable": false,
+    "overallConfidence": 80
+  },
+  "dual": null,
+  "position": null,
+  "advice": {
+    "source": "gate",
+    "label": "数据不足",
+    "headline": "今日数据未过门禁，暂停依据结论调仓",
+    "action": "保持原定投计划，待数据恢复后再评估。"
+  },
+  "short": {
+    "score": 65,
+    "direction": "neutral"
+  },
+  "mid": null,
+  "long": null
+}

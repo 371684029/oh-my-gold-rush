@@ -13,6 +13,17 @@ import {
 import { computeFactorIc, formatFactorIcConsole, formatFactorIcMarkdown } from '../utils/factor-ic.js';
 import { computeScenarioBrier, formatScenarioBrierConsole, formatScenarioBrierMarkdown } from '../utils/scenario-brier.js';
 import { summarizeWalkForward, formatWalkForwardConsole, formatWalkForwardMarkdown, computeOosHitStats } from '../utils/walk-forward.js';
+import {
+  evaluateProbFanCalibration,
+  buildNewsAuditStats,
+  formatProbFanConsole,
+  formatProbFanMarkdown,
+  formatNewsAuditConsole,
+  formatNewsAuditMarkdown,
+  type QuantileForecastSample,
+  type NewsAuditSample,
+} from '../utils/prob-calibration.js';
+import { forwardReturnPct } from '../utils/forward-return.js';
 import { header, separator } from '../utils/format.js';
 import chalk from 'chalk';
 import type { CalibrateOptions } from '../types/config.js';
@@ -77,6 +88,60 @@ export async function calibrateCommand(options: CalibrateOptions): Promise<void>
       pricesRepo,
       5,
     );
+  }
+
+  // v2.6: 概率扇面 CRPS + P10–P90 覆盖率校准
+  const parseReportJson = (raw: string): Record<string, any> | null => {
+    try { return JSON.parse(raw) as Record<string, any>; } catch { return null; }
+  };
+
+  let probFanReports = null as ReturnType<typeof evaluateProbFanCalibration>[] | null;
+  if (options.crps || options.md) {
+    const recentReports = reportsRepo.getRecent(Math.max(options.days, 90));
+    const samples5d: QuantileForecastSample[] = [];
+    for (const row of recentReports) {
+      const parsed = parseReportJson(row.reportJson);
+      const pts = parsed?.probPath?.points;
+      if (!Array.isArray(pts) || pts.length === 0) continue;
+      const lastPt = pts[pts.length - 1] as { p10?: number; p50?: number; p90?: number } | undefined;
+      if (!lastPt || typeof lastPt.p10 !== 'number' || typeof lastPt.p50 !== 'number' || typeof lastPt.p90 !== 'number') continue;
+      const fwd = forwardReturnPct(pricesRepo, row.date, 5);
+      if (fwd == null || !Number.isFinite(fwd)) continue;
+      samples5d.push({
+        date: row.date,
+        p10: lastPt.p10,
+        p25: (lastPt.p10 + lastPt.p50) / 2,
+        p50: lastPt.p50,
+        p75: (lastPt.p50 + lastPt.p90) / 2,
+        p90: lastPt.p90,
+        actualPct: fwd,
+      });
+    }
+    probFanReports = [evaluateProbFanCalibration(samples5d, 5)];
+  }
+
+  // v2.6: 消息面真伪与防钓鱼分桶事后审计
+  let newsAuditReport = null as ReturnType<typeof buildNewsAuditStats> | null;
+  if (options.newsAudit || options.md) {
+    const recentReports = reportsRepo.getRecent(Math.max(options.days, 90));
+    const auditSamples: NewsAuditSample[] = [];
+    for (const row of recentReports) {
+      const fwd1 = forwardReturnPct(pricesRepo, row.date, 1);
+      const fwd5 = forwardReturnPct(pricesRepo, row.date, 5);
+      const parsed = parseReportJson(row.reportJson);
+      const nv = parsed?.newsVeracity as { veracityStatus?: NewsAuditSample['veracityStatus'] } | undefined;
+      const et = parsed?.eventTransmission as { veracityStatus?: string } | undefined;
+      const veracityStatus: NewsAuditSample['veracityStatus'] = nv?.veracityStatus
+        ?? (et?.veracityStatus === 'bait_suspected' ? 'bait_suspected' : 'quiet');
+      auditSamples.push({
+        date: row.date,
+        veracityStatus,
+        score: row.overallScore,
+        actual1dPct: fwd1,
+        actual5dPct: fwd5,
+      });
+    }
+    newsAuditReport = buildNewsAuditStats(auditSamples);
   }
 
   // 输出
@@ -206,7 +271,15 @@ export async function calibrateCommand(options: CalibrateOptions): Promise<void>
     console.log('\n' + formatScenarioBrierConsole(scenarioBrier));
   }
 
-  if (options.md && (tearsheet || factorIc || walkForward || scenarioBrier)) {
+  if (probFanReports && options.crps) {
+    console.log('\n' + formatProbFanConsole(probFanReports));
+  }
+
+  if (newsAuditReport && options.newsAudit) {
+    console.log('\n' + formatNewsAuditConsole(newsAuditReport));
+  }
+
+  if (options.md && (tearsheet || factorIc || walkForward || scenarioBrier || probFanReports || newsAuditReport)) {
     const fs = await import('node:fs');
     const docsDir = 'docs';
     if (!fs.existsSync(docsDir)) fs.mkdirSync(docsDir, { recursive: true });
@@ -216,6 +289,8 @@ export async function calibrateCommand(options: CalibrateOptions): Promise<void>
     if (factorIc) parts.push(formatFactorIcMarkdown(factorIc));
     if (walkForward) parts.push(formatWalkForwardMarkdown(walkForward));
     if (scenarioBrier) parts.push(formatScenarioBrierMarkdown(scenarioBrier));
+    if (probFanReports) parts.push(formatProbFanMarkdown(probFanReports));
+    if (newsAuditReport) parts.push(formatNewsAuditMarkdown(newsAuditReport));
     const content = parts.join('\n');
     const dated = `${docsDir}/goldrush-calibration-${new Date().toISOString().slice(0, 10)}.md`;
     const latest = `${docsDir}/goldrush-calibration-latest.md`;

@@ -145,6 +145,10 @@ function initializeTables(db: Database.Database): void {
   `;
 
   db.exec(goldPricesDDL);
+  // v2.6 幂等迁移：补齐黄金隐含波动率 GVZ、美债 2Y 收益率、上海金相对伦敦金美元溢价
+  try { db.exec('ALTER TABLE gold_prices ADD COLUMN gvz REAL'); } catch { /* 列已存在则忽略 */ }
+  try { db.exec('ALTER TABLE gold_prices ADD COLUMN us2y_yield REAL'); } catch { /* 列已存在则忽略 */ }
+  try { db.exec('ALTER TABLE gold_prices ADD COLUMN sge_premium_usd REAL'); } catch { /* 列已存在则忽略 */ }
   db.exec(fundNavDDL);
   db.exec(analysisReportsDDL);
 

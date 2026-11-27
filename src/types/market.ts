@@ -93,6 +93,12 @@ export interface GoldPriceRecord {
   dollarIndex: number | null;
   us10yYield: number | null;
   tipsYield: number | null;
+  /** v2.6: 黄金隐含波动率指数 (CBOE GVZ) */
+  gvz?: number | null;
+  /** v2.6: 2年期美债收益率 (%) */
+  us2yYield?: number | null;
+  /** v2.6: 上海金 Au99.99 相对伦敦金溢价 (USD/oz，可正可负) */
+  sgePremiumUsd?: number | null;
   createdAt: string;
 }
 

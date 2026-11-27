@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-08-06",
+  "generatedAt": "2026-11-27T06:37:46.498Z",
+  "backfilledFromMarkdown": true,
+  "score": 44,
+  "scoreLow": 32,
+  "scoreHigh": 56,
+  "direction": "neutral",
+  "quantScore": 57,
+  "quantCoverage": 100,
+  "gate": {
+    "tier": "red",
+    "actionable": false,
+    "overallConfidence": 40
+  },
+  "dual": {
+    "llmScore": 44,
+    "quantScore": 57,
+    "delta": -13,
+    "alignment": "mild_divergence",
+    "actionPolicy": "quant_preferred"
+  },
+  "position": {
+    "targetPct": 26,
+    "label": "极轻",
+    "tilt": "reduce",
+    "headline": "数据不可靠，建议维持轻仓纪律仓",
+    "action": "建议相对计划仓约 26%（定投层 85% / 波段层 15%）；暂停加仓，修好数据再评估"
+  },
+  "advice": {
+    "source": "gate",
+    "label": "数据不足",
+    "headline": "今日数据未过门禁，暂停依据结论调仓",
+    "action": "保持原定投计划，待数据恢复后再评估。"
+  },
+  "short": {
+    "score": 44,
+    "direction": "neutral"
+  },
+  "mid": null,
+  "long": null
+}

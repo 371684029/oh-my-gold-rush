@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-08-27",
+  "generatedAt": "2026-11-27T06:37:46.508Z",
+  "backfilledFromMarkdown": true,
+  "score": 57,
+  "scoreLow": 53,
+  "scoreHigh": 61,
+  "direction": "neutral",
+  "quantScore": 55,
+  "quantCoverage": 100,
+  "gate": {
+    "tier": "yellow",
+    "actionable": true,
+    "overallConfidence": 93
+  },
+  "dual": {
+    "llmScore": 57,
+    "quantScore": 55,
+    "delta": 2,
+    "alignment": "aligned",
+    "actionPolicy": "both"
+  },
+  "position": {
+    "targetPct": 46,
+    "label": "标配",
+    "tilt": "hold",
+    "headline": "风险偏高，仓位已自动收一收",
+    "action": "建议相对计划仓约 46%（标配）；定投层为主（80%），少做波段加仓"
+  },
+  "advice": {
+    "source": "position",
+    "label": "标配",
+    "headline": "风险偏高，仓位已自动收一收",
+    "action": "建议相对计划仓约 46%（标配）；定投层为主（80%），少做波段加仓"
+  },
+  "short": {
+    "score": 57,
+    "direction": "neutral"
+  },
+  "mid": null,
+  "long": null
+}

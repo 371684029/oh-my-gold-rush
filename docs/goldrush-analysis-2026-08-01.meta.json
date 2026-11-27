@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-08-01",
+  "generatedAt": "2026-11-27T06:37:46.496Z",
+  "backfilledFromMarkdown": true,
+  "score": 39,
+  "scoreLow": 31,
+  "scoreHigh": 47,
+  "direction": "bearish",
+  "quantScore": 47,
+  "quantCoverage": 100,
+  "gate": {
+    "tier": "yellow",
+    "actionable": true,
+    "overallConfidence": 86
+  },
+  "dual": {
+    "llmScore": 39,
+    "quantScore": 47,
+    "delta": -8,
+    "alignment": "aligned",
+    "actionPolicy": "both"
+  },
+  "position": {
+    "targetPct": 34,
+    "label": "偏轻",
+    "tilt": "reduce",
+    "headline": "双体系不一致，维持纪律仓、不追方向",
+    "action": "建议相对计划仓约 34%；以定投层为主（85%），波段仓轻仓或空仓"
+  },
+  "advice": {
+    "source": "position",
+    "label": "偏轻",
+    "headline": "双体系不一致，维持纪律仓、不追方向",
+    "action": "建议相对计划仓约 34%；以定投层为主（85%），波段仓轻仓或空仓"
+  },
+  "short": {
+    "score": 39,
+    "direction": "bearish"
+  },
+  "mid": null,
+  "long": null
+}

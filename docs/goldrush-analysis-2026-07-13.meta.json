@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-07-13",
+  "generatedAt": "2026-11-27T06:37:46.490Z",
+  "backfilledFromMarkdown": true,
+  "score": 63,
+  "scoreLow": null,
+  "scoreHigh": null,
+  "direction": "bullish",
+  "quantScore": null,
+  "quantCoverage": null,
+  "gate": {
+    "tier": "yellow",
+    "actionable": true,
+    "overallConfidence": 46
+  },
+  "dual": null,
+  "position": null,
+  "advice": {
+    "source": "score",
+    "label": "偏多",
+    "headline": "综合分 63/100 偏多",
+    "action": "维持定投或逢回踩分批小额加仓，控制单次节奏。"
+  },
+  "short": {
+    "score": 63,
+    "direction": "bullish"
+  },
+  "mid": null,
+  "long": null
+}

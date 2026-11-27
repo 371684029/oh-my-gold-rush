@@ -634,6 +634,53 @@ header.home-hero .subtitle {
   margin: 18px 0 10px;
   font-weight: 600;
 }
+.month-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  background: var(--glass);
+  border: 0.5px solid var(--hairline);
+  border-radius: 12px;
+}
+.month-filter-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.month-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex: 1;
+}
+.month-btn {
+  background: rgba(0, 0, 0, 0.04);
+  border: 0.5px solid var(--hairline);
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 0.76rem;
+  font-family: var(--mono);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.15s var(--ease);
+}
+.month-btn:hover { background: rgba(0, 122, 255, 0.10); color: var(--accent); }
+.month-btn.active {
+  background: var(--accent);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 600;
+}
+.month-cnt { opacity: 0.75; margin-left: 2px; }
+.month-visible-count {
+  font-size: 0.74rem;
+  color: var(--text-3);
+  white-space: nowrap;
+}
 
 /* Hero 最新报告 */
 .hero-card {

@@ -3,12 +3,48 @@ import Database from 'better-sqlite3';
 import type { GoldPriceRecord } from '../types/market.js';
 import { addCalendarDays, todayDate } from '../utils/time.js';
 
-export class GoldPricesRepo {
-  constructor(private db: Database.Database) {}
+/** 金衡盎司换算克数常数 */
+export const TROY_OZ_TO_GRAM = 31.1034768;
 
-  /** 将 ≤0 视为缺失，避免 0 覆盖有效历史价 */
+/** 计算上海金 Au99.99 (CNY/g) 相对伦敦金 (USD/oz) 的美元溢价（可正可负） */
+export function computeSgePremiumUsd(
+  shanghaiCnyPerGram: number | null | undefined,
+  londonUsdPerOz: number | null | undefined,
+  usdCny: number | null | undefined,
+): number | null {
+  if (
+    shanghaiCnyPerGram == null || !Number.isFinite(shanghaiCnyPerGram) || shanghaiCnyPerGram <= 0
+    || londonUsdPerOz == null || !Number.isFinite(londonUsdPerOz) || londonUsdPerOz <= 0
+    || usdCny == null || !Number.isFinite(usdCny) || usdCny <= 0
+  ) {
+    return null;
+  }
+  const shanghaiUsdPerOz = (shanghaiCnyPerGram / usdCny) * TROY_OZ_TO_GRAM;
+  return Math.round((shanghaiUsdPerOz - londonUsdPerOz) * 100) / 100;
+}
+
+export class GoldPricesRepo {
+  constructor(private db: Database.Database) {
+    // 幂等补齐 v2.6 扩展列，兼容未经过 initDatabase 的旧库或测试内存库
+    const cols = new Set(
+      (this.db.prepare('PRAGMA table_info(gold_prices)').all() as Array<{ name: string }>).map(c => c.name),
+    );
+    if (cols.size > 0) {
+      if (!cols.has('gvz')) this.db.exec('ALTER TABLE gold_prices ADD COLUMN gvz REAL');
+      if (!cols.has('us2y_yield')) this.db.exec('ALTER TABLE gold_prices ADD COLUMN us2y_yield REAL');
+      if (!cols.has('sge_premium_usd')) this.db.exec('ALTER TABLE gold_prices ADD COLUMN sge_premium_usd REAL');
+    }
+  }
+
+  /** 将 ≤0 视为缺失，避免 0 或负数覆盖有效历史价 */
   private static sanitize(v: number | null | undefined): number | null {
-    if (v == null || !Number.isFinite(v) || v === 0) return null;
+    if (v == null || !Number.isFinite(v) || v <= 0) return null;
+    return v;
+  }
+
+  /** 允许正负或 0 的有符号数值（如上海金溢价） */
+  private static sanitizeSigned(v: number | null | undefined): number | null {
+    if (v == null || !Number.isFinite(v)) return null;
     return v;
   }
 
@@ -27,12 +63,15 @@ export class GoldPricesRepo {
     const tipsYield = record.tipsYield != null && Number.isFinite(record.tipsYield) && record.tipsYield !== 0
       ? record.tipsYield
       : null;
+    const gvz = GoldPricesRepo.sanitize(record.gvz);
+    const us2yYield = GoldPricesRepo.sanitize(record.us2yYield);
+    const sgePremiumUsd = GoldPricesRepo.sanitizeSigned(record.sgePremiumUsd);
 
     this.db.prepare(`
       INSERT INTO gold_prices (date, london_close, london_high, london_low,
         shanghai_close, shanghai_high, shanghai_low, etf_nav, etf_change,
-        dollar_index, us10y_yield, tips_yield)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        dollar_index, us10y_yield, tips_yield, gvz, us2y_yield, sge_premium_usd)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(date) DO UPDATE SET
         london_close = COALESCE(excluded.london_close, gold_prices.london_close),
         london_high = COALESCE(excluded.london_high, gold_prices.london_high),
@@ -44,12 +83,15 @@ export class GoldPricesRepo {
         etf_change = COALESCE(excluded.etf_change, gold_prices.etf_change),
         dollar_index = COALESCE(excluded.dollar_index, gold_prices.dollar_index),
         us10y_yield = COALESCE(excluded.us10y_yield, gold_prices.us10y_yield),
-        tips_yield = COALESCE(excluded.tips_yield, gold_prices.tips_yield)
+        tips_yield = COALESCE(excluded.tips_yield, gold_prices.tips_yield),
+        gvz = COALESCE(excluded.gvz, gold_prices.gvz),
+        us2y_yield = COALESCE(excluded.us2y_yield, gold_prices.us2y_yield),
+        sge_premium_usd = COALESCE(excluded.sge_premium_usd, gold_prices.sge_premium_usd)
     `).run(
       record.date, londonClose, londonHigh, londonLow,
       shanghaiClose, shanghaiHigh, shanghaiLow,
       etfNav, record.etfChange ?? null, dollarIndex,
-      us10yYield, tipsYield,
+      us10yYield, tipsYield, gvz, us2yYield, sgePremiumUsd,
     );
   }
 
@@ -71,12 +113,15 @@ export class GoldPricesRepo {
     const tipsYield = record.tipsYield != null && Number.isFinite(record.tipsYield) && record.tipsYield !== 0
       ? record.tipsYield
       : null;
+    const gvz = GoldPricesRepo.sanitize(record.gvz);
+    const us2yYield = GoldPricesRepo.sanitize(record.us2yYield);
+    const sgePremiumUsd = GoldPricesRepo.sanitizeSigned(record.sgePremiumUsd);
 
     this.db.prepare(`
       INSERT INTO gold_prices (date, london_close, london_high, london_low,
         shanghai_close, shanghai_high, shanghai_low, etf_nav, etf_change,
-        dollar_index, us10y_yield, tips_yield)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        dollar_index, us10y_yield, tips_yield, gvz, us2y_yield, sge_premium_usd)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(date) DO UPDATE SET
         london_close = COALESCE(gold_prices.london_close, excluded.london_close),
         london_high = COALESCE(gold_prices.london_high, excluded.london_high),
@@ -88,12 +133,15 @@ export class GoldPricesRepo {
         etf_change = COALESCE(gold_prices.etf_change, excluded.etf_change),
         dollar_index = COALESCE(gold_prices.dollar_index, excluded.dollar_index),
         us10y_yield = COALESCE(gold_prices.us10y_yield, excluded.us10y_yield),
-        tips_yield = COALESCE(gold_prices.tips_yield, excluded.tips_yield)
+        tips_yield = COALESCE(gold_prices.tips_yield, excluded.tips_yield),
+        gvz = COALESCE(gold_prices.gvz, excluded.gvz),
+        us2y_yield = COALESCE(gold_prices.us2y_yield, excluded.us2y_yield),
+        sge_premium_usd = COALESCE(gold_prices.sge_premium_usd, excluded.sge_premium_usd)
     `).run(
       record.date, londonClose, londonHigh, londonLow,
       shanghaiClose, shanghaiHigh, shanghaiLow,
       etfNav, record.etfChange ?? null, dollarIndex,
-      us10yYield, tipsYield,
+      us10yYield, tipsYield, gvz, us2yYield, sgePremiumUsd,
     );
   }
 
@@ -145,6 +193,11 @@ function mapNum(v: unknown, allowNegative = false): number | null {
   return v;
 }
 
+function mapSignedNum(v: unknown): number | null {
+  if (v == null || typeof v !== 'number' || !Number.isFinite(v)) return null;
+  return v;
+}
+
 function mapRow(row: Record<string, unknown>): GoldPriceRecord {
   return {
     date: row.date as string,
@@ -159,6 +212,9 @@ function mapRow(row: Record<string, unknown>): GoldPriceRecord {
     dollarIndex: mapNum(row.dollar_index),
     us10yYield: mapNum(row.us10y_yield),
     tipsYield: mapNum(row.tips_yield, true),
+    gvz: mapNum(row.gvz),
+    us2yYield: mapNum(row.us2y_yield),
+    sgePremiumUsd: mapSignedNum(row.sge_premium_usd),
     createdAt: row.created_at as string,
   };
 }

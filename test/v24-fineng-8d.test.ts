@@ -352,9 +352,9 @@ describe('GoldRush v2.4 — 八维正交体系（三基 + 五专）与 18 项金
     expect(md).toContain('S5');
   });
 
-  it('8. 版本号与 Web 引擎八维/55年实证锚契约一致 (v2.4.0)', () => {
+  it('8. 版本号与 Web 引擎八维/55年实证锚契约一致 (v2.4+)', () => {
     const pkg = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf8')) as { version: string };
-    expect(pkg.version).toBe('2.4.0');
+    expect(pkg.version).toMatch(/^2\.[4-9]\.\d+$/);
 
     const docsDir = path.resolve(process.cwd(), 'docs');
     const forecastData = require('../web/forecast-data.cjs') as {

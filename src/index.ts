@@ -34,7 +34,7 @@ const program = new Command();
 program
   .name('goldrush')
   .description('🥇 GoldRush — 黄金投资研究 Agent')
-  .version('0.1.0');
+  .version('2.6.0');
 
 // P0: 实时金价速查
 program
@@ -103,6 +103,8 @@ program
   .option('--ic', '输出量化因子 Spearman IC（研究卫生，不自动改权重）')
   .option('--walk-forward', 'Walk-forward：前半训练 / 后半样本外 MAE')
   .option('--brier', '情景概率 Brier 校准（预报上行概率 vs 实际上涨频率）')
+  .option('--crps', '概率扇面 CRPS + P10–P90 区间覆盖率实证校准（零前视）')
+  .option('--news-audit', '消息面真伪与防钓鱼分桶事后审计（5D 收益与滤网提升）')
   .action(async (opts) => {
     try {
       await calibrateCommand({
@@ -113,6 +115,8 @@ program
         ic: opts.ic ?? false,
         walkForward: opts.walkForward ?? false,
         brier: opts.brier ?? false,
+        crps: opts.crps ?? false,
+        newsAudit: opts.newsAudit ?? false,
       });
     } finally {
       closeDb();

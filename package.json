@@ -1,14 +1,17 @@
 {
   "name": "goldrush",
-  "version": "2.4.0",
-  "description": "黄金投资研究 Agent — 八维全景分析 + 对数FHS预测 + 回测校准 + 强制反驳",
+  "version": "2.6.0",
+  "description": "黄金投资研究 Agent — 八维全景分析 + 对数FHS预测 + 宏观预期差 + CRPS校准 + 防钓鱼证伪",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
     "goldrush": "dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "node scripts/sync-web-cjs.mjs && tsc",
+    "sync:web": "node scripts/sync-web-cjs.mjs",
+    "sync:web:check": "node scripts/sync-web-cjs.mjs --check",
+    "backfill:meta": "node scripts/backfill-meta.mjs",
     "dev": "node server.cjs",
     "cli": "tsx src/index.ts",
     "start": "node server.cjs",
